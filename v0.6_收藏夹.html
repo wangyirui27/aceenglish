@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>头号听力 · 收藏夹</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    /* 主色 */
+    --accent: #FF600F;
+    --accent-hover: #E85500;
+    --accent-light: #FF7A33;
+    --accent-dark: #CC4D0C;
+    --accent-glow: rgba(255, 96, 15, 0.3);
+    --accent-subtle: rgba(255, 96, 15, 0.1);
+    --accent-gradient: linear-gradient(135deg, #FF600F 0%, #FF7A33 100%);
+    --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+
+    /* 背景层级 */
+    --bg-0: #000000;
+    --bg-1: #111111;
+    --bg-2: #1A1A1A;
+    --bg-3: #222222;
+    --bg-accent: #2A1508;
+
+    /* 辅助色 */
+    --secondary: #FFB800;
+    --success: #00C853;
+    --info: #448AFF;
+    --warning: #FF600F;
+    --error: #FF3B30;
+
+    /* 文字 */
+    --text-1: #FFFFFF;
+    --text-2: #AAAAAA;
+    --text-3: #666666;
+    --text-accent: #FF600F;
+
+    /* 间距 / 圆角 */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 999px;
+
+    --safe-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+    background: var(--bg-0);
+    color: var(--text-1);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  .app {
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* 框外黑色区域可点击提示 */
+  html {
+    cursor: pointer;
+  }
+
+  /* 全局环境光 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -150px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 96, 15, 0.18) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 100px;
+    left: -150px;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(255, 96, 15, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; }
+
+  /* ===== 状态栏 ===== */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px 0;
+    font-size: 16px;
+    font-weight: 600;
+    height: 50px;
+  }
+  .status-bar .time { letter-spacing: 0.3px; }
+  .status-icons { display: flex; gap: 6px; align-items: center; }
+  .status-icons svg { width: 18px; height: 18px; }
+
+  /* ===== 顶部 Tabs ===== */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px 6px;
+  }
+  .tabs { display: flex; gap: 22px; align-items: baseline; }
+  .tab {
+    font-size: 17px;
+    color: var(--text-3);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    padding-bottom: 6px;
+  }
+  .tab.active {
+    font-size: 22px;
+    color: var(--text-1);
+    font-weight: 700;
+  }
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 22px;
+    height: 3px;
+    background: var(--accent-gradient);
+    border-radius: 2px;
+    box-shadow: 0 2px 8px var(--accent-glow);
+  }
+
+  .top-actions { display: flex; gap: 8px; align-items: center; }
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-md);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-1);
+  }
+  .icon-btn:active { transform: scale(0.92); }
+  .icon-btn svg { width: 18px; height: 18px; }
+
+  /* ===== 搜索栏 ===== */
+  .search-bar {
+    margin: 8px 20px 0;
+    background: var(--bg-2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+  }
+  .search-bar:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+  .search-bar svg { width: 18px; height: 18px; color: var(--text-3); flex-shrink: 0; }
+  .search-bar input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text-1);
+    font-size: 15px;
+    width: 100%;
+    font-family: inherit;
+  }
+  .search-bar input::placeholder { color: var(--text-3); }
+
+  /* ===== 月度精通目标卡 v3 ===== */
+  .goal-card {
+    margin: 16px 20px 0;
+    background: var(--bg-1);
+    border-radius: var(--radius-xl);
+    padding: 18px 20px 16px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,96,15,0.18);
+  }
+
+  /* 标题行 */
+  .goal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .goal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .goal-title-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--accent-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .goal-title-icon svg { width: 16px; height: 16px; }
+  .goal-title-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-1);
+  }
+  .goal-month-pill {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--accent);
+    background: var(--accent-subtle);
+    border: 1px solid rgba(255,96,15,0.18);
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+  }
+  .goal-month-pill svg { width: 11px; height: 11px; }
+
+  /* Hero：还需精通 48 词 */
+  .goal-hero {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .goal-hero-label {
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+  .goal-hero-num {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -1px;
+    font-feature-settings: "tnum";
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .goal-hero-unit {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+  }
+
+  /* 进度条 */
+  .goal-progress {
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .goal-progress-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+  .goal-progress-fill {
+    height: 100%;
+    background: var(--accent-gradient-h);
+    border-radius: var(--radius-full);
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* 底部信息行 */
+  .goal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+  .goal-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .goal-footer-left svg { width: 14px; height: 14px; color: var(--accent); }
+  .goal-footer-left strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .goal-footer-left .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--text-3);
+    display: inline-block;
+  }
+  .goal-footer-cta {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    color: var(--text-3);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .goal-footer-cta svg { width: 10px; height: 10px; }
+
+  /* ===== 调整目标弹窗 ===== */
+  .goal-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    z-index: 300;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    pointer-events: none;
+    transition: background 0.3s ease;
+  }
+  .goal-modal-overlay.open {
+    background: rgba(0,0,0,0.6);
+    pointer-events: auto;
+  }
+  .goal-modal {
+    width: 100%;
+    max-width: 430px;
+    background: var(--bg-1);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 0 24px 34px;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    position: relative;
+  }
+  .goal-modal-overlay.open .goal-modal {
+    transform: translateY(0);
+  }
+  .goal-modal-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    margin: 12px auto 0;
+  }
+  .goal-modal-title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-1);
+    margin-top: 20px;
+    margin-bottom: 28px;
+  }
+
+  /* 大数字 + 步进器 */
+  .goal-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    margin-bottom: 24px;
+  }
+  .goal-step-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-1);
+    font-size: 22px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1;
+    padding-bottom: 2px;
+  }
+  .goal-step-btn:active {
+    transform: scale(0.9);
+    background: rgba(255,255,255,0.12);
+  }
+  .goal-step-btn.disabled {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  .goal-step-display {
+    text-align: center;
+    min-width: 90px;
+  }
+  .goal-step-value {
+    font-size: 48px;
+    font-weight: 800;
+    font-feature-settings: "tnum";
+    letter-spacing: -2px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+  .goal-step-unit {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  /* 滑块 */
+  .goal-slider-row {
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
+  .goal-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  .goal-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--bg-0);
+    box-shadow: 0 2px 12px var(--accent-glow);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .goal-slider::-webkit-slider-thumb:active {
+    transform: scale(1.2);
+  }
+  .goal-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-3);
+  }
+
+  /* 预设档位 */
+  .goal-presets {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .goal-preset-chip {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .goal-preset-chip:active { transform: scale(0.96); }
+  .goal-preset-chip.active {
+    color: var(--accent);
+    background: var(--accent-subtle);
+    border-color: rgba(255,96,15,0.3);
+  }
+  .goal-preset-chip .preset-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+  .goal-preset-chip.active .preset-label { color: var(--accent); opacity: 0.7; }
+
+  /* 确认按钮 */
+  .goal-modal-confirm {
+    width: 100%;
+    height: 50px;
+    border-radius: var(--radius-md);
+    background: var(--accent-gradient);
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    transition: all 0.2s;
+  }
+  .goal-modal-confirm:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 10px var(--accent-glow);
+  }
+
+  /* ===== 过滤栏 ===== */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 8px;
+  }
+  .filters-left { display: flex; gap: 14px; }
+  .filter-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: var(--text-2);
+    cursor: pointer;
+    padding: 4px 0;
+    transition: color 0.2s;
+  }
+  .filter-chip:hover { color: var(--text-1); }
+  .filter-chip svg { width: 12px; height: 12px; opacity: 0.6; }
+  .filters-right { display: flex; gap: 8px; align-items: center; }
+  .btn-edit {
+    font-size: 13px;
+    color: var(--text-2);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-edit:active { background: rgba(255,255,255,0.12); }
+  .btn-add {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-md);
+    background: var(--accent-gradient);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px var(--accent-glow);
+  }
+  .btn-add:active { transform: scale(0.92); }
+  .btn-add svg { width: 18px; height: 18px; }
+
+  /* ===== 收藏汇总条（移位）===== */
+  .summary-strip {
+    margin: 6px 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--bg-1);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .summary-strip:hover {
+    border-color: rgba(255,96,15,0.25);
+    background: var(--bg-2);
+  }
+  .summary-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-accent);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .summary-icon svg { width: 18px; height: 18px; }
+  .summary-text { flex: 1; }
+  .summary-text .count {
+    font-size: 14px;
+    color: var(--text-1);
+    font-weight: 500;
+  }
+  .summary-text .count strong {
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 18px;
+    margin: 0 3px;
+    font-feature-settings: "tnum";
+  }
+  .summary-text .sub {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+  .summary-arrow {
+    color: var(--text-3);
+    transition: transform 0.2s;
+  }
+  .summary-strip:hover .summary-arrow { transform: translateX(2px); color: var(--accent); }
+  .summary-arrow svg { width: 16px; height: 16px; }
+
+  /* ===== 分组 Section ===== */
+  .section { margin-top: 4px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-accent);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .section-icon svg { width: 14px; height: 14px; }
+  .section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-1);
+  }
+  .section-count {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-left: 6px;
+    font-weight: 400;
+  }
+  .section-toggle {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s;
+    color: var(--text-3);
+  }
+  .section-toggle svg { width: 14px; height: 14px; }
+  .section-toggle.collapsed { transform: rotate(-90deg); }
+
+  /* ===== 单词卡 ===== */
+  .word-list {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .word-card {
+    background: var(--bg-1);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .word-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+    transition: background 0.2s;
+  }
+  .word-card.lvl-mastered::before { background: var(--success); }
+  .word-card.lvl-known::before { background: var(--accent); }
+  .word-card.lvl-fuzzy::before { background: var(--secondary); }
+  .word-card.lvl-new::before { background: var(--error); }
+
+  .word-card:active {
+    transform: scale(0.985);
+    background: var(--bg-2);
+  }
+  .word-card-left { flex: 1; min-width: 0; }
+  .word-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+  .word-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: -0.2px;
+  }
+  .level-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .level-tag.mastered { background: rgba(0,200,83,0.12); color: var(--success); }
+  .level-tag.known { background: var(--accent-subtle); color: var(--accent); }
+  .level-tag.fuzzy { background: rgba(255,184,0,0.12); color: var(--secondary); }
+  .level-tag.new { background: rgba(255,59,48,0.12); color: var(--error); }
+  .level-tag .lvl-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .word-def {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .word-meta {
+    text-align: right;
+    flex-shrink: 0;
+    margin-left: 14px;
+  }
+  .word-time {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 6px;
+  }
+  .mastery-bar {
+    width: 50px;
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: var(--radius-full);
+    margin-left: auto;
+    overflow: hidden;
+  }
+  .mastery-bar-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .mastery-bar-fill.mastered { background: var(--success); }
+  .mastery-bar-fill.known { background: var(--accent); }
+  .mastery-bar-fill.fuzzy { background: var(--secondary); }
+  .mastery-bar-fill.new { background: var(--error); }
+
+  /* ===== 底部操作按钮 ===== */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    padding: 12px 20px;
+    padding-bottom: calc(70px + var(--safe-bottom));
+    background: linear-gradient(to top, rgba(0,0,0,1) 60%, rgba(0,0,0,0));
+    z-index: 100;
+  }
+  .action-btn {
+    width: 100%;
+    height: 56px;
+    border-radius: var(--radius-lg);
+    background: var(--accent-gradient);
+    border: none;
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+    box-shadow: 0 4px 24px var(--accent-glow);
+  }
+  .action-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 12px var(--accent-glow);
+  }
+  .action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0% { left: -100%; }
+    50% { left: 150%; }
+    100% { left: 150%; }
+  }
+  .action-btn .coin {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    position: absolute;
+    left: 18px;
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.95;
+  }
+  .action-btn .coin-icon {
+    width: 20px;
+    height: 20px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .action-btn .coin-icon svg { width: 12px; height: 12px; }
+  .action-btn .center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .action-btn .center svg { width: 16px; height: 16px; }
+  .action-btn .remaining {
+    position: absolute;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0.95;
+  }
+  .remaining-badge {
+    background: rgba(255,255,255,0.25);
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* ===== 底部 Tab 栏 ===== */
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    height: 70px;
+    background: rgba(10,10,10,0.95);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-top: 0.5px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-around;
+    padding-top: 10px;
+    z-index: 200;
+    padding-bottom: var(--safe-bottom);
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    min-width: 56px;
+    transition: all 0.2s;
+    color: var(--text-3);
+  }
+  .tab-item:active { transform: scale(0.9); }
+  .tab-item svg { width: 22px; height: 22px; }
+  .tab-item span {
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .tab-item.active { color: var(--text-1); }
+  .tab-item.center-tab span {
+    font-size: 11px;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: -0.5px;
+  }
+  .tab-item.center-tab.active { color: var(--accent); }
+
+  .scroll-content { padding-bottom: 170px; }
+
+  /* ===== 动画 ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-in {
+    animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    opacity: 0;
+  }
+  .delay-1 { animation-delay: 0.05s; }
+  .delay-2 { animation-delay: 0.1s; }
+  .delay-3 { animation-delay: 0.15s; }
+  .delay-4 { animation-delay: 0.2s; }
+  .delay-5 { animation-delay: 0.25s; }
+  .delay-6 { animation-delay: 0.3s; }
+  .delay-7 { animation-delay: 0.35s; }
+  .delay-8 { animation-delay: 0.4s; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .count-anim {
+    animation: fadeIn 0.6s ease forwards;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- SVG defs -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="goalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF600F"/>
+      <stop offset="100%" stop-color="#FFB800"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="app">
+
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <div class="time">9:41</div>
+    <div class="status-icons">
+      <!-- 信号 -->
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 22h2v-4H2v4zm5 0h2v-7H7v7zm5 0h2v-10h-2v10zm5 0h2v-13h-2v13zm5 0h2V5h-2v17z"/></svg>
+      <!-- WiFi -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+        <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+        <line x1="12" y1="20" x2="12.01" y2="20"/>
+      </svg>
+      <!-- 电池 -->
+      <svg viewBox="0 0 26 14" fill="none">
+        <rect x="0.5" y="0.5" width="22" height="13" rx="3" stroke="white" stroke-opacity="0.5"/>
+        <rect x="24" y="4.5" width="1.5" height="5" rx="0.75" fill="white" fill-opacity="0.5"/>
+        <rect x="2" y="2" width="19" height="10" rx="1.5" fill="white"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 顶部 Tabs -->
+  <div class="top-nav">
+    <div class="tabs">
+      <div class="tab">精选</div>
+      <div class="tab active">收藏</div>
+      <div class="tab">重遇</div>
+    </div>
+    <div class="top-actions">
+      <div class="icon-btn" title="查词">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- 搜索栏 -->
+  <div class="search-bar animate-in delay-1">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" placeholder="搜索单词、语块..." />
+  </div>
+
+  <div class="scroll-content">
+
+    <!-- 月度精通目标卡 v3 -->
+    <div class="goal-card animate-in delay-2">
+      <div class="goal-header">
+        <div class="goal-title">
+          <div class="goal-title-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="6"/>
+              <circle cx="12" cy="12" r="2"/>
+            </svg>
+          </div>
+          <span class="goal-title-text">本月精通目标</span>
+        </div>
+        <div class="goal-month-pill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          4月
+        </div>
+      </div>
+
+      <!-- Hero：还需精通 48 词 -->
+      <div class="goal-hero">
+        <span class="goal-hero-label">还需精通</span>
+        <span class="goal-hero-num" id="goalRemain">48</span>
+        <span class="goal-hero-unit">词</span>
+      </div>
+
+      <!-- 进度条：72 / 120 = 60% -->
+      <div class="goal-progress">
+        <div class="goal-progress-track">
+          <div class="goal-progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <!-- 底部信息行 -->
+      <div class="goal-footer">
+        <div class="goal-footer-left">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="currentColor" fill-opacity="0.2"/>
+          </svg>
+          每天 <strong>12 词</strong>
+          <span class="dot"></span>
+          还剩 4 天
+        </div>
+        <div class="goal-footer-cta">
+          调整目标
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 收藏汇总条 -->
+    <div class="summary-strip animate-in delay-3">
+      <div class="summary-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <div class="summary-text">
+        <div class="count">已收藏 <strong>372</strong> 个单词</div>
+        <div class="sub">来自 48 个视频 · 6 本辞书</div>
+      </div>
+      <div class="summary-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 过滤栏 -->
+    <div class="filter-bar animate-in delay-4">
+      <div class="filters-left">
+        <div class="filter-chip">
+          最近收藏
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+        <div class="filter-chip">
+          熟悉度
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+      <div class="filters-right">
+        <div class="btn-edit">编辑</div>
+        <div class="icon-btn" title="筛选">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="7" y1="12" x2="17" y2="12"/>
+            <line x1="10" y1="18" x2="14" y2="18"/>
+          </svg>
+        </div>
+        <div class="btn-add" title="添加">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分组：手动添加 -->
+    <div class="section animate-in delay-5">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </div>
+          <div class="section-title">手动添加的生词 <span class="section-count">6</span></div>
+        </div>
+        <div class="section-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+      <div class="word-list">
+        <div class="word-card lvl-known">
+          <div class="word-card-left">
+            <div class="word-name">
+              <span class="word-text">compound</span>
+              <span class="level-tag known"><span class="lvl-dot"></span>熟悉</span>
+            </div>
+            <div class="word-def">n. 复合物；化合物</div>
+          </div>
+          <div class="word-meta">
+            <div class="word-time">3天前</div>
+            <div class="mastery-bar"><div class="mastery-bar-fill known" style="width:65%"></div></div>
+          </div>
+        </div>
+
+        <div class="word-card lvl-fuzzy">
+          <div class="word-card-left">
+            <div class="word-name">
+              <span class="word-text">Serendipity</span>
+              <span class="level-tag fuzzy"><span class="lvl-dot"></span>眼熟</span>
+            </div>
+            <div class="word-def">n. 意外发现珍奇事物的运气</div>
+          </div>
+          <div class="word-meta">
+            <div class="word-time">3天前</div>
+            <div class="mastery-bar"><div class="mastery-bar-fill fuzzy" style="width:40%"></div></div>
+          </div>
+        </div>
+
+        <div class="word-card lvl-mastered">
+          <div class="word-card-left">
+            <div class="word-name">
+              <span class="word-text">Ephemeral</span>
+              <span class="level-tag mastered"><span class="lvl-dot"></span>精通</span>
+            </div>
+            <div class="word-def">adj. 短暂的；转瞬即逝的</div>
+          </div>
+          <div class="word-meta">
+            <div class="word-time">3天前</div>
+            <div class="mastery-bar"><div class="mastery-bar-fill mastered" style="width:95%"></div></div>
+          </div>
+        </div>
+
+        <div class="word-card lvl-known">
+          <div class="word-card-left">
+            <div class="word-name">
+              <span class="word-text">Resilient</span>
+              <span class="level-tag known"><span class="lvl-dot"></span>熟悉</span>
+            </div>
+            <div class="word-def">adj. 有复原力的，有韧性的</div>
+          </div>
+          <div class="word-meta">
+            <div class="word-time">1天前</div>
+            <div class="mastery-bar"><div class="mastery-bar-fill known" style="width:72%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分组：CET-4 -->
+    <div class="section animate-in delay-6">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <div class="section-title">CET-4 四级词汇 <span class="section-count">8</span></div>
+        </div>
+        <div class="section-toggle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+      <div class="word-list">
+        <div class="word-card lvl-mastered">
+          <div class="word-card-left">
+            <div class="word-name">
+              <span class="word-text">abandon</span>
+              <span class="level-tag mastered"><span class="lvl-dot"></span>精通</span>
+            </div>
+            <div class="word-def">v. 放弃；抛弃</div>
+          </div>
+          <div class="word-meta">
+            <div class="word-time">1天前</div>
+            <div class="mastery-bar"><div class="mastery-bar-fill mastered" style="width:95%"></div></div>
+          </div>
+        </div>
+        <div class="word-card lvl-fuzzy">
+          <div class="word-card-left">
+            <div class="word-name">
+              <span class="word-text">abstract</span>
+              <span class="level-tag fuzzy"><span class="lvl-dot"></span>眼熟</span>
+            </div>
+            <div class="word-def">adj. 抽象的；n. 摘要</div>
+          </div>
+          <div class="word-meta">
+            <div class="word-time">2天前</div>
+            <div class="mastery-bar"><div class="mastery-bar-fill fuzzy" style="width:40%"></div></div>
+          </div>
+        </div>
+        <div class="word-card lvl-new">
+          <div class="word-card-left">
+            <div class="word-name">
+              <span class="word-text">accelerate</span>
+              <span class="level-tag new"><span class="lvl-dot"></span>生词</span>
+            </div>
+            <div class="word-def">v. 加速；促进</div>
+          </div>
+          <div class="word-meta">
+            <div class="word-time">2天前</div>
+            <div class="mastery-bar"><div class="mastery-bar-fill new" style="width:18%"></div></div>
+          </div>
+        </div>
+        <div class="word-card lvl-known">
+          <div class="word-card-left">
+            <div class="word-name">
+              <span class="word-text">accomplish</span>
+              <span class="level-tag known"><span class="lvl-dot"></span>熟悉</span>
+            </div>
+            <div class="word-def">v. 完成；实现</div>
+          </div>
+          <div class="word-meta">
+            <div class="word-time">3天前</div>
+            <div class="mastery-bar"><div class="mastery-bar-fill known" style="width:60%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分组：IELTS（折叠） -->
+    <div class="section animate-in delay-7">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+          </div>
+          <div class="section-title">IELTS 雅思核心词汇 <span class="section-count">45</span></div>
+        </div>
+        <div class="section-toggle collapsed">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+      <div class="word-list" style="display:none"></div>
+    </div>
+
+  </div>
+
+  <!-- 底部学习按钮 -->
+  <div class="bottom-bar">
+    <button class="action-btn">
+      <div class="coin">
+        <div class="coin-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        +100
+      </div>
+      <div class="center">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+        开始学习
+      </div>
+      <div class="remaining">
+        还剩
+        <div class="remaining-badge">5</div>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.7">
+          <polyline points="18 15 12 9 6 15"/>
+        </svg>
+      </div>
+    </button>
+  </div>
+
+  <!-- 底部 Tab 栏 -->
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+      <span>学习</span>
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      <span>排名</span>
+    </div>
+    <div class="tab-item center-tab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="4"/>
+        <circle cx="8.5" cy="10" r="1" fill="currentColor"/>
+        <circle cx="15.5" cy="10" r="1" fill="currentColor"/>
+        <path d="M8 15c1.5 1.5 6.5 1.5 8 0"/>
+      </svg>
+      <span>AI教练</span>
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="6"/>
+        <circle cx="12" cy="12" r="2"/>
+      </svg>
+      <span>目标</span>
+    </div>
+    <div class="tab-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span>我的</span>
+    </div>
+  </div>
+
+  <!-- 调整目标弹窗 -->
+  <div class="goal-modal-overlay" id="goalModal">
+    <div class="goal-modal">
+      <div class="goal-modal-handle"></div>
+      <div class="goal-modal-title">4月 · 每月精通目标</div>
+
+      <div class="goal-stepper">
+        <div class="goal-step-btn" id="stepDown" onclick="stepGoal(-5)">&#8722;</div>
+        <div class="goal-step-display">
+          <div class="goal-step-value" id="modalValue">80</div>
+          <div class="goal-step-unit">词 / 月</div>
+        </div>
+        <div class="goal-step-btn" id="stepUp" onclick="stepGoal(5)">+</div>
+      </div>
+
+      <div class="goal-slider-row">
+        <input type="range" class="goal-slider" id="goalSlider" min="30" max="200" step="5" value="80" />
+        <div class="goal-slider-labels">
+          <span>30</span>
+          <span>200</span>
+        </div>
+      </div>
+
+      <div class="goal-presets" id="goalPresets">
+        <div class="goal-preset-chip" data-val="30" onclick="selectPreset(this)">
+          30<span class="preset-label">轻松</span>
+        </div>
+        <div class="goal-preset-chip" data-val="60" onclick="selectPreset(this)">
+          60<span class="preset-label">日常</span>
+        </div>
+        <div class="goal-preset-chip active" data-val="80" onclick="selectPreset(this)">
+          80<span class="preset-label">推荐</span>
+        </div>
+        <div class="goal-preset-chip" data-val="120" onclick="selectPreset(this)">
+          120<span class="preset-label">进阶</span>
+        </div>
+        <div class="goal-preset-chip" data-val="200" onclick="selectPreset(this)">
+          200<span class="preset-label">挑战</span>
+        </div>
+      </div>
+
+      <button class="goal-modal-confirm" onclick="confirmGoal()">确认修改</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleSection(header) {
+  const toggle = header.querySelector('.section-toggle');
+  const list = header.nextElementSibling;
+  toggle.classList.toggle('collapsed');
+  if (list) {
+    list.style.display = list.style.display === 'none' ? 'flex' : 'none';
+  }
+}
+
+// 目标卡动画
+document.addEventListener('DOMContentLoaded', () => {
+  // Hero 数字：还需 48
+  const remain = document.getElementById('goalRemain');
+  if (remain) {
+    remain.textContent = '0';
+    let cur = 0;
+    setTimeout(() => {
+      const t = setInterval(() => {
+        cur += 3;
+        if (cur >= 48) { cur = 48; clearInterval(t); }
+        remain.textContent = cur;
+      }, 35);
+    }, 300);
+  }
+
+  // 进度条动画 60%
+  setTimeout(() => {
+    const fill = document.getElementById('progressFill');
+    if (fill) fill.style.width = '60%';
+  }, 350);
+
+  // 调整目标按钮 → 打开弹窗
+  document.querySelector('.goal-footer-cta').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('goalModal').classList.add('open');
+  });
+
+  // 点击手机框外的黑色区域 → 唤起弹窗
+  document.body.addEventListener('click', (e) => {
+    const app = document.querySelector('.app');
+    if (e.target === document.body || !app.contains(e.target)) {
+      document.getElementById('goalModal').classList.add('open');
+    }
+  });
+
+  // 点击遮罩关闭
+  document.getElementById('goalModal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) e.target.classList.remove('open');
+  });
+
+  // 滑块联动
+  document.getElementById('goalSlider').addEventListener('input', (e) => {
+    syncModal(parseInt(e.target.value, 10));
+  });
+});
+
+// ——— 调整目标弹窗逻辑 ———
+const MIN = 30, MAX = 200, STEP = 5;
+
+function syncModal(val) {
+  val = Math.max(MIN, Math.min(MAX, val));
+  // 四舍五入到 STEP 倍数
+  val = Math.round(val / STEP) * STEP;
+  document.getElementById('modalValue').textContent = val;
+  document.getElementById('goalSlider').value = val;
+  // 步进按钮禁用态
+  document.getElementById('stepDown').classList.toggle('disabled', val <= MIN);
+  document.getElementById('stepUp').classList.toggle('disabled', val >= MAX);
+  // 预设高亮
+  document.querySelectorAll('.goal-preset-chip').forEach(chip => {
+    chip.classList.toggle('active', parseInt(chip.dataset.val, 10) === val);
+  });
+}
+
+function stepGoal(delta) {
+  const cur = parseInt(document.getElementById('modalValue').textContent, 10);
+  syncModal(cur + delta);
+}
+
+function selectPreset(chip) {
+  syncModal(parseInt(chip.dataset.val, 10));
+}
+
+function confirmGoal() {
+  const val = parseInt(document.getElementById('modalValue').textContent, 10);
+  // 更新卡片显示
+  const carried = 15; // 上月累计
+  const remain = Math.max(0, val - 72); // 假设已精通 72
+  document.getElementById('goalRemain').textContent = remain;
+  // 更新进度条
+  const pct = Math.min(100, Math.round(72 / val * 100));
+  document.getElementById('progressFill').style.width = pct + '%';
+  // 关闭弹窗
+  document.getElementById('goalModal').classList.remove('open');
+}
+</script>
+</body>
+</html>

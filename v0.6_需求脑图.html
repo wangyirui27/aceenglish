@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>头号听力 v0.6 需求脑图</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", sans-serif;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 40px 60px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .header h1 {
+    font-size: 42px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+  .header p {
+    color: #666;
+    font-size: 16px;
+  }
+
+  /* Stats bar */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 50px;
+  }
+  .stat {
+    text-align: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 20px 36px;
+    min-width: 120px;
+  }
+  .stat-num {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 14px;
+    color: #666;
+    margin-top: 6px;
+  }
+
+  /* Grid layout */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Cards */
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 28px 30px;
+    transition: all 0.3s;
+  }
+  .card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .card-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .card-item {
+    font-size: 15px;
+    color: #b0b0b0;
+    line-height: 1.6;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .card-item .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+  .card-item .text { flex: 1; }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .tag-new { background: rgba(34,197,94,0.2); color: #4ade80; }
+  .tag-change { background: rgba(234,179,8,0.2); color: #facc15; }
+  .tag-optimize { background: rgba(59,130,246,0.2); color: #60a5fa; }
+  .tag-done { background: rgba(34,197,94,0.15); color: #4ade80; }
+
+  /* Card color themes */
+  .c-purple .card-icon { background: rgba(139,92,246,0.2); }
+  .c-purple .card-title { color: #a78bfa; }
+  .c-purple .dot { background: #a78bfa; }
+
+  .c-green .card-icon { background: rgba(34,197,94,0.2); }
+  .c-green .card-title { color: #4ade80; }
+  .c-green .dot { background: #4ade80; }
+
+  .c-cyan .card-icon { background: rgba(6,182,212,0.2); }
+  .c-cyan .card-title { color: #22d3ee; }
+  .c-cyan .dot { background: #22d3ee; }
+
+  .c-blue .card-icon { background: rgba(59,130,246,0.2); }
+  .c-blue .card-title { color: #60a5fa; }
+  .c-blue .dot { background: #60a5fa; }
+
+  .c-orange .card-icon { background: rgba(249,115,22,0.2); }
+  .c-orange .card-title { color: #fb923c; }
+  .c-orange .dot { background: #fb923c; }
+
+  .c-pink .card-icon { background: rgba(236,72,153,0.2); }
+  .c-pink .card-title { color: #f472b6; }
+  .c-pink .dot { background: #f472b6; }
+
+  /* Pending section */
+  .pending {
+    max-width: 1400px;
+    margin: 50px auto 0;
+  }
+  .pending h3 {
+    font-size: 20px;
+    color: #facc15;
+    margin-bottom: 16px;
+  }
+  .pending-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 10px;
+  }
+  .pending-item {
+    background: rgba(234,179,8,0.06);
+    border: 1px solid rgba(234,179,8,0.15);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 15px;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pending-item .num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(234,179,8,0.15);
+    color: #facc15;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .pending-item span { color: #facc15; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>头号听力 v0.6 需求全景</h1>
+  <p>2026-04-27 产品会议整理 · 明日开发评审用</p>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">6</div>
+    <div class="stat-label">新增功能</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">4</div>
+    <div class="stat-label">交互改版</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">3</div>
+    <div class="stat-label">体验优化</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">7</div>
+    <div class="stat-label">待明确项</div>
+  </div>
+</div>
+
+<div class="grid">
+
+  <!-- 微练习 -->
+  <div class="card c-purple">
+    <div class="card-header">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">微练习</div>
+    </div>
+    <div class="card-items">
+      <div class="card-item"><div class="dot"></div><div class="text">视频流新增微练习按钮，用户主动触发进入做题 <span class="tag tag-change">改版</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">取消原"刷视频随机插入微练习"逻辑</div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">默认出 3 道简单题，做完展示"挑战更难的题"按钮 <span class="tag tag-change">待讨论</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">支持一直做题直到题库耗尽，提示"今天都做完啦" <span class="tag tag-new">新增</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">题目来源含用户收藏单词，答题影响熟悉度</div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">微练习视频播放速度调整为 ×0.8 <span class="tag tag-optimize">优化</span></div></div>
+    </div>
+  </div>
+
+  <!-- 收藏夹 & 单词体系 -->
+  <div class="card c-green">
+    <div class="card-header">
+      <div class="card-icon">📚</div>
+      <div class="card-title">收藏夹 & 单词体系</div>
+    </div>
+    <div class="card-items">
+      <div class="card-item"><div class="dot"></div><div class="text">新增导入辞书功能，后台预置 1000+ 本辞书 <span class="tag tag-new">新增</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">收藏词与辞书词分组展示，导入后支持批量筛选</div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">一键剔除 A1 / A2 级别单词</div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">学习队列：月度目标制，本月推到「精通」<span class="tag tag-new">新增</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">未精通单词自动累计到下月队列</div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">优化每日守护题型分布，降低完形填空占比 <span class="tag tag-optimize">优化</span></div></div>
+    </div>
+  </div>
+
+  <!-- 视频 & 交互 -->
+  <div class="card c-blue">
+    <div class="card-header">
+      <div class="card-icon">🎬</div>
+      <div class="card-title">视频 & 交互</div>
+    </div>
+    <div class="card-items">
+      <div class="card-item"><div class="dot"></div><div class="text">视频流「更多」入口改版，内容更丰富 <span class="tag tag-change">改版</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">单句循环播放 UI 优化 <span class="tag tag-optimize">优化</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">跟读交互全面重做 <span class="tag tag-change">改版</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">闪答出题机制调整 <span class="tag tag-change">改版</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">「作者」文案改为「上传者」</div></div>
+    </div>
+  </div>
+
+  <!-- 用户引导 -->
+  <div class="card c-orange">
+    <div class="card-header">
+      <div class="card-icon">👋</div>
+      <div class="card-title">用户引导</div>
+    </div>
+    <div class="card-items">
+      <div class="card-item"><div class="dot"></div><div class="text">注册引导页改为让用户选择偏好（学习目标、水平等）<span class="tag tag-change">改版</span></div></div>
+    </div>
+  </div>
+
+  <!-- 网页端 -->
+  <div class="card c-cyan">
+    <div class="card-header">
+      <div class="card-icon">🌐</div>
+      <div class="card-title">网页端</div>
+    </div>
+    <div class="card-items">
+      <div class="card-item"><div class="dot"></div><div class="text">新增视频上传页面（面向内容提供者 / 运营）<span class="tag tag-new">新增</span></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 待明确 -->
+<div class="pending">
+  <h3>⚠️ 评审前需确认</h3>
+  <div class="pending-grid">
+    <div class="pending-item"><div class="num">1</div><span>视频流「更多」</span> 具体丰富哪些内容</div>
+    <div class="pending-item"><div class="num">2</div><span>单句循环</span> 新 UI 设计稿</div>
+    <div class="pending-item"><div class="num">3</div><span>跟读</span> 新交互方案</div>
+    <div class="pending-item"><div class="num">4</div><span>闪答</span> 出题机制具体规则</div>
+    <div class="pending-item"><div class="num">5</div><span>注册偏好</span> 选项有哪些</div>
+    <div class="pending-item"><div class="num">6</div><span>学习队列</span> 默认值多少</div>
+    <div class="pending-item"><div class="num">7</div><span>题库耗尽</span> 耗尽判定逻辑</div>
+  </div>
+</div>
+
+</body>
+</html>
