@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>微练习 — 排序题</title>
+<style>
+  :root {
+    --accent: #FF600F;
+    --accent-subtle: rgba(255,96,15,0.1);
+    --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+    --accent-glow: rgba(255,96,15,0.3);
+    --bg-0: #000; --bg-1: #111; --bg-2: #1A1A1A; --bg-3: #222;
+    --success: #00C853; --error: #FF3B30;
+    --t1: #fff; --t2: #aaa; --t3: #666;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; overflow:hidden; background:#000; color:#fff;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif; }
+
+  .wrap {
+    width:390px; height:100vh; height:100dvh; margin:0 auto;
+    display:flex; flex-direction:column; overflow:hidden; background:#000;
+  }
+
+  /* ========== 视频：完整 9:16 ========== */
+  .vid {
+    flex-shrink:0;
+    width:100%; aspect-ratio:9/16; max-height:56.5vh;
+    position:relative; background:#000; overflow:hidden;
+  }
+  .vid-bg {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse at 25% 65%,rgba(60,40,90,0.55),transparent 55%),
+      radial-gradient(ellipse at 75% 35%,rgba(40,55,100,0.4),transparent 50%),
+      linear-gradient(180deg,#151525,#0a0a18);
+  }
+  .vid-fig {
+    position:absolute; bottom:18%; left:50%; transform:translateX(-50%);
+    width:120px; height:200px;
+    background:radial-gradient(ellipse at 50% 30%,rgba(80,60,120,0.4),transparent 70%);
+    border-radius:50% 50% 0 0;
+  }
+  .vid-top {
+    position:absolute; top:0; left:0; right:0; padding:8px 14px;
+    background:linear-gradient(rgba(0,0,0,0.5),transparent);
+    display:flex; justify-content:space-between; align-items:center; z-index:2;
+  }
+  .vid-src { font-size:12px; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; }
+  .vid-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); }
+  .vid-spd { font-size:10px; color:rgba(255,255,255,0.45); background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:3px; }
+  .vid-subs { position:absolute; bottom:50px; left:14px; right:14px; text-align:center; z-index:2; }
+  .vid-sub { font-size:15px; font-weight:600; color:#fff; text-shadow:0 1px 10px rgba(0,0,0,0.85); line-height:1.5; }
+  .vid-sub .hl { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+  .vid-ctrl {
+    position:absolute; bottom:0; left:0; right:0;
+    background:linear-gradient(transparent,rgba(0,0,0,0.85));
+    padding:14px 14px 8px; display:flex; align-items:center; gap:10px; z-index:2;
+  }
+  .vid-play { width:28px; height:28px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
+  .vid-bar { flex:1; height:3px; background:rgba(255,255,255,0.2); border-radius:999px; overflow:hidden; }
+  .vid-bar-f { height:100%; width:68%; background:var(--accent); border-radius:999px; }
+  .vid-time { font-size:11px; color:rgba(255,255,255,0.45); font-variant-numeric:tabular-nums; flex-shrink:0; }
+
+  /* ========== 中间答题区：flex:1 填满 ========== */
+  .ex {
+    flex:1; display:flex; flex-direction:column;
+    min-height:0; overflow:hidden; background:var(--bg-0);
+  }
+
+  /* 题目头 */
+  .ex-hd {
+    flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px 8px;
+  }
+  .ex-l { display:flex; align-items:center; gap:8px; }
+  .ex-badge { font-size:10px; font-weight:800; color:var(--accent); letter-spacing:1px; background:var(--accent-subtle); padding:3px 8px; border-radius:4px; }
+  .ex-ttl { font-size:14px; font-weight:700; }
+  .ex-pg { font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-subtle); padding:3px 10px; border-radius:20px; }
+
+  /* 槽位 */
+  .slots { flex-shrink:0; padding:0 14px; display:flex; flex-direction:column; gap:4px; }
+  .slot {
+    display:flex; align-items:stretch;
+    background:var(--bg-1); border:1.5px solid var(--bg-3);
+    border-radius:8px; overflow:hidden;
+    height:36px; cursor:pointer; transition:all 0.2s;
+  }
+  .slot.filled { border-color:rgba(255,96,15,0.3); }
+  .slot-n {
+    width:30px; display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:800; color:var(--t3);
+    background:var(--bg-2); border-right:1px solid var(--bg-3);
+    flex-shrink:0; transition:all 0.2s;
+  }
+  .slot.filled .slot-n { background:var(--accent-subtle); color:var(--accent); }
+  .slot-t {
+    flex:1; display:flex; align-items:center; padding:0 10px;
+    font-size:12px; color:var(--t3); font-style:italic;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .slot.filled .slot-t { color:var(--t1); font-style:normal; }
+  .slot.correct { border-color:var(--success); background:rgba(0,200,83,0.06); }
+  .slot.correct .slot-n { background:rgba(0,200,83,0.15); color:var(--success); }
+  .slot.wrong { border-color:var(--error); background:rgba(255,59,48,0.06); }
+  .slot.wrong .slot-n { background:rgba(255,59,48,0.15); color:var(--error); }
+
+  /* 分隔 */
+  .sep { flex-shrink:0; padding:6px 14px 4px; display:flex; align-items:center; gap:6px; }
+  .sep-l { flex:1; height:1px; background:var(--bg-3); }
+  .sep-t { font-size:10px; color:var(--t3); font-weight:700; letter-spacing:0.5px; white-space:nowrap; }
+
+  /* 选项：flex:1 自动填满剩余，可滚动兜底 */
+  .opts {
+    flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding:0 14px 6px; display:flex; flex-direction:column; gap:4px;
+  }
+  .opt {
+    flex-shrink:0; display:flex; align-items:center; gap:10px;
+    background:var(--bg-2); border:1.5px solid var(--bg-3);
+    border-radius:8px; padding:10px 12px;
+    cursor:pointer; transition:all 0.15s;
+  }
+  .opt:active { transform:scale(0.98); background:var(--bg-3); }
+  .opt.used { opacity:0.2; pointer-events:none; }
+  .opt-i {
+    width:20px; height:20px; border-radius:50%;
+    background:var(--accent-subtle);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .opt-i svg { color:var(--accent); }
+  .opt-t { flex:1; font-size:13px; color:var(--t2); line-height:1.45; }
+
+  /* 提交 */
+  .fab { flex-shrink:0; padding:4px 14px 4px; background:var(--bg-0); }
+  .fab-b {
+    width:100%; padding:11px; border:none; border-radius:8px;
+    font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s;
+  }
+  .fab-b.off { background:var(--bg-3); color:var(--t3); pointer-events:none; }
+  .fab-b.on { background:var(--accent-gradient); color:#fff; box-shadow:0 4px 20px var(--accent-glow); }
+  .fab-b.on:active { transform:scale(0.98); }
+  .fab-b.next { background:var(--accent-gradient); color:#fff; box-shadow:0 4px 20px var(--accent-glow); }
+
+  /* Tab */
+  .tab-bar {
+    flex-shrink:0; height:50px; padding-bottom:env(safe-area-inset-bottom,0px);
+    background:rgba(0,0,0,0.95); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    border-top:1px solid var(--bg-3);
+    display:flex; align-items:center; justify-content:space-around;
+  }
+  .tab { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--t3); }
+  .tab.on { color:var(--accent); }
+  .tab-i { width:20px; height:20px; }
+  .tab-t { font-size:10px; font-weight:600; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- 视频 -->
+  <div class="vid">
+    <div class="vid-bg"></div>
+    <div class="vid-fig"></div>
+    <div class="vid-top">
+      <div class="vid-src"><div class="vid-dot"></div>Friends S01E03</div>
+      <div class="vid-spd">×0.8</div>
+    </div>
+    <div class="vid-subs"><div class="vid-sub">Hey, do you want to <span class="hl">grab</span> dinner together tonight?</div></div>
+    <div class="vid-ctrl">
+      <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div class="vid-bar"><div class="vid-bar-f"></div></div>
+      <div class="vid-time">0:42 / 1:02</div>
+    </div>
+  </div>
+
+  <!-- 答题 -->
+  <div class="ex">
+    <div class="ex-hd">
+      <div class="ex-l"><div class="ex-badge">排序</div><div class="ex-ttl">排成正确的对话顺序</div></div>
+      <div class="ex-pg">2/3</div>
+    </div>
+    <div class="slots">
+      <div class="slot" id="s0" onclick="rm(0)"><div class="slot-n">①</div><div class="slot-t" id="st0">点击填入</div></div>
+      <div class="slot" id="s1" onclick="rm(1)"><div class="slot-n">②</div><div class="slot-t" id="st1">点击填入</div></div>
+      <div class="slot" id="s2" onclick="rm(2)"><div class="slot-n">③</div><div class="slot-t" id="st2">点击填入</div></div>
+    </div>
+    <div class="sep"><div class="sep-l"></div><div class="sep-t">打乱的句子 · 点击填入上方</div><div class="sep-l"></div></div>
+    <div class="opts">
+      <div class="opt" data-id="2" onclick="pick(this)">
+        <div class="opt-i"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
+        <div class="opt-t">Actually, I was thinking we could try that new Italian place downtown. I heard they have amazing pasta.</div>
+      </div>
+      <div class="opt" data-id="0" onclick="pick(this)">
+        <div class="opt-i"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
+        <div class="opt-t">Hey, do you want to grab dinner together tonight?</div>
+      </div>
+      <div class="opt" data-id="1" onclick="pick(this)">
+        <div class="opt-i"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></div>
+        <div class="opt-t">Sure, sounds great! What are you in the mood for?</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fab" id="fab"><button class="fab-b off" id="fb" onclick="go()">还需选择 3 个</button></div>
+
+  <div class="tab-bar">
+    <div class="tab"><svg class="tab-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><polygon points="10 8 16 12 10 16 10 8"/></svg><div class="tab-t">发现</div></div>
+    <div class="tab on"><svg class="tab-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><div class="tab-t">学习</div></div>
+    <div class="tab"><svg class="tab-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><div class="tab-t">收藏</div></div>
+    <div class="tab"><svg class="tab-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><div class="tab-t">我的</div></div>
+  </div>
+</div>
+
+<script>
+const ans=[0,1,2],tx={0:"Hey, do you want to grab dinner together tonight?",1:"Sure, sounds great! What are you in the mood for?",2:"Actually, I was thinking we could try that new Italian place downtown. I heard they have amazing pasta."};
+let sl=[null,null,null],pl=new Set(),nx=0,done=false;
+
+function pick(el){if(done)return;const id=+el.dataset.id;if(pl.has(id)||nx>=3)return;
+sl[nx]=id;pl.add(id);document.getElementById('st'+nx).textContent=tx[id];
+document.getElementById('s'+nx).classList.add('filled');el.classList.add('used');nx++;ub();}
+
+function rm(i){if(done)return;const id=sl[i];if(id===null)return;
+sl[i]=null;pl.delete(id);const c=sl.filter(v=>v!==null);
+sl=[...c,...Array(3-c.length).fill(null)];pl=new Set(c);
+for(let j=0;j<3;j++){const e=document.getElementById('st'+j),s=document.getElementById('s'+j);
+if(sl[j]!==null){e.textContent=tx[sl[j]];s.classList.add('filled');}else{e.textContent='点击填入';s.classList.remove('filled');}}
+document.querySelectorAll('.opt').forEach(o=>o.classList.toggle('used',pl.has(+o.dataset.id)));
+nx=c.length;ub();}
+
+function ub(){const b=document.getElementById('fb'),l=3-pl.size;
+if(l===0){b.className='fab-b on';b.textContent='确认提交';}
+else{b.className='fab-b off';b.textContent=`还需选择 ${l} 个`;}}
+
+function go(){if(pl.size<3)return;done=true;
+for(let i=0;i<3;i++){const s=document.getElementById('s'+i);s.classList.remove('filled');s.classList.add(sl[i]===ans[i]?'correct':'wrong');}
+document.getElementById('fab').innerHTML='<button class="fab-b next" onclick="location.reload()">下一题 →</button>';}
+</script>
+</body>
+</html>
