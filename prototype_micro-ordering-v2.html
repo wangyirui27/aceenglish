@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>微练习 — 排序题 v2</title>
+<style>
+  :root {
+    --accent: #FF600F;
+    --accent-hover: #E85500;
+    --accent-subtle: rgba(255,96,15,0.1);
+    --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+    --accent-glow: rgba(255,96,15,0.3);
+    --bg-0: #000; --bg-1: #111; --bg-2: #1A1A1A; --bg-3: #222;
+    --success: #00C853; --error: #FF3B30;
+    --t1: #fff; --t2: #aaa; --t3: #666;
+    --safe-b: env(safe-area-inset-bottom, 0px);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { height:100%; overflow:hidden; background:#000; color:#fff;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC",sans-serif;
+    -webkit-font-smoothing:antialiased; }
+
+  .wrap {
+    width:390px; height:100vh; height:100dvh; margin:0 auto;
+    display:flex; flex-direction:column; overflow:hidden; background:#000;
+  }
+
+  /* ========== 视频区 (不变) ========== */
+  .vid {
+    flex-shrink:0; width:100%; aspect-ratio:9/16; max-height:52vh;
+    position:relative; background:#000; overflow:hidden;
+  }
+  .vid-bg {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse at 25% 65%,rgba(60,40,90,0.55),transparent 55%),
+      radial-gradient(ellipse at 75% 35%,rgba(40,55,100,0.4),transparent 50%),
+      linear-gradient(180deg,#151525,#0a0a18);
+  }
+  .vid-fig {
+    position:absolute; bottom:18%; left:50%; transform:translateX(-50%);
+    width:120px; height:200px;
+    background:radial-gradient(ellipse at 50% 30%,rgba(80,60,120,0.4),transparent 70%);
+    border-radius:50% 50% 0 0;
+  }
+  .vid-top {
+    position:absolute; top:0; left:0; right:0; padding:8px 14px;
+    background:linear-gradient(rgba(0,0,0,0.5),transparent);
+    display:flex; justify-content:space-between; align-items:center; z-index:2;
+  }
+  .vid-src { font-size:12px; color:rgba(255,255,255,0.7); display:flex; align-items:center; gap:6px; }
+  .vid-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); }
+  .vid-spd { font-size:10px; color:rgba(255,255,255,0.45); background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:3px; }
+  .vid-subs { position:absolute; bottom:50px; left:14px; right:14px; text-align:center; z-index:2; }
+  .vid-sub { font-size:15px; font-weight:600; color:#fff; text-shadow:0 1px 10px rgba(0,0,0,0.85); line-height:1.5; }
+  .vid-sub .hl { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+  .vid-ctrl {
+    position:absolute; bottom:0; left:0; right:0;
+    background:linear-gradient(transparent,rgba(0,0,0,0.85));
+    padding:14px 14px 8px; display:flex; align-items:center; gap:10px; z-index:2;
+  }
+  .vid-play { width:28px; height:28px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
+  .vid-bar { flex:1; height:3px; background:rgba(255,255,255,0.2); border-radius:999px; overflow:hidden; }
+  .vid-bar-f { height:100%; width:68%; background:var(--accent); border-radius:999px; }
+  .vid-time { font-size:11px; color:rgba(255,255,255,0.45); font-variant-numeric:tabular-nums; flex-shrink:0; }
+
+  /* ========== 答题区 ========== */
+  .ex {
+    flex:1; display:flex; flex-direction:column;
+    min-height:0; overflow:hidden; background:var(--bg-0);
+  }
+
+  /* 题目头 */
+  .ex-hd {
+    flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
+    padding:10px 16px 6px;
+  }
+  .ex-l { display:flex; align-items:center; gap:8px; }
+  .ex-badge { font-size:10px; font-weight:800; color:var(--accent); letter-spacing:1px; background:var(--accent-subtle); padding:3px 8px; border-radius:4px; }
+  .ex-ttl { font-size:14px; font-weight:700; }
+  .ex-pg { font-size:11px; font-weight:700; color:var(--accent); background:var(--accent-subtle); padding:3px 10px; border-radius:20px; }
+
+  /* 操作提示 */
+  .ex-hint {
+    flex-shrink:0; padding:0 16px 8px;
+    display:flex; align-items:center; gap:6px;
+  }
+  .hint-icon {
+    width:16px; height:16px; color:var(--t3); flex-shrink:0;
+  }
+  .hint-text { font-size:11px; color:var(--t3); line-height:1.3; }
+
+  /* ========== 可排序列表 ========== */
+  .sort-list {
+    flex:1; min-height:0; overflow:hidden;
+    padding:0 16px; display:flex; flex-direction:column; gap:6px;
+    position:relative;
+  }
+
+  .sort-item {
+    display:flex; align-items:stretch;
+    background:var(--bg-1); border:1.5px solid var(--bg-3);
+    border-radius:10px; overflow:hidden;
+    cursor:grab; touch-action:none;
+    transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s, background 0.2s;
+    user-select:none; -webkit-user-select:none;
+    position:relative;
+  }
+  .sort-item:active { cursor:grabbing; }
+  .sort-item.dragging {
+    z-index:10; border-color:var(--accent);
+    box-shadow:0 8px 32px rgba(0,0,0,0.6), 0 0 0 2px var(--accent);
+    transform:scale(1.03);
+    background:var(--bg-2);
+  }
+  .sort-item.drag-over {
+    border-color:var(--accent);
+    background:rgba(255,96,15,0.04);
+  }
+  .sort-item.correct {
+    border-color:var(--success); background:rgba(0,200,83,0.06);
+  }
+  .sort-item.wrong {
+    border-color:var(--error); background:rgba(255,59,48,0.06);
+  }
+
+  /* 序号 */
+  .item-num {
+    width:32px; display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:800; color:var(--t3);
+    background:var(--bg-2); border-right:1px solid var(--bg-3);
+    flex-shrink:0; transition:all 0.2s;
+  }
+  .sort-item.correct .item-num { background:rgba(0,200,83,0.12); color:var(--success); }
+  .sort-item.wrong .item-num { background:rgba(255,59,48,0.12); color:var(--error); }
+
+  /* 拖拽手柄 */
+  .item-handle {
+    width:28px; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; color:var(--t3); transition:color 0.2s;
+  }
+  .sort-item:active .item-handle { color:var(--accent); }
+
+  /* 文本 */
+  .item-text {
+    flex:1; display:flex; align-items:center;
+    padding:10px 10px 10px 0;
+    font-size:13px; color:var(--t2); line-height:1.45;
+    /* 长文本处理：最多显示2行，超出省略 */
+    overflow:hidden;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  }
+  .sort-item.dragging .item-text { color:var(--t1); }
+
+  /* 展开按钮 */
+  .item-expand {
+    position:absolute; right:8px; bottom:6px;
+    font-size:10px; color:var(--accent); background:var(--bg-1);
+    padding:1px 6px; border-radius:3px; cursor:pointer;
+    border:1px solid var(--accent-subtle);
+    display:none;
+  }
+  .sort-item.has-overflow .item-expand { display:block; }
+
+  /* 展开态 */
+  .sort-item.expanded .item-text {
+    -webkit-line-clamp:unset; overflow:visible;
+  }
+  .sort-item.expanded .item-expand { display:none; }
+
+  /* ========== 提交按钮 ========== */
+  .fab { flex-shrink:0; padding:6px 16px 8px; background:var(--bg-0); }
+  .fab-b {
+    width:100%; padding:12px; border:none; border-radius:10px;
+    font-size:15px; font-weight:700; cursor:pointer; transition:all 0.2s;
+  }
+  .fab-b.off { background:var(--bg-3); color:var(--t3); pointer-events:none; }
+  .fab-b.on { background:var(--accent-gradient); color:#fff; box-shadow:0 4px 20px var(--accent-glow); }
+  .fab-b.on:active { transform:scale(0.98); }
+  .fab-b.next { background:var(--accent-gradient); color:#fff; box-shadow:0 4px 20px var(--accent-glow); }
+
+  /* ========== Tab栏 (不变) ========== */
+  .tab-bar {
+    flex-shrink:0; height:50px; padding-bottom:var(--safe-b);
+    background:rgba(0,0,0,0.95); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    border-top:1px solid var(--bg-3);
+    display:flex; align-items:center; justify-content:space-around;
+  }
+  .tab { display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--t3); }
+  .tab.on { color:var(--accent); }
+  .tab-i { width:20px; height:20px; }
+  .tab-t { font-size:10px; font-weight:600; }
+
+  /* ========== 结果反馈动画 ========== */
+  @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.06)} 100%{transform:scale(1)} }
+  .sort-item.pop { animation:pop 0.3s ease; }
+
+  /* 拖拽占位符 */
+  .drag-placeholder {
+    border:2px dashed var(--accent);
+    border-radius:10px;
+    background:rgba(255,96,15,0.03);
+    transition:height 0.2s;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- 视频区 -->
+  <div class="vid">
+    <div class="vid-bg"></div>
+    <div class="vid-fig"></div>
+    <div class="vid-top">
+      <div class="vid-src"><div class="vid-dot"></div>Friends S01E03</div>
+      <div class="vid-spd">×0.8</div>
+    </div>
+    <div class="vid-subs"><div class="vid-sub">Hey, do you want to <span class="hl">grab</span> dinner together tonight?</div></div>
+    <div class="vid-ctrl">
+      <div class="vid-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+      <div class="vid-bar"><div class="vid-bar-f"></div></div>
+      <div class="vid-time">0:42 / 1:02</div>
+    </div>
+  </div>
+
+  <!-- 答题区 -->
+  <div class="ex">
+    <div class="ex-hd">
+      <div class="ex-l">
+        <div class="ex-badge">排序</div>
+        <div class="ex-ttl">拖拽排列正确顺序</div>
+      </div>
+      <div class="ex-pg">2/3</div>
+    </div>
+
+    <div class="ex-hint">
+      <svg class="hint-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 11l5-5 5 5"/><path d="M7 17l5-5 5 5"/>
+      </svg>
+      <span class="hint-text">长按拖拽调整顺序 · 点击序号旁可展开长句</span>
+    </div>
+
+    <div class="sort-list" id="sortList">
+      <!-- JS 动态渲染 -->
+    </div>
+
+    <div class="fab" id="fab">
+      <button class="fab-b on" id="fb" onclick="check()">确认提交</button>
+    </div>
+  </div>
+
+  <!-- Tab栏 -->
+  <div class="tab-bar">
+    <div class="tab">
+      <svg class="tab-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+      <div class="tab-t">发现</div>
+    </div>
+    <div class="tab on">
+      <svg class="tab-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <div class="tab-t">学习</div>
+    </div>
+    <div class="tab">
+      <svg class="tab-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <div class="tab-t">收藏</div>
+    </div>
+    <div class="tab">
+      <svg class="tab-i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <div class="tab-t">我的</div>
+    </div>
+  </div>
+</div>
+
+<!-- 展开弹层 -->
+<div id="expandOverlay" style="
+  display:none; position:fixed; inset:0; z-index:100;
+  background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  align-items:center; justify-content:center; padding:24px;
+">
+  <div style="
+    background:var(--bg-1); border:1px solid var(--bg-3); border-radius:14px;
+    padding:20px; max-width:340px; width:100%;
+  ">
+    <div style="font-size:11px; color:var(--t3); margin-bottom:8px; font-weight:600;" id="expandLabel"></div>
+    <div style="font-size:14px; color:var(--t1); line-height:1.6;" id="expandText"></div>
+    <button onclick="closeExpand()" style="
+      margin-top:16px; width:100%; padding:10px; border:none; border-radius:8px;
+      background:var(--bg-3); color:var(--t2); font-size:13px; font-weight:600; cursor:pointer;
+    ">收起</button>
+  </div>
+</div>
+
+<script>
+/* ===== 数据 ===== */
+const sentences = [
+  { id: 0, text: "Hey, do you want to grab dinner together tonight?" },
+  { id: 1, text: "Sure, sounds great! What are you in the mood for?" },
+  { id: 2, text: "Actually, I was thinking we could try that new Italian place downtown. I heard they have amazing pasta and the ambiance is really cozy." }
+];
+const correctOrder = [0, 1, 2]; // 正确顺序
+
+/* ===== 状态 ===== */
+let currentOrder = [0, 1, 2]; // 当前排序（先按打乱顺序）
+let done = false;
+
+/* 打乱初始顺序 */
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ===== 渲染 ===== */
+function render() {
+  const list = document.getElementById('sortList');
+  list.innerHTML = '';
+  currentOrder.forEach((id, idx) => {
+    const s = sentences.find(x => x.id === id);
+    const div = document.createElement('div');
+    div.className = 'sort-item';
+    div.dataset.index = idx;
+    div.dataset.id = id;
+    div.innerHTML = `
+      <div class="item-num">${idx + 1}</div>
+      <div class="item-handle">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/>
+          <circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/>
+          <circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>
+        </svg>
+      </div>
+      <div class="item-text">${s.text}</div>
+    `;
+    list.appendChild(div);
+
+    // 检测文本溢出
+    requestAnimationFrame(() => {
+      const textEl = div.querySelector('.item-text');
+      if (textEl.scrollHeight > textEl.clientHeight + 2) {
+        div.classList.add('has-overflow');
+        const expandBtn = document.createElement('div');
+        expandBtn.className = 'item-expand';
+        expandBtn.textContent = '展开';
+        expandBtn.onclick = (e) => { e.stopPropagation(); showExpand(id, idx); };
+        div.appendChild(expandBtn);
+      }
+    });
+  });
+
+  initDrag();
+}
+
+/* ===== 展开弹层 ===== */
+function showExpand(id, idx) {
+  const s = sentences.find(x => x.id === id);
+  document.getElementById('expandLabel').textContent = `第 ${idx + 1} 句`;
+  document.getElementById('expandText').textContent = s.text;
+  document.getElementById('expandOverlay').style.display = 'flex';
+}
+function closeExpand() {
+  document.getElementById('expandOverlay').style.display = 'none';
+}
+
+/* ===== 拖拽排序 ===== */
+let dragState = null; // { el, startY, startIndex, placeholder }
+
+function initDrag() {
+  const items = document.querySelectorAll('.sort-item');
+  items.forEach(el => {
+    el.addEventListener('touchstart', onTouchStart, { passive: false });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd);
+    // 也支持鼠标
+    el.addEventListener('mousedown', onMouseDown);
+  });
+}
+
+function getTouch(e) {
+  return e.touches ? e.touches[0] : e;
+}
+
+function onTouchStart(e) {
+  if (done) return;
+  // 如果点击的是展开按钮，不触发拖拽
+  if (e.target.closest('.item-expand')) return;
+  e.preventDefault();
+  const el = e.currentTarget;
+  const touch = getTouch(e);
+  dragState = {
+    el,
+    startY: touch.clientY,
+    startX: touch.clientX,
+    startIndex: +el.dataset.index,
+    moved: false,
+    longPressTimer: null
+  };
+  // 长按 150ms 后才启动拖拽
+  dragState.longPressTimer = setTimeout(() => {
+    if (dragState && !dragState.moved) {
+      startDrag();
+    }
+  }, 150);
+}
+
+function onMouseDown(e) {
+  if (done) return;
+  if (e.target.closest('.item-expand')) return;
+  e.preventDefault();
+  const el = e.currentTarget;
+  dragState = {
+    el,
+    startY: e.clientY,
+    startX: e.clientX,
+    startIndex: +el.dataset.index,
+    moved: false,
+    longPressTimer: null
+  };
+  dragState.longPressTimer = setTimeout(() => {
+    if (dragState && !dragState.moved) {
+      startDrag();
+    }
+  }, 150);
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+}
+
+function startDrag() {
+  if (!dragState) return;
+  dragState.el.classList.add('dragging');
+  // 记录每个item的位置
+  const items = document.querySelectorAll('.sort-item');
+  dragState.positions = [];
+  items.forEach(item => {
+    const rect = item.getBoundingClientRect();
+    dragState.positions.push({ el: item, top: rect.top, height: rect.height, index: +item.dataset.index });
+  });
+}
+
+function onTouchMove(e) {
+  if (!dragState) return;
+  e.preventDefault();
+  const touch = getTouch(e);
+  const dy = touch.clientY - dragState.startY;
+  const dx = touch.clientX - dragState.startX;
+  if (!dragState.moved && (Math.abs(dy) > 5 || Math.abs(dx) > 5)) {
+    dragState.moved = true;
+    if (!dragState.el.classList.contains('dragging')) {
+      clearTimeout(dragState.longPressTimer);
+      startDrag();
+    }
+  }
+  if (dragState.el.classList.contains('dragging')) {
+    moveDrag(touch.clientY);
+  }
+}
+
+function onMouseMove(e) {
+  if (!dragState) return;
+  const dy = e.clientY - dragState.startY;
+  if (!dragState.moved && Math.abs(dy) > 5) {
+    dragState.moved = true;
+    if (!dragState.el.classList.contains('dragging')) {
+      clearTimeout(dragState.longPressTimer);
+      startDrag();
+    }
+  }
+  if (dragState.el.classList.contains('dragging')) {
+    moveDrag(e.clientY);
+  }
+}
+
+function moveDrag(clientY) {
+  if (!dragState || !dragState.positions) return;
+  // 找到当前拖拽到的位置
+  const draggedIdx = dragState.startIndex;
+  let targetIdx = draggedIdx;
+
+  for (const pos of dragState.positions) {
+    if (pos.index === draggedIdx) continue;
+    const midY = pos.top + pos.height / 2;
+    if (draggedIdx < pos.index && clientY > midY) {
+      targetIdx = pos.index;
+    } else if (draggedIdx > pos.index && clientY < midY) {
+      targetIdx = pos.index;
+    }
+  }
+
+  // 如果位置变化了，更新排序
+  if (targetIdx !== dragState.currentIndex) {
+    dragState.currentIndex = targetIdx;
+    // 移动DOM
+    const list = document.getElementById('sortList');
+    const items = [...list.children];
+    const draggedEl = items[draggedIdx];
+    const targetEl = items[targetIdx];
+    if (draggedIdx < targetIdx) {
+      list.insertBefore(draggedEl, targetEl.nextSibling);
+    } else {
+      list.insertBefore(draggedEl, targetEl);
+    }
+    // 更新 data-index
+    [...list.children].forEach((child, i) => {
+      child.dataset.index = i;
+      child.querySelector('.item-num').textContent = i + 1;
+    });
+  }
+}
+
+function onTouchEnd(e) {
+  endDrag();
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+}
+
+function onMouseUp(e) {
+  endDrag();
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+}
+
+function endDrag() {
+  if (!dragState) return;
+  clearTimeout(dragState.longPressTimer);
+  if (dragState.el.classList.contains('dragging')) {
+    dragState.el.classList.remove('dragging');
+    // 更新 currentOrder
+    const list = document.getElementById('sortList');
+    currentOrder = [...list.children].map(el => +el.dataset.id);
+  }
+  dragState = null;
+}
+
+/* ===== 提交检查 ===== */
+function check() {
+  if (done) return;
+  done = true;
+  const items = document.querySelectorAll('.sort-item');
+  let allCorrect = true;
+  items.forEach((el, i) => {
+    const id = +el.dataset.id;
+    if (id === correctOrder[i]) {
+      el.classList.add('correct', 'pop');
+    } else {
+      el.classList.add('wrong', 'pop');
+      allCorrect = false;
+    }
+  });
+  const fb = document.getElementById('fb');
+  if (allCorrect) {
+    fb.textContent = '✓ 全部正确！';
+    fb.className = 'fab-b next';
+  } else {
+    fb.textContent = '查看结果';
+    fb.className = 'fab-b next';
+  }
+  fb.onclick = () => location.reload();
+}
+
+/* ===== 初始化 ===== */
+// 打乱初始顺序
+currentOrder = shuffle(correctOrder);
+// 确保不是正确顺序
+while (JSON.stringify(currentOrder) === JSON.stringify(correctOrder)) {
+  currentOrder = shuffle(correctOrder);
+}
+render();
+</script>
+</body>
+</html>

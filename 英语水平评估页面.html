@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>头号听力 · 英语水平评估</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    /* 主色 */
+    --accent: #FF600F;
+    --accent-hover: #E85500;
+    --accent-light: #FF7A33;
+    --accent-dark: #CC4D0C;
+    --accent-glow: rgba(255, 96, 15, 0.3);
+    --accent-subtle: rgba(255, 96, 15, 0.1);
+    --accent-gradient: linear-gradient(135deg, #FF600F 0%, #FF7A33 100%);
+    --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+
+    /* 背景层级 */
+    --bg-0: #000000;
+    --bg-1: #111111;
+    --bg-2: #1A1A1A;
+    --bg-3: #222222;
+    --bg-accent: #2A1508;
+
+    /* 辅助色 */
+    --secondary: #FFB800;
+    --success: #00C853;
+    --info: #448AFF;
+    --warning: #FF600F;
+    --error: #FF3B30;
+
+    /* 文字 */
+    --text-1: #FFFFFF;
+    --text-2: #AAAAAA;
+    --text-3: #666666;
+    --text-accent: #FF600F;
+
+    /* 间距 / 圆角 */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 999px;
+
+    --safe-bottom: env(safe-area-inset-bottom, 20px);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+    background: var(--bg-0);
+    color: var(--text-1);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  .app {
+    max-width: 390px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    padding: 20px 16px 100px;
+  }
+
+  /* 全局环境光 */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -150px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 96, 15, 0.18) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* 进度条 */
+  .progress-container {
+    margin-bottom: 32px;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .progress-text {
+    font-size: 12px;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  .progress-track {
+    background: var(--bg-3);
+    border-radius: var(--radius-full);
+    height: 6px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    background: var(--accent-gradient-h);
+    border-radius: var(--radius-full);
+    height: 100%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+  }
+
+  /* 标题区域 */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .header-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    background: var(--bg-accent);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header-icon svg {
+    width: 32px;
+    height: 32px;
+    color: var(--accent);
+  }
+
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    color: var(--text-1);
+  }
+
+  .header p {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+
+  /* 问题区域 */
+  .question-section {
+    margin-bottom: 32px;
+  }
+
+  .question-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .question-number {
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .question-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  /* 选项 */
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option-card {
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-2);
+  }
+
+  .option-card.selected {
+    border-color: var(--accent);
+    background: var(--bg-accent);
+    box-shadow: 0 0 20px var(--accent-subtle);
+  }
+
+  .option-card.selected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent);
+  }
+
+  .option-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .option-radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--bg-3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .option-card.selected .option-radio {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .option-radio-dot {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s ease;
+  }
+
+  .option-card.selected .option-radio-dot {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .option-text {
+    flex: 1;
+  }
+
+  .option-main {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-1);
+    margin-bottom: 2px;
+  }
+
+  .option-sub {
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.4;
+  }
+
+  /* 分隔线 */
+  .divider {
+    height: 1px;
+    background: var(--bg-3);
+    margin: 32px 0;
+  }
+
+  /* 底部按钮 */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--bg-3);
+    padding: 12px 16px;
+    padding-bottom: calc(12px + var(--safe-bottom));
+    z-index: 100;
+  }
+
+  .btn-primary {
+    background: var(--accent-gradient);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 14px 32px;
+    border-radius: var(--radius-md);
+    border: none;
+    width: 100%;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(255, 96, 15, 0.45);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary:disabled {
+    background: var(--bg-3);
+    color: var(--text-3);
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-primary svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* 结果页面 */
+  .result-page {
+    display: none;
+    text-align: center;
+    padding-top: 40px;
+  }
+
+  .result-page.active {
+    display: block;
+  }
+
+  .result-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+    background: var(--bg-accent);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .result-icon svg {
+    width: 40px;
+    height: 40px;
+    color: var(--accent);
+  }
+
+  .result-level {
+    position: absolute;
+    bottom: -8px;
+    right: -8px;
+    background: var(--accent);
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 8px rgba(255, 96, 15, 0.3);
+  }
+
+  .result-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-1);
+    margin-bottom: 8px;
+  }
+
+  .result-subtitle {
+    font-size: 16px;
+    color: var(--text-2);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .result-stars {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .star {
+    width: 32px;
+    height: 32px;
+    color: var(--bg-3);
+  }
+
+  .star.active {
+    color: var(--secondary);
+  }
+
+  .result-card {
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 24px;
+    text-align: left;
+  }
+
+  .result-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result-card-title svg {
+    width: 20px;
+    height: 20px;
+    color: var(--accent);
+  }
+
+  .result-recommendations {
+    list-style: none;
+  }
+
+  .result-recommendations li {
+    font-size: 14px;
+    color: var(--text-2);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--bg-3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result-recommendations li:last-child {
+    border-bottom: none;
+  }
+
+  .result-recommendations li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* 动画 */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.6s ease forwards;
+  }
+
+  .slide-up {
+    animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .delay-2 { animation-delay: 0.2s; opacity: 0; }
+  .delay-3 { animation-delay: 0.3s; opacity: 0; }
+  .delay-4 { animation-delay: 0.4s; opacity: 0; }
+  .delay-5 { animation-delay: 0.5s; opacity: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- 问题页面 -->
+  <div id="questionPage">
+    <!-- 进度条 -->
+    <div class="progress-container fade-in delay-1">
+      <div class="progress-header">
+        <span class="progress-text">问题 1 / 2</span>
+        <span class="progress-text" id="progressPercent">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <!-- 标题 -->
+    <div class="header fade-in delay-2">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <h1>快速评估你的英语水平</h1>
+      <p>回答两个问题，帮你找到最适合的学习内容</p>
+    </div>
+
+    <!-- 问题1 -->
+    <div class="question-section fade-in delay-3" id="question1">
+      <div class="question-label">
+        <span class="question-number">1</span>
+        学习经历
+      </div>
+      <h2 class="question-title">你学英语多久了？</h2>
+      <div class="options-grid">
+        <div class="option-card" data-question="1" data-value="1" onclick="selectOption(this)">
+          <div class="option-content">
+            <div class="option-radio">
+              <div class="option-radio-dot"></div>
+            </div>
+            <div class="option-text">
+              <div class="option-main">不到1年</div>
+              <div class="option-sub">刚开始接触英语</div>
+            </div>
+          </div>
+        </div>
+        <div class="option-card" data-question="1" data-value="2" onclick="selectOption(this)">
+          <div class="option-content">
+            <div class="option-radio">
+              <div class="option-radio-dot"></div>
+            </div>
+            <div class="option-text">
+              <div class="option-main">1-3年</div>
+              <div class="option-sub">有一些基础，但还不熟练</div>
+            </div>
+          </div>
+        </div>
+        <div class="option-card" data-question="1" data-value="3" onclick="selectOption(this)">
+          <div class="option-content">
+            <div class="option-radio">
+              <div class="option-radio-dot"></div>
+            </div>
+            <div class="option-text">
+              <div class="option-main">3-5年</div>
+              <div class="option-sub">可以进行简单交流</div>
+            </div>
+          </div>
+        </div>
+        <div class="option-card" data-question="1" data-value="4" onclick="selectOption(this)">
+          <div class="option-content">
+            <div class="option-radio">
+              <div class="option-radio-dot"></div>
+            </div>
+            <div class="option-text">
+              <div class="option-main">5年以上</div>
+              <div class="option-sub">有较好的英语基础</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider fade-in delay-4"></div>
+
+    <!-- 问题2 -->
+    <div class="question-section fade-in delay-4" id="question2">
+      <div class="question-label">
+        <span class="question-number">2</span>
+        听力能力
+      </div>
+      <h2 class="question-title">你能听懂美剧中的日常对话吗？</h2>
+      <div class="options-grid">
+        <div class="option-card" data-question="2" data-value="1" onclick="selectOption(this)">
+          <div class="option-content">
+            <div class="option-radio">
+              <div class="option-radio-dot"></div>
+            </div>
+            <div class="option-text">
+              <div class="option-main">完全听不懂</div>
+              <div class="option-sub">只能听懂零星几个单词</div>
+            </div>
+          </div>
+        </div>
+        <div class="option-card" data-question="2" data-value="2" onclick="selectOption(this)">
+          <div class="option-content">
+            <div class="option-radio">
+              <div class="option-radio-dot"></div>
+            </div>
+            <div class="option-text">
+              <div class="option-main">能听懂一些词</div>
+              <div class="option-sub">能抓住关键词，但不懂整体意思</div>
+            </div>
+          </div>
+        </div>
+        <div class="option-card" data-question="2" data-value="3" onclick="selectOption(this)">
+          <div class="option-content">
+            <div class="option-radio">
+              <div class="option-radio-dot"></div>
+            </div>
+            <div class="option-text">
+              <div class="option-main">能听懂大概意思</div>
+              <div class="option-sub">理解主要内容，但细节会漏掉</div>
+            </div>
+          </div>
+        </div>
+        <div class="option-card" data-question="2" data-value="4" onclick="selectOption(this)">
+          <div class="option-content">
+            <div class="option-radio">
+              <div class="option-radio-dot"></div>
+            </div>
+            <div class="option-text">
+              <div class="option-main">能听懂大部分</div>
+              <div class="option-sub">轻松理解对话内容</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 结果页面 -->
+  <div class="result-page" id="resultPage">
+    <div class="result-icon slide-up">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+      <span class="result-level" id="resultLevel">A1</span>
+    </div>
+    
+    <h1 class="result-title slide-up delay-1">你的英语水平是</h1>
+    <p class="result-subtitle slide-up delay-2" id="resultDescription">入门级 - 适合基础学习内容</p>
+    
+    <div class="result-stars slide-up delay-3" id="resultStars">
+      <!-- 星星将通过JavaScript动态生成 -->
+    </div>
+    
+    <div class="result-card slide-up delay-4">
+      <div class="result-card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        推荐学习内容
+      </div>
+      <ul class="result-recommendations" id="resultRecommendations">
+        <!-- 推荐内容将通过JavaScript动态生成 -->
+      </ul>
+    </div>
+    
+    <div class="slide-up delay-5">
+      <button class="btn-primary" onclick="startLearning()">
+        开始学习
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"/>
+          <polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 底部按钮 -->
+  <div class="bottom-bar" id="bottomBar">
+    <button class="btn-primary" id="nextBtn" disabled onclick="showResult()">
+      查看结果
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  // 存储用户选择
+  const userAnswers = {
+    question1: null,
+    question2: null
+  };
+
+  // 选择选项
+  function selectOption(element) {
+    const question = element.dataset.question;
+    const value = parseInt(element.dataset.value);
+    
+    // 更新存储
+    userAnswers[`question${question}`] = value;
+    
+    // 更新UI - 移除同一问题的其他选中状态
+    const questionSection = element.closest('.question-section');
+    questionSection.querySelectorAll('.option-card').forEach(card => {
+      card.classList.remove('selected');
+    });
+    
+    // 添加选中状态
+    element.classList.add('selected');
+    
+    // 更新进度
+    updateProgress();
+    
+    // 检查是否可以进入下一步
+    checkCompletion();
+  }
+
+  // 更新进度条
+  function updateProgress() {
+    const answered = Object.values(userAnswers).filter(v => v !== null).length;
+    const progress = (answered / 2) * 100;
+    
+    document.getElementById('progressFill').style.width = `${progress}%`;
+    document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+    
+    // 更新进度文本
+    const progressText = document.querySelector('.progress-text');
+    if (answered === 0) {
+      progressText.textContent = '问题 1 / 2';
+    } else if (answered === 1) {
+      progressText.textContent = '问题 2 / 2';
+    } else {
+      progressText.textContent = '完成！';
+    }
+  }
+
+  // 检查是否完成
+  function checkCompletion() {
+    const nextBtn = document.getElementById('nextBtn');
+    const allAnswered = Object.values(userAnswers).every(v => v !== null);
+    
+    nextBtn.disabled = !allAnswered;
+  }
+
+  // 计算结果
+  function calculateResult() {
+    const totalScore = userAnswers.question1 + userAnswers.question2;
+    
+    // 根据总分确定级别
+    // 2-3分: A1 (1星)
+    // 4分: A2 (2星)  
+    // 5分: B1 (3星)
+    // 6分: B2 (4星)
+    // 7-8分: C1+ (5星)
+    
+    if (totalScore <= 3) {
+      return {
+        level: 'A1',
+        stars: 1,
+        title: '入门级',
+        description: '适合基础学习内容，从简单对话开始',
+        recommendations: [
+          '基础日常对话（问候、自我介绍）',
+          '简单词汇和短语',
+          '慢速英语听力练习',
+          '带中文字幕的简单视频'
+        ]
+      };
+    } else if (totalScore === 4) {
+      return {
+        level: 'A2',
+        stars: 2,
+        title: '初级',
+        description: '可以开始接触简单场景对话',
+        recommendations: [
+          '生活场景对话（购物、点餐）',
+          '基础语法巩固',
+          '带双语字幕的视频',
+          '简单故事和叙述'
+        ]
+      };
+    } else if (totalScore === 5) {
+      return {
+        level: 'B1',
+        stars: 3,
+        title: '中级',
+        description: '能够理解日常交流内容',
+        recommendations: [
+          '日常话题讨论',
+          '美剧生活场景片段',
+          '中英双语字幕切换',
+          '简单新闻和播客'
+        ]
+      };
+    } else if (totalScore === 6) {
+      return {
+        level: 'B2',
+        stars: 4,
+        title: '中高级',
+        description: '能够理解大部分日常对话',
+        recommendations: [
+          '美剧电影原声片段',
+          '纯英文字幕内容',
+          '话题讨论和辩论',
+          '新闻和纪录片'
+        ]
+      };
+    } else {
+      return {
+        level: 'C1+',
+        stars: 5,
+        title: '高级',
+        description: '能够理解复杂内容和快速对话',
+        recommendations: [
+          '无字幕原声内容',
+          '专业话题讨论',
+          '快速对话和俚语',
+          '学术和专业内容'
+        ]
+      };
+    }
+  }
+
+  // 显示结果
+  function showResult() {
+    const result = calculateResult();
+    
+    // 更新结果页面
+    document.getElementById('resultLevel').textContent = result.level;
+    document.getElementById('resultDescription').textContent = `${result.title} - ${result.description}`;
+    
+    // 生成星星
+    const starsContainer = document.getElementById('resultStars');
+    starsContainer.innerHTML = '';
+    
+    for (let i = 1; i <= 5; i++) {
+      const star = document.createElement('div');
+      star.className = `star ${i <= result.stars ? 'active' : ''}`;
+      star.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="${i <= result.stars ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      `;
+      starsContainer.appendChild(star);
+    }
+    
+    // 生成推荐内容
+    const recommendationsContainer = document.getElementById('resultRecommendations');
+    recommendationsContainer.innerHTML = '';
+    
+    result.recommendations.forEach(rec => {
+      const li = document.createElement('li');
+      li.textContent = rec;
+      recommendationsContainer.appendChild(li);
+    });
+    
+    // 切换页面
+    document.getElementById('questionPage').style.display = 'none';
+    document.getElementById('resultPage').classList.add('active');
+    document.getElementById('bottomBar').style.display = 'none';
+    
+    // 滚动到顶部
+    window.scrollTo(0, 0);
+  }
+
+  // 开始学习
+  function startLearning() {
+    // 这里可以跳转到主应用页面
+    alert('即将开始你的个性化学习之旅！');
+  }
+
+  // 初始化
+  document.addEventListener('DOMContentLoaded', function() {
+    updateProgress();
+    checkCompletion();
+  });
+</script>
+</body>
+</html>
