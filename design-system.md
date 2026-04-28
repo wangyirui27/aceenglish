@@ -259,7 +259,7 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
 
 ```css
 .page {
-  max-width: 390px;
+  max-width: 402px;
   margin: 0 auto;
   padding: 20px 16px 100px;
   background: var(--bg-0);
@@ -357,7 +357,7 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
 
 - 完整单文件HTML（内联CSS + 内联少量JS交互）
 - 所有颜色使用CSS变量
-- 移动端优先，390px居中
+- 移动端优先，402px居中
 - 使用语义化标签
 - **图标统一使用线性 SVG，禁用 emoji**
 - 底部CTA固定浮动

@@ -69,6 +69,10 @@
     max-width: 1400px;
     margin: 0 auto;
   }
+  /* 最后一行只有1张卡片时居中 */
+  .grid .card:nth-last-child(1):nth-child(3n+1) {
+    grid-column: 2 / 3;
+  }
 
   /* Cards */
   .card {
@@ -99,8 +103,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
     flex-shrink: 0;
+  }
+  .card-icon svg {
+    color: currentColor;
   }
   .card-title {
     font-size: 20px;
@@ -143,6 +149,7 @@
   .tag-change { background: rgba(234,179,8,0.2); color: #facc15; }
   .tag-optimize { background: rgba(59,130,246,0.2); color: #60a5fa; }
   .tag-done { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .tag-discuss { background: rgba(251,146,60,0.2); color: #fb923c; }
 
   /* Card color themes */
   .c-purple .card-icon { background: rgba(139,92,246,0.2); }
@@ -220,15 +227,15 @@
 
 <div class="stats">
   <div class="stat">
-    <div class="stat-num">6</div>
+    <div class="stat-num">3</div>
     <div class="stat-label">新增功能</div>
   </div>
   <div class="stat">
-    <div class="stat-num">4</div>
+    <div class="stat-num">5</div>
     <div class="stat-label">交互改版</div>
   </div>
   <div class="stat">
-    <div class="stat-num">3</div>
+    <div class="stat-num">5</div>
     <div class="stat-label">体验优化</div>
   </div>
   <div class="stat">
@@ -242,14 +249,19 @@
   <!-- 微练习 -->
   <div class="card c-purple">
     <div class="card-header">
-      <div class="card-icon">🎯</div>
+      <div class="card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="6"/>
+          <circle cx="12" cy="12" r="2"/>
+        </svg>
+      </div>
       <div class="card-title">微练习</div>
     </div>
     <div class="card-items">
       <div class="card-item"><div class="dot"></div><div class="text">视频流新增微练习按钮，用户主动触发进入做题 <span class="tag tag-change">改版</span></div></div>
       <div class="card-item"><div class="dot"></div><div class="text">取消原"刷视频随机插入微练习"逻辑</div></div>
-      <div class="card-item"><div class="dot"></div><div class="text">默认出 3 道简单题，做完展示"挑战更难的题"按钮 <span class="tag tag-change">待讨论</span></div></div>
-      <div class="card-item"><div class="dot"></div><div class="text">支持一直做题直到题库耗尽，提示"今天都做完啦" <span class="tag tag-new">新增</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">默认出 3 道简单题，做完展示"挑战更难的题"按钮 <span class="tag tag-discuss">待讨论</span></div></div>
       <div class="card-item"><div class="dot"></div><div class="text">题目来源含用户收藏单词，答题影响熟悉度</div></div>
       <div class="card-item"><div class="dot"></div><div class="text">微练习视频播放速度调整为 ×0.8 <span class="tag tag-optimize">优化</span></div></div>
     </div>
@@ -258,7 +270,11 @@
   <!-- 收藏夹 & 单词体系 -->
   <div class="card c-green">
     <div class="card-header">
-      <div class="card-icon">📚</div>
+      <div class="card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
       <div class="card-title">收藏夹 & 单词体系</div>
     </div>
     <div class="card-items">
@@ -274,7 +290,11 @@
   <!-- 视频 & 交互 -->
   <div class="card c-blue">
     <div class="card-header">
-      <div class="card-icon">🎬</div>
+      <div class="card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+      </div>
       <div class="card-title">视频 & 交互</div>
     </div>
     <div class="card-items">
@@ -283,13 +303,21 @@
       <div class="card-item"><div class="dot"></div><div class="text">跟读交互全面重做 <span class="tag tag-change">改版</span></div></div>
       <div class="card-item"><div class="dot"></div><div class="text">闪答出题机制调整 <span class="tag tag-change">改版</span></div></div>
       <div class="card-item"><div class="dot"></div><div class="text">「作者」文案改为「上传者」</div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">修改乱序单词拖拽拼句题型的 UI 和交互（已告知超哥） <span class="tag tag-optimize">优化</span></div></div>
     </div>
   </div>
 
   <!-- 用户引导 -->
   <div class="card c-orange">
     <div class="card-header">
-      <div class="card-icon">👋</div>
+      <div class="card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="8.5" cy="7" r="4"/>
+          <line x1="20" y1="8" x2="20" y2="14"/>
+          <line x1="23" y1="11" x2="17" y2="11"/>
+        </svg>
+      </div>
       <div class="card-title">用户引导</div>
     </div>
     <div class="card-items">
@@ -300,7 +328,13 @@
   <!-- 网页端 -->
   <div class="card c-cyan">
     <div class="card-header">
-      <div class="card-icon">🌐</div>
+      <div class="card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </div>
       <div class="card-title">网页端</div>
     </div>
     <div class="card-items">
@@ -308,11 +342,29 @@
     </div>
   </div>
 
+  <!-- 考一下 -->
+  <div class="card c-pink">
+    <div class="card-header">
+      <div class="card-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="13" x2="15" y2="13"/>
+          <line x1="9" y1="17" x2="13" y2="17"/>
+        </svg>
+      </div>
+      <div class="card-title">考一下</div>
+    </div>
+    <div class="card-items">
+      <div class="card-item"><div class="dot"></div><div class="text">支持一直做题直到题库耗尽</div></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- 待明确 -->
 <div class="pending">
-  <h3>⚠️ 评审前需确认</h3>
+  <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>评审前需确认</h3>
   <div class="pending-grid">
     <div class="pending-item"><div class="num">1</div><span>视频流「更多」</span> 具体丰富哪些内容</div>
     <div class="pending-item"><div class="num">2</div><span>单句循环</span> 新 UI 设计稿</div>
