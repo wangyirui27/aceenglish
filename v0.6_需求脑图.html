@@ -227,19 +227,19 @@
 
 <div class="stats">
   <div class="stat">
-    <div class="stat-num">3</div>
+    <div class="stat-num">4</div>
     <div class="stat-label">新增功能</div>
   </div>
   <div class="stat">
-    <div class="stat-num">5</div>
+    <div class="stat-num">4</div>
     <div class="stat-label">交互改版</div>
   </div>
   <div class="stat">
-    <div class="stat-num">5</div>
+    <div class="stat-num">7</div>
     <div class="stat-label">体验优化</div>
   </div>
   <div class="stat">
-    <div class="stat-num">7</div>
+    <div class="stat-num">9</div>
     <div class="stat-label">待明确项</div>
   </div>
 </div>
@@ -284,6 +284,8 @@
       <div class="card-item"><div class="dot"></div><div class="text">学习队列：月度目标制，本月推到「精通」<span class="tag tag-new">新增</span></div></div>
       <div class="card-item"><div class="dot"></div><div class="text">未精通单词自动累计到下月队列</div></div>
       <div class="card-item"><div class="dot"></div><div class="text">优化每日守护题型分布，降低完形填空占比 <span class="tag tag-optimize">优化</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">守护失败的单词可在当前结算页直接重做 <span class="tag tag-optimize">优化</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">移除「批量变精通」和「批量取消精通」<span class="tag tag-change">改版</span></div></div>
     </div>
   </div>
 
@@ -307,38 +309,55 @@
     </div>
   </div>
 
-  <!-- 用户引导 -->
+  <!-- 取消的功能 -->
+  <div class="card" style="opacity: 0.5;">
+    <div class="card-header">
+      <div class="card-icon" style="background: rgba(239,68,68,0.15);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>
+      </div>
+      <div class="card-title" style="color: #ef4444;">取消的功能</div>
+    </div>
+    <div class="card-items">
+      <div class="card-item"><div class="dot" style="background: #ef4444;"></div><div class="text"><s style="color: #666;">注册引导页改为让用户选择偏好</s> <span class="tag" style="background: rgba(239,68,68,0.15); color: #ef4444;">已取消</span></div></div>
+      <div class="card-item"><div class="dot" style="background: #ef4444;"></div><div class="text">v0.6 不做用户引导，直接跳过</div></div>
+    </div>
+  </div>
+
+  <!-- 会员中心 -->
   <div class="card c-orange">
     <div class="card-header">
       <div class="card-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="8.5" cy="7" r="4"/>
-          <line x1="20" y1="8" x2="20" y2="14"/>
-          <line x1="23" y1="11" x2="17" y2="11"/>
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
         </svg>
       </div>
-      <div class="card-title">用户引导</div>
+      <div class="card-title">会员中心</div>
     </div>
     <div class="card-items">
-      <div class="card-item"><div class="dot"></div><div class="text">注册引导页改为让用户选择偏好（学习目标、水平等）<span class="tag tag-change">改版</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">新增会员中心页面 <span class="tag tag-new">新增</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">上传视频功能从网页端迁移到手机端（会员中心内）<span class="tag tag-change">改版</span></div></div>
     </div>
   </div>
 
-  <!-- 网页端 -->
+  <!-- 金币体系 -->
   <div class="card c-cyan">
     <div class="card-header">
       <div class="card-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
-          <line x1="2" y1="12" x2="22" y2="12"/>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          <line x1="12" y1="8" x2="12" y2="16"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
         </svg>
       </div>
-      <div class="card-title">网页端</div>
+      <div class="card-title">金币体系</div>
     </div>
     <div class="card-items">
-      <div class="card-item"><div class="dot"></div><div class="text">新增视频上传页面（面向内容提供者 / 运营）<span class="tag tag-new">新增</span></div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">设计全局所有场景的金币增加数量规则 <span class="tag tag-new">新增</span></div></div>
     </div>
   </div>
 
@@ -357,6 +376,7 @@
     </div>
     <div class="card-items">
       <div class="card-item"><div class="dot"></div><div class="text">支持一直做题直到题库耗尽</div></div>
+      <div class="card-item"><div class="dot"></div><div class="text">⚠️ 「考一下」名字待调整，新名称待确认 <span class="tag tag-discuss">待确认</span></div></div>
     </div>
   </div>
 
@@ -370,9 +390,11 @@
     <div class="pending-item"><div class="num">2</div><span>单句循环</span> 新 UI 设计稿</div>
     <div class="pending-item"><div class="num">3</div><span>跟读</span> 新交互方案</div>
     <div class="pending-item"><div class="num">4</div><span>闪答</span> 出题机制具体规则</div>
-    <div class="pending-item"><div class="num">5</div><span>注册偏好</span> 选项有哪些</div>
-    <div class="pending-item"><div class="num">6</div><span>学习队列</span> 默认值多少</div>
-    <div class="pending-item"><div class="num">7</div><span>题库耗尽</span> 耗尽判定逻辑</div>
+    <div class="pending-item"><div class="num">5</div><span>学习队列</span> 默认值多少</div>
+    <div class="pending-item"><div class="num">6</div><span>更难的题</span> 最多几道</div>
+    <div class="pending-item"><div class="num">7</div><span>会员中心</span> 页面设计稿缺失</div>
+    <div class="pending-item"><div class="num">8</div><span>手机端上传</span> 交互设计稿缺失</div>
+    <div class="pending-item"><div class="num">9</div><span>考一下</span> 新名称待确认</div>
   </div>
 </div>
 
