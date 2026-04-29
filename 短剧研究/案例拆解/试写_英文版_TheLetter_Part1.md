@@ -1,15 +1,15 @@
-# 试写英文短剧：The Letter — Part 1
+# 试写短剧：The Letter（信）— 第一集
 
 > 练习目标：英文出海短剧，1 分钟格式，悬疑/反转题材
 > 平台：TikTok / YouTube Shorts
 > 时长：60 秒
-> 系列：Part 1 of 5
+> 系列：第一集（共 5 集）
 
 ---
 
-## Logline
+## 故事梗概
 
-A woman finds an unsent letter in her late mother's attic — addressed to her, dated 3 days from now.
+一个女人在已故母亲的阁楼里发现一封未寄出的信——收件人是她自己，落款日期是三天后。
 
 ---
 
@@ -18,148 +18,146 @@ A woman finds an unsent letter in her late mother's attic — addressed to her, 
 ```
 情绪强度
   ↑
-高│                      ╱╲  ← 反转：日期是3天后
+高│                      ╱╲  ← 反转：日期是三天后
   │                    ╱    ╲
 中│      ╱╲          ╱        ╲
   │    ╱    ╲      ╱            ╲
-低│  ╱        ╲  ╱                ╲ ← 钩子："Who sent this?"
+低│  ╱        ╲  ╱                ╲ ← 钩子："谁发的短信？"
   └──────────────────────────────────→ 时间
   0s    10s   20s   30s   45s   60s
-  Hook  Setup  冲突  反转   悬念  钩子
+  开场  铺垫   冲突  反转   悬念  钩子
 ```
 
 ---
 
-## Script
-
-### SHOT LIST
+## 剧本 & 分镜
 
 ---
 
-**SHOT 1 [0-3s] — HOOK**
-- Camera: Extreme close-up, slightly shaky handheld
-- Action: A woman's trembling hand pulls a yellowed envelope from between old books. Dust particles float in a single beam of attic light.
-- No dialogue.
+**镜头 1 [0-3s] — 开场冲击**
+- 机位：特写，微晃手持感
+- 动作：一只颤抖的女人手，从一堆旧书之间抽出一封泛黄的信封。一束阁楼天窗的光线中，灰尘颗粒清晰可见。
+- 无台词。
 
-> **AI Prompt (MidJourney):**
-> Extreme close-up, a woman's hand pulling a yellowed envelope from between old dusty books in an attic, single beam of warm attic light from a small window, visible dust particles floating in the light beam, envelope has faded blue ink handwriting, photorealistic, shallow depth of field, Kodak Portra 400 style, warm skin tones, visible skin pores and fine arm hair, 4K
-
----
-
-**SHOT 2 [3-8s] — SETUP**
-- Camera: Medium shot, eye level
-- Action: Emma (28, dark hair in a messy bun, oversized grey sweater) sits cross-legged on the attic floor. She turns the envelope over — no return address. Her brow furrows slightly.
-
-> **AI Prompt:**
-> Medium shot, young woman 28 years old sitting cross-legged on dusty attic floor, dark hair in messy bun, oversized grey wool sweater, turning over a yellowed envelope, slight furrow in brow showing confusion, attic with exposed wooden beams and stacked boxes, natural window light from the left creating soft shadows on her face, PBR skin texture with natural imperfections, Kodak Vision3 250D style, daylight, 4K
+> **AI 提示词：**
+> 特写，女人的手从阁楼旧书堆中抽出一封泛黄信封，阁楼小窗射入一束暖色光线，光束中可见灰尘颗粒漂浮，信封上有褪色的蓝色墨水手写字迹，摄影写实风格，浅景深，柯达 Portra 400 风格，肤色暖而自然，皮肤毛孔和细微手臂汗毛清晰可见，4K
 
 ---
 
-**SHOT 3 [8-13s] — REVEAL**
-- Camera: Close-up, over-the-shoulder
-- Action: She opens the envelope. Inside: a handwritten letter. The camera focuses on the first line.
-- Dialogue (whispered, voiceover): *"My dearest Emma..."*
+**镜头 2 [3-8s] — 建立情境**
+- 机位：中景，平视
+- 动作：艾玛（28 岁，深色头发随意扎成丸子头，穿宽松灰色毛衣）盘腿坐在阁楼地板上。她翻过信封——没有寄信人地址。眉头微微皱起。
 
-> **AI Prompt:**
-> Close-up over-the-shoulder, woman's hands opening yellowed envelope, pulling out handwritten letter, camera focuses on first line of blue ink cursive writing "My dearest Emma", hands have natural skin texture with visible knuckle creases and a thin silver ring on right index finger, soft attic light, shallow depth of field with background blurred, Kodak Portra 400 style, 4K
-
----
-
-**SHOT 4 [13-18s] — BUILD**
-- Camera: Medium close-up, her face
-- Action: Emma reads silently. Her eyes widen. She stops breathing for a moment. Lips part slightly. She reads faster.
-- Dialogue (voiceover, her mother's voice reading the letter): *"If you're reading this, I'm already gone. But I need you to know — your father didn't die in an accident."*
-
-> **AI Prompt:**
-> Medium close-up, young woman's face reading a letter, eyes widening with shock, lips slightly parted, breathing paused, natural attic light illuminating the left side of her face while the right side falls into soft shadow, pupils slightly dilated, subtle tension in her jaw muscle, photorealistic, Kodak Vision3 250D, 4K
+> **AI 提示词：**
+> 中景，28 岁年轻女性盘腿坐在阁楼灰尘地板上，深色头发扎成丸子头，穿宽松灰色羊毛毛衣，翻看一封泛黄信封，眉头微皱显出困惑，阁楼内有裸露木梁和堆叠的纸箱，左侧自然窗光在她脸上形成柔和阴影，PBR 皮肤材质有自然瑕疵，柯达 Vision3 250D 风格，日光，4K
 
 ---
 
-**SHOT 5 [18-24s] — ESCALATION**
-- Camera: Close-up, the letter
-- Action: Her hands start trembling. The letter shakes. Camera slowly pans down to a line of text: *"He was murdered. And the killer is still watching our family."*
+**镜头 3 [8-13s] — 揭示**
+- 机位：近景，过肩视角
+- 动作：她拆开信封。里面是一封手写信。镜头聚焦在第一行字。
+- 台词（画外音，低语）：*"我最亲爱的艾玛……"*
 
-> **AI Prompt:**
-> Close-up of trembling hands holding a handwritten letter, the letter shaking visibly, blue ink cursive text on aged cream paper, camera focused on one line of text, hands have tension visible in tendons and knuckles, slight motion blur from trembling, attic light, shallow depth of field, Kodak Portra 400 style, 4K
-
----
-
-**SHOT 6 [24-30s] — REACTION**
-- Camera: Medium shot, low angle
-- Action: Emma looks up from the letter, directly at the attic window. Her expression shifts from shock to fear. She holds her breath.
-- Dialogue (whispered): *"No..."*
-
-> **AI Prompt:**
-> Medium shot, low angle looking up at young woman on attic floor looking up toward window with fear on her face, eyes wide, lips pressed together, shoulders tense and raised, attic window behind her showing grey overcast sky, dramatic lighting from below as if from the letter in her lap, fear micro-expression: pupils dilated, nostrils slightly flared, breathing shallow, Kodak Vision3 250D, 4K
+> **AI 提示词：**
+> 过肩近景，女人双手拆开泛黄信封，抽出一封手写信，镜头聚焦蓝色墨水手写体第一行字，手部皮肤有自然纹理，指关节褶皱可见，右手食指戴一枚细细的银戒指，柔和阁楼光线，浅景深背景虚化，柯达 Portra 400 风格，4K
 
 ---
 
-**SHOT 7 [30-38s] — TWIST**
-- Camera: Close-up, the letter again
-- Action: She flips the letter over. At the bottom, in different handwriting (sharper, darker ink): a date. Camera slowly zooms in.
-- The date: **May 2, 2026** — three days from now.
-- No dialogue. Just the sound of her breathing.
+**镜头 4 [13-18s] — 铺垫**
+- 机位：中近景，她的脸
+- 动作：艾玛默读。眼睛骤然睁大。屏住呼吸。嘴唇微微张开。读得更快了。
+- 台词（画外音，母亲的声音，温暖而带着回声，像记忆中的声音）：*"如果你看到这封信，说明我已经不在了。但我必须让你知道——你父亲不是死于意外。"*
 
-> **AI Prompt:**
-> Extreme close-up of the bottom of a handwritten letter, a date written in darker sharper ink "May 2, 2026", the handwriting style is noticeably different from the rest of the letter — darker, more aggressive strokes, slightly larger, the paper shows a slight indent from pressing hard, surrounding text in softer blue ink, attic light, shallow depth of field, Kodak Portra 400 style, 4K
-
----
-
-**SHOT 8 [38-45s] — FEAR**
-- Camera: Medium close-up, her face
-- Action: Emma looks at the date. Her breathing becomes rapid and shallow. She looks around the attic — at the shadows, the dark corners, the locked trunk.
-- Dialogue (breathless whisper): *"Three days...?"*
-
-> **AI Prompt:**
-> Medium close-up, young woman's face showing fear transitioning to panic, rapid shallow breathing visible in her chest rising and falling, eyes darting left and right scanning shadows, sweat starting to appear on her upper lip, forehead slightly glossy with stress sweat, attic shadows in background appearing darker and more ominous, Kodak Vision3 500T style, dim light, high contrast shadows, 4K
+> **AI 提示词：**
+> 中近景，年轻女性读信的脸，眼睛因震惊而睁大，嘴唇微张，呼吸暂停，阁楼自然光照亮左半边脸，右半边沉入柔和阴影，瞳孔略微放大，咬肌有细微紧张感，摄影写实风格，柯达 Vision3 250D，4K
 
 ---
 
-**SHOT 9 [45-52s] — ACTION**
-- Camera: Wide shot, attic
-- Action: Emma scrambles to her feet. The letter falls to the floor. She grabs her phone from her back pocket, hands shaking too much to unlock it.
+**镜头 5 [18-24s] — 升级**
+- 机位：特写，信纸
+- 动作：她的手开始发抖。信纸随之颤动。镜头缓缓下移，定格在一行字上：*"他是被人害死的。而凶手……至今还在盯着我们家。"*
 
-> **AI Prompt:**
-> Wide shot of attic interior, young woman scrambling to her feet from the floor, yellowed letter falling to dusty floorboards, she's reaching for phone in back pocket with shaking hands, attic filled with old furniture and stacked boxes, single window casting dramatic light beam across the scene, sense of urgency and fear in body language, Kodak Vision3 250D, photorealistic, 4K
-
----
-
-**SHOT 10 [52-58s] — CLIFFHANGER**
-- Camera: Close-up, her phone screen
-- Action: She finally unlocks the phone. On the screen: a notification. A message from an unknown number. She taps it.
-- The message: **"I know you found it."**
-- Her face freezes.
-
-> **AI Prompt:**
-> Close-up of smartphone screen showing a text message notification from unknown number, the message reads "I know you found it.", woman's thumb hovering over the screen about to tap, phone screen glow illuminating her fingertips from below, dark attic background, tension and fear, Kodak Vision3 500T style, dim mixed lighting, phone screen as key light, 4K
+> **AI 提示词：**
+> 特写，颤抖的双手握着一封手写信，信纸明显在晃动，泛黄奶油色纸张上的蓝色墨水手写体，镜头聚焦一行字，手部肌腱和指关节因用力而紧绷，颤抖造成轻微动态模糊，阁楼光线，浅景深，柯达 Portra 400 风格，4K
 
 ---
 
-**SHOT 11 [58-60s] — ENDING**
-- Camera: Black screen.
-- Text: **"Follow for Part 2"**
-- Sound: A single heartbeat. Then silence.
+**镜头 6 [24-30s] — 反应**
+- 机位：中景，低角度仰拍
+- 动作：艾玛从信上抬起头，直直看向阁楼窗户。表情从震惊转为恐惧。屏住呼吸。
+- 台词（低语）：*"不可能……"*
+
+> **AI 提示词：**
+> 中景，低角度仰拍，阁楼地板上的年轻女性抬头望向窗户，脸上是恐惧，眼睛睁大，嘴唇紧闭，肩膀紧张耸起，身后阁楼窗外是阴沉的灰色天空，膝上信纸投射的光线从下方照亮面部，恐惧微表情：瞳孔放大，鼻翼微张，呼吸浅而快，柯达 Vision3 250D，4K
 
 ---
 
-## Audio Design
+**镜头 7 [30-38s] — 反转**
+- 机位：特写，信纸背面
+- 动作：她翻过信纸。底部有一行不同笔迹的字——笔触更锐利、墨水更深。镜头缓缓推近。
+- 日期：**2026 年 5 月 2 日** —— 三天后。
+- 无台词。只有她的呼吸声。
 
-| Time | Audio |
-|------|-------|
-| 0-3s | Paper rustling + dust falling (realistic foley) |
-| 3-13s | Quiet ambient attic sounds (creaking wood, distant wind) |
-| 13-18s | Mother's voice (warm, slightly echoey, like a memory) reading the letter |
-| 18-30s | Silence + Emma's breathing becoming audible |
-| 30-38s | Heartbeat sound begins (slow, deliberate) |
-| 38-52s | Heartbeat accelerates + phone unlock sound |
-| 52-58s | Phone notification ping + dead silence |
-| 58-60s | Single heartbeat + silence |
+> **AI 提示词：**
+> 极度特写，信纸底部，一行用更深更锐利的墨水写成的日期"May 2, 2026"，笔迹风格与信的其余部分明显不同——更黑、笔触更用力、字体略大，纸上有用力书写留下的轻微凹痕，周围是更柔和的蓝色墨水正文，阁楼光线，浅景深，柯达 Portra 400 风格，4K
+
+---
+
+**镜头 8 [38-45s] — 恐惧**
+- 机位：中近景，她的脸
+- 动作：艾玛盯着那个日期。呼吸变得急促而浅。她环顾阁楼——阴影、黑暗角落、上了锁的旧箱子。
+- 台词（喘息般的低语）：*"三天……？"*
+
+> **AI 提示词：**
+> 中近景，年轻女性脸上恐惧转为恐慌，急促浅呼吸在胸口起伏可见，眼神左右扫视阴影，上唇开始冒汗，额头因紧张微泛油光，背景阁楼阴影显得更深更阴森，柯达 Vision3 500T 风格，弱光，高对比度阴影，4K
+
+---
+
+**镜头 9 [45-52s] — 行动**
+- 机位：全景，阁楼
+- 动作：艾玛慌忙站起来。信掉在地板上。她从后兜掏手机，手抖得解不开锁。
+
+> **AI 提示词：**
+> 阁楼内部全景，年轻女性从地板上慌忙起身，泛黄信纸落在灰尘地板上，她正用颤抖的手从后兜掏手机，阁楼内堆满旧家具和纸箱，单扇窗户投射出戏剧性光束横贯画面，肢体语言充满紧迫和恐惧，柯达 Vision3 250D，摄影写实风格，4K
+
+---
+
+**镜头 10 [52-58s] — 钩子**
+- 机位：特写，手机屏幕
+- 动作：她终于解开锁。屏幕上：一条通知。一个陌生号码发来的消息。她点开。
+- 消息内容：**"我知道你找到了。"**
+- 她的脸僵住了。
+
+> **AI 提示词：**
+> 特写，智能手机屏幕显示一条来自陌生号码的短信通知，消息内容为英文"我知道你找到了"，女人的拇指悬在屏幕上方即将点击，手机屏幕光从下方照亮指尖，深色阁楼背景，紧张和恐惧，柯达 Vision3 500T 风格，混合弱光，手机屏幕作为主光源，4K
+
+---
+
+**镜头 11 [58-60s] — 结尾**
+- 机位：黑屏
+- 字幕：**"Follow for Part 2"**（关注看第二集）
+- 音效：一声心跳。然后寂静。
+
+---
+
+## 音频设计
+
+| 时间 | 音频内容 |
+|------|----------|
+| 0-3s | 纸张摩擦声 + 灰尘掉落声（真实拟音） |
+| 3-13s | 安静的阁楼环境音（木头吱呀声、远处风声） |
+| 13-18s | 母亲的声音（温暖、微带回声，像记忆中的声音）读信 |
+| 18-30s | 寂静 + 艾玛的呼吸声逐渐清晰 |
+| 30-38s | 心跳声开始（缓慢、刻意） |
+| 38-52s | 心跳加速 + 手机解锁声 |
+| 52-58s | 手机通知提示音 + 死寂 |
+| 58-60s | 一声心跳 + 寂静 |
 
 ---
 
 ## 制作流程（你的工具链）
 
-### Step 1: ChatGPT — 生成完整 10 集剧本大纲（5 分钟）
+### 第一步：ChatGPT — 生成完整 5 集大纲（5 分钟）
 
 ```
 Based on this Part 1, outline the remaining 4 parts of "The Letter" series.
@@ -171,30 +169,32 @@ and escalate the mystery. Include:
 - The final twist in Part 5
 ```
 
-### Step 2: ChatGPT — 生成每个镜头的角色提示词（3 分钟）
+### 第二步：ChatGPT — 生成每个镜头的角色提示词（3 分钟）
 
 上面已经写好了，直接用。
 
-### Step 3: 即梦 / LiblibAI — 生角色设定图（10 分钟）
+### 第三步：即梦 / LiblibAI — 生角色设定图（10 分钟）
 
-1. 用 SHOT 2 的提示词生一张 Emma 的全身图
+1. 用镜头 2 的提示词生一张艾玛的全身图
 2. 挑最满意的作为角色基准图
 3. 后续所有镜头都用这张图做参考
 
-### Step 4: 即梦 — 图生视频（30 分钟）
+### 第四步：即梦 — 图生视频（30 分钟）
 
 11 个镜头，每个 5-6 秒，逐个生成。
 
-### Step 5: ElevenLabs — 生成配音（5 分钟）
+### 第五步：ElevenLabs — 生成英文配音（5 分钟）
 
-用 ElevenLabs 生成母亲的旁白声音 + Emma 的台词。
+用 ElevenLabs 生成母亲的旁白声音 + 艾玛的台词。注意：
+- 母亲的声音要温暖、微带回声感
+- 艾玛的台词要轻、带喘息
 
-### Step 6: CapCut — 剪辑出片（15 分钟）
+### 第六步：CapCut — 剪辑出片（15 分钟）
 
-1. 铺音频轨道
+1. 先铺音频轨道（先定声音再出画面！）
 2. 按节奏贴画面
-3. 加字幕（英文）
-4. 导出 9:16
+3. 加英文字幕
+4. 导出 9:16 竖版
 
 ---
 
@@ -202,10 +202,11 @@ and escalate the mystery. Include:
 
 | 知识来源 | 在本集的应用 |
 |----------|-------------|
-| 全流程提示词 | 黄金前3秒（手从灰尘中抽信封）、钩子结尾（"I know you found it."） |
-| 微表情演技 | Emma 的恐惧递进：眼眶扩大→嘴唇微张→瞳孔扩张→额头出汗 |
-| 消除AI感 | PBR 材质（皮肤毛孔、纸张泛黄、墨水凹痕）、物理光源（阁楼天窗光束） |
+| 全流程提示词 | 黄金前 3 秒（手从灰尘中抽信封）、钩子结尾（"我知道你找到了。"） |
+| 微表情演技 | 艾玛的恐惧递进：瞳孔放大→嘴唇微张→鼻翼张开→额头冒汗 |
+| 消除 AI 感 | PBR 材质（皮肤毛孔、纸张泛黄、墨水凹痕）、物理光源（阁楼天窗光束） |
 | 胶片风格 | 日光场景用 250D，暗光场景用 500T |
-| 提示词替代词 | 用 "photorealistic" 替代 "cinematic" |
+| 提示词替代词 | 用"摄影写实风格"替代"电影感" |
 | 底层叙事思维 | 先规划情绪曲线和音频节奏，再出画面 |
 | 出海指南 | 英文对话简短自然、Show don't tell、每秒都不浪费 |
+| 场景一致性 | 同一阁楼场景保持空间关系不变 |
