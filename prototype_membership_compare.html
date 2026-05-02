@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>头号听力 · 创始会员对比</title>
+<style>
+  :root {
+    /* 主色 */
+    --accent: #FF600F;
+    --accent-hover: #E85500;
+    --accent-light: #FF7A33;
+    --accent-dark: #CC4D0C;
+    --accent-glow: rgba(255, 96, 15, 0.3);
+    --accent-subtle: rgba(255, 96, 15, 0.1);
+    --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+    --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+
+    /* 背景 */
+    --bg-0: #000000;
+    --bg-1: #111111;
+    --bg-2: #1A1A1A;
+    --bg-3: #222222;
+    --bg-accent: #2A1508;
+
+    /* 辅助色 */
+    --secondary: #FFB800;
+    --success: #00C853;
+    --info: #448AFF;
+    --error: #FF3B30;
+
+    /* 文字 */
+    --text-1: #FFFFFF;
+    --text-2: #AAAAAA;
+    --text-3: #666666;
+    --text-accent: #FF600F;
+
+    /* 间距 */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+
+    /* 圆角 */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 999px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg-0);
+    color: var(--text-1);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                 "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 402px;
+    margin: 0 auto;
+    padding: 24px 16px 120px;
+    background: var(--bg-0);
+    min-height: 100vh;
+  }
+
+  /* ==== Hero ==== */
+  .hero {
+    text-align: center;
+    margin-bottom: var(--space-2xl);
+    animation: slide-up 400ms ease-out both;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-accent);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    letter-spacing: 0.5px;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  .hero-title {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.5px;
+  }
+  .hero-title .hl {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.6;
+    padding: 0 8px;
+  }
+
+  /* ==== Section ==== */
+  .section {
+    margin-bottom: var(--space-xl);
+    animation: slide-up 400ms ease-out both;
+  }
+  .section:nth-of-type(2) { animation-delay: 60ms; }
+  .section:nth-of-type(3) { animation-delay: 120ms; }
+  .section:nth-of-type(4) { animation-delay: 180ms; }
+  .section:nth-of-type(5) { animation-delay: 240ms; }
+
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 4px;
+  }
+  .section-title .icon-box {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-accent);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title .label-num {
+    font-size: 12px;
+    color: var(--text-3);
+    font-weight: 500;
+    margin-left: auto;
+  }
+
+  /* ==== Compare Card ==== */
+  .compare {
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .compare-head {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    background: var(--bg-2);
+    padding: 12px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-3);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .compare-head .col-us {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 700;
+    position: relative;
+  }
+  .compare-head .col-us::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 2px;
+    background: var(--accent-gradient-h);
+    border-radius: 999px;
+  }
+  .compare-head .col-label {
+    text-align: left;
+    padding-left: 14px;
+  }
+
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    align-items: center;
+    padding: 14px 4px;
+    border-top: 1px solid var(--bg-3);
+    font-size: 13px;
+  }
+  .compare-row:first-of-type {
+    border-top: none;
+  }
+
+  .row-label {
+    padding-left: 14px;
+    color: var(--text-1);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .row-label .sub {
+    display: block;
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .row-label .star {
+    display: inline-block;
+    color: var(--accent);
+    font-size: 10px;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  .row-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-2);
+    font-size: 12px;
+    text-align: center;
+    padding: 0 4px;
+  }
+  .row-cell.us {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* check / cross icons */
+  .ico-check, .ico-cross, .ico-partial {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .ico-check {
+    background: rgba(255, 96, 15, 0.15);
+    color: var(--accent);
+  }
+  .ico-check.alt {
+    background: rgba(170, 170, 170, 0.12);
+    color: var(--text-2);
+  }
+  .ico-cross {
+    background: rgba(102, 102, 102, 0.15);
+    color: var(--text-3);
+  }
+  .ico-partial {
+    background: rgba(255, 184, 0, 0.12);
+    color: var(--secondary);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* ==== Price Card ==== */
+  .price-card {
+    background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: var(--space-md);
+    box-shadow: 0 0 30px var(--accent-subtle);
+    position: relative;
+    overflow: hidden;
+  }
+  .price-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 96, 15, 0.08), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  .price-tag-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: var(--space-sm);
+  }
+  .price-symbol {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .price-num {
+    font-size: 44px;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .price-unit {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .price-original {
+    font-size: 14px;
+    color: var(--text-3);
+    text-decoration: line-through;
+    margin-left: auto;
+  }
+  .price-daily {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-top: 6px;
+  }
+  .price-daily b {
+    color: var(--secondary);
+    font-weight: 700;
+  }
+  .price-lock {
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--bg-3);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  .price-lock svg {
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ==== Trust Badges ==== */
+  .trust-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+    animation: slide-up 400ms ease-out 300ms both;
+  }
+  .trust-item {
+    background: var(--bg-1);
+    border-radius: var(--radius-md);
+    padding: 14px 8px;
+    text-align: center;
+  }
+  .trust-icon {
+    width: 32px;
+    height: 32px;
+    margin: 0 auto var(--space-sm);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .trust-text {
+    font-size: 11px;
+    color: var(--text-2);
+    line-height: 1.4;
+    font-weight: 500;
+  }
+
+  /* ==== Bottom CTA ==== */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--bg-3);
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 100;
+  }
+  .bottom-inner {
+    max-width: 402px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .bottom-price {
+    flex-shrink: 0;
+  }
+  .bottom-price-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .bottom-price-num .sym {
+    font-size: 14px;
+    margin-right: 1px;
+  }
+  .bottom-price-tip {
+    font-size: 10px;
+    color: var(--text-3);
+    margin-top: 3px;
+  }
+  .btn-primary {
+    flex: 1;
+    background: var(--accent-gradient);
+    color: #FFFFFF;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 20px;
+    border-radius: var(--radius-md);
+    border: none;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 30px rgba(255, 96, 15, 0.45);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 10px var(--accent-glow);
+  }
+
+  /* ==== Animations ==== */
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 8px var(--accent-glow); }
+    50% { box-shadow: 0 0 16px rgba(255, 96, 15, 0.6); }
+  }
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  /* highlight stripe on us column */
+  .compare {
+    position: relative;
+  }
+  .compare::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(1.4 / 3.4 * 100%);
+    width: calc(1 / 3.4 * 100%);
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255, 96, 15, 0.06), rgba(255, 96, 15, 0.02));
+    pointer-events: none;
+    z-index: 0;
+  }
+  .compare-head, .compare-row {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* footer note */
+  .footer-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: var(--space-lg);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ==== Hero ==== -->
+  <div class="hero">
+    <div class="hero-tag">创始会员 · 第一阶段限时</div>
+    <h1 class="hero-title">
+      为什么选择<br>
+      <span class="hl">头号听力创始会员</span>
+    </h1>
+    <p class="hero-sub">同样是学英语，凭什么我们能让你刷得停不下来</p>
+  </div>
+
+  <!-- ==== Section 1: 内容形态 ==== -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+      </span>
+      内容形态
+      <span class="label-num">01</span>
+    </div>
+
+    <div class="compare">
+      <div class="compare-head">
+        <div class="col-label">对比维度</div>
+        <div class="col-us">头号听力</div>
+        <div>同类听力 App</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">学习方式<span class="star">★ 独家</span>
+          <span class="sub">短视频流刷剧学英语</span>
+        </div>
+        <div class="row-cell us">短视频流</div>
+        <div class="row-cell">列表选片</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">素材来源
+          <span class="sub">AI 剪辑完整对话</span>
+        </div>
+        <div class="row-cell us">美剧 / 电影</div>
+        <div class="row-cell">新闻 / 整集</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">单段时长
+          <span class="sub">一个完整对话场景</span>
+        </div>
+        <div class="row-cell us">≤ 2 分钟</div>
+        <div class="row-cell">5-40 分钟</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">难度分级
+          <span class="sub">A1-C1 五星精细分级</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-partial">~</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== Section 2: 学习黑科技 ==== -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+      </span>
+      学习黑科技
+      <span class="label-num">02</span>
+    </div>
+
+    <div class="compare">
+      <div class="compare-head">
+        <div class="col-label">对比维度</div>
+        <div class="col-us">头号听力</div>
+        <div>同类听力 App</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">字幕模式
+          <span class="sub">减压 / 中英 / 纯英 / 延迟</span>
+        </div>
+        <div class="row-cell us">4 种</div>
+        <div class="row-cell">2-3 种</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">减压字幕<span class="star">★ 独家</span>
+          <span class="sub">只翻译超纲词，不破坏沉浸</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-cross">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">闪答互动<span class="star">★ 独家</span>
+          <span class="sub">迷雾遮罩 2 选 1，专注不走神</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-cross">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">重遇弹幕<span class="star">★ 独家</span>
+          <span class="sub">收藏词在新视频里"再相遇"</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-cross">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">全局框选查词
+          <span class="sub">App 内任意位置可选</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-partial">部分</div>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">单句循环 + AI 跟读评分
+          <span class="sub">逐句精跟，发音可量化</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-partial">部分</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== Section 3: 记忆体系 ==== -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-1.04Z"/>
+          <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-1.04Z"/>
+        </svg>
+      </span>
+      记忆体系
+      <span class="label-num">03</span>
+    </div>
+
+    <div class="compare">
+      <div class="compare-head">
+        <div class="col-label">对比维度</div>
+        <div class="col-us">头号听力</div>
+        <div>传统单词 App</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">熟悉度分级
+          <span class="sub">生词→眼熟→熟悉→精通</span>
+        </div>
+        <div class="row-cell us">4 级</div>
+        <div class="row-cell">2-3 级</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">复习题型
+          <span class="sub">微练习 6 种题型轮换</span>
+        </div>
+        <div class="row-cell us">6 种</div>
+        <div class="row-cell">1-2 种</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">题型与单词系统打通<span class="star">★ 独家</span>
+          <span class="sub">做题就是复习，不再两套</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-cross">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">智能搜索→单句循环<span class="star">★ 独家</span>
+          <span class="sub">查词跳转含该词的真实台词</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-cross">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">辞书一键导入
+          <span class="sub">四六级/雅思/托福 1000+ 本</span>
+        </div>
+        <div class="row-cell us">1000+</div>
+        <div class="row-cell">部分支持</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">月度学习目标<span class="star">★ 独家</span>
+          <span class="sub">未完成自动累计，不焦虑</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-cross">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">每日守护防遗忘
+          <span class="sub">6 题型均衡，AI 推降级词</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-partial">部分</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== Section 4: 价格与服务 ==== -->
+  <div class="section">
+    <div class="section-title">
+      <span class="icon-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23"/>
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+      </span>
+      价格与服务
+      <span class="label-num">04</span>
+    </div>
+
+    <!-- 价格大卡 -->
+    <div class="price-card">
+      <div class="price-tag-row">
+        <span class="price-symbol">¥</span>
+        <span class="price-num">299</span>
+        <span class="price-unit">/年</span>
+        <span class="price-original">¥498</span>
+      </div>
+      <div class="price-daily">折合每天 <b>不到 ¥0.82</b>，比一瓶矿泉水还便宜</div>
+      <div class="price-lock">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+        <span><b style="color: var(--text-1)">创始价永久锁定</b>——下次涨至 ¥399 / ¥498 时，你的续费仍是 ¥299</span>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="compare-head">
+        <div class="col-label">对比维度</div>
+        <div class="col-us">头号听力</div>
+        <div>同类英语 App</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">年费价格</div>
+        <div class="row-cell us">¥299</div>
+        <div class="row-cell">¥348-498</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">免费试用
+          <span class="sub">Day 3-7 全功能体验</span>
+        </div>
+        <div class="row-cell us">3 天</div>
+        <div class="row-cell">部分有</div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">价格保护<span class="star">★ 独家</span>
+          <span class="sub">老用户续费永远是入会价</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-cross">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="compare-row">
+        <div class="row-label">无广告
+          <span class="sub">沉浸式学习不被打扰</span>
+        </div>
+        <div class="row-cell us">
+          <div class="ico-check">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="row-cell">
+          <div class="ico-partial">部分</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==== Trust Badges ==== -->
+  <div class="trust-row">
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <div class="trust-text">官方安全支付<br>支持微信/支付宝</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="trust-text">7 天无理由<br>申请退款</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div class="trust-text">永久锁价<br>续费不涨价</div>
+    </div>
+  </div>
+
+  <p class="footer-note">
+    ★ 标记为头号听力独家功能<br>
+    数据采集时间：2026 年 5 月，竞品价格随其官方调整可能变动
+  </p>
+
+</div>
+
+<!-- ==== Bottom Fixed CTA ==== -->
+<div class="bottom-bar">
+  <div class="bottom-inner">
+    <div class="bottom-price">
+      <div class="bottom-price-num"><span class="sym">¥</span>299<span style="font-size:13px;color:var(--text-2);font-weight:500">/年</span></div>
+      <div class="bottom-price-tip">永久锁价</div>
+    </div>
+    <button class="btn-primary" onclick="this.style.transform='scale(0.97)';setTimeout(()=>this.style.transform='',150)">
+      立即开通创始会员
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

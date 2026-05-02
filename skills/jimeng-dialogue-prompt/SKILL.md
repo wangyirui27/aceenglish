@@ -350,6 +350,45 @@ When designing a scene: first decide who is the native speaker, then design the 
 2. Replace that target sentence with one the native speaker can naturally say, OR
 3. Have the non-native character deliver the item silently (gesture = visual definition) and have the native speaker acknowledge it
 
+**CRITICAL — Visual Spatial Consistency Rule**: When a target person/object is referenced by a spatial position (e.g. "the man by the window", "the bag over there"), that spatial anchor MUST be explicitly re-stated in EVERY shot where the person/object appears or is referenced. AI video generation models process each shot independently — if a character is "by the window" in shot 1 but the spatial anchor is not mentioned in shot 3, the model may place them in the middle of the room.
+
+**How to apply**:
+- In every shot that shows or references the target person, include their spatial anchor: "Mark **在窗边的单人桌前**" (not just "Mark")
+- In shots that DON'T show the target person but reference them (e.g. a character pointing), still describe the direction: "朝阅览室**深处窗边**的方向"
+- The spatial anchor (window, door, sofa, counter) must be mentioned in at least 2 of the 4 shots for any "person + location" target
+- When introducing a spatial target for the first time (shot 1), establish the anchor clearly: "窗边坐着Mark，阳光从窗户照在他身上"
+
+**The test**: After writing all 4 shots, check if each shot that references the target person/object includes their spatial anchor word. If any shot mentions the person without the anchor, add it.
+
+**CRITICAL — Spatial Coordinate Anchoring**: Before writing any shot description, establish a fixed spatial map of where EVERY character is positioned in the scene. Then reference those fixed positions by name in EVERY shot. Never use vague directions like "看向远处" or "指向一个方向" — the AI model doesn't know what "far" or "that direction" means without an anchor.
+
+**How to apply — three-step process**:
+
+Step 1: In the characters section, assign each character a FIXED POSITION with a physical anchor object:
+- ❌ "Sara — 女性同事" (no position)
+- ✅ "Sara — 女性同事，**站在画面右侧窗台边**"
+
+Step 2: In every shot, use the character's NAME + their FIXED POSITION:
+- ❌ "B转头看向远处，指向一个方向" (where is "far"? which "direction"?)
+- ✅ "B转头看向**画面右侧窗台边的Sara**，抬手指向她"
+
+Step 3: When a character MOVES during the scene, explicitly describe the movement from Position A to Position B:
+- ❌ "Liam走向Grace" (from where to where?)
+- ✅ "Liam从**画面中央**走向**画面左侧入口门边的Grace**"
+
+**The test**: After writing all shots, check: can a stranger draw a floor plan from your description alone? If any character's position is ambiguous, add the anchor.
+
+**CRITICAL — Spatial Action-Dialogue Alignment**: When a character asks a question about a LOCATION or PERSON they don't know (e.g. "Who is Sara?", "Where's the charger?", "Which one is Mark?"), that character MUST NOT be looking at, pointing at, or gesturing toward the answer. They are asking BECAUSE they don't know. The answering character should be the one who looks/points/gestures toward the target.
+
+Common mistake: Character A asks "Who is Sara?" while already looking at Sara and gesturing toward her. This makes no sense — if they already know who/where the target is, why are they asking?
+
+**Correct pattern**:
+1. Character A (the one who doesn't know) → looks at Character B (the one who knows) → asks the question
+2. Character B → looks toward / points at the target → gives the answer
+3. Character A → now looks at the target → confirms
+
+**The test**: For each question-and-answer pair, draw a simple diagram: who is looking at whom when the question is asked? If the asker is already looking at the answer, the logic is broken.
+
 **CRITICAL — Speaker Logic Check**: before finalizing, verify EVERY line against these three questions:
 1. **Who is speaking?** Does this character have the item / knowledge / position to say this line? (e.g. a vendor holding a pen should NOT ask "Can I have the pen?")
 2. **Who are they speaking to?** Is the listener present, and can they respond? (e.g. don't have a character ask a question to someone who's not in the shot)

@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>头号听力 · 会员卡七态预览</title>
+<style>
+  :root{
+    --accent:#FF600F;
+    --accent-hover:#E85500;
+    --accent-light:#FF7A33;
+    --accent-dark:#CC4D0C;
+    --accent-glow:rgba(255,96,15,0.3);
+    --accent-subtle:rgba(255,96,15,0.1);
+    --accent-gradient:linear-gradient(135deg,#FF600F,#FF7A33);
+    --accent-gradient-h:linear-gradient(90deg,#FF600F,#FFB800);
+
+    --bg-0:#000000;
+    --bg-1:#111111;
+    --bg-2:#1A1A1A;
+    --bg-3:#222222;
+    --bg-accent:#2A1508;
+
+    --secondary:#FFB800;
+    --success:#00C853;
+    --info:#448AFF;
+    --error:#FF3B30;
+
+    --text-1:#FFFFFF;
+    --text-2:#AAAAAA;
+    --text-3:#666666;
+    --text-accent:#FF600F;
+
+    --space-xs:4px;
+    --space-sm:8px;
+    --space-md:16px;
+    --space-lg:24px;
+    --space-xl:32px;
+    --space-2xl:48px;
+
+    --radius-sm:6px;
+    --radius-md:12px;
+    --radius-lg:16px;
+    --radius-xl:20px;
+    --radius-full:999px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg-0);color:var(--text-1);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue","PingFang SC",Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+  body{min-height:100vh;}
+
+  .page{
+    max-width:402px;
+    margin:0 auto;
+    padding:20px 16px 40px;
+    background:var(--bg-0);
+    min-height:100vh;
+  }
+
+  /* ====== 顶部说明 ====== */
+  .doc-head{margin-bottom:var(--space-lg);}
+  .doc-title{font-size:22px;font-weight:800;margin-bottom:6px;}
+  .doc-sub{color:var(--text-2);font-size:13px;line-height:1.6;}
+
+  /* ====== 状态切换器 ====== */
+  .state-tabs{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:8px;
+    margin-bottom:var(--space-lg);
+    padding:8px;
+    background:var(--bg-1);
+    border-radius:var(--radius-md);
+    position:sticky;
+    top:0;
+    z-index:50;
+    backdrop-filter:blur(10px);
+    background:rgba(17,17,17,0.92);
+  }
+  .state-tab{
+    padding:9px 6px;
+    background:transparent;
+    color:var(--text-2);
+    border:none;
+    border-radius:var(--radius-sm);
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.2s ease;
+    text-align:center;
+    line-height:1.3;
+  }
+  .state-tab:active{transform:scale(0.97);}
+  .state-tab.active{
+    background:var(--accent-gradient);
+    color:#fff;
+    box-shadow:0 2px 10px var(--accent-glow);
+  }
+
+  /* ====== 状态描述区 ====== */
+  .state-desc{
+    background:var(--bg-1);
+    border-radius:var(--radius-md);
+    padding:14px 16px;
+    margin-bottom:var(--space-lg);
+    border-left:3px solid var(--accent);
+  }
+  .state-desc-label{
+    font-size:11px;
+    font-weight:600;
+    color:var(--accent);
+    letter-spacing:0.5px;
+    margin-bottom:6px;
+    text-transform:uppercase;
+  }
+  .state-desc-title{
+    font-size:15px;
+    font-weight:700;
+    color:var(--text-1);
+    margin-bottom:6px;
+  }
+  .state-desc-body{
+    font-size:12.5px;
+    color:var(--text-2);
+    line-height:1.6;
+  }
+  .state-desc-body b{color:var(--text-1);font-weight:600;}
+
+  /* ====== 卡片容器 ====== */
+  .card-stage{
+    perspective:1200px;
+    margin-bottom:var(--space-lg);
+  }
+
+  /* ====== 会员卡基础样式 ====== */
+  .mcard{
+    position:relative;
+    width:100%;
+    aspect-ratio:1.586/1;
+    border-radius:var(--radius-xl);
+    padding:20px;
+    overflow:hidden;
+    color:var(--text-1);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    animation:slide-up 0.5s ease both;
+    box-shadow:0 12px 40px rgba(0,0,0,0.6);
+  }
+
+  @keyframes slide-up{
+    from{opacity:0;transform:translateY(16px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* 卡片公共上栏 */
+  .mcard-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    z-index:2;
+    position:relative;
+  }
+  .mcard-brand{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.3px;
+  }
+  .mcard-brand-icon{
+    width:24px;height:24px;
+    border-radius:6px;
+    background:rgba(255,255,255,0.12);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .mcard-status-pill{
+    padding:4px 10px;
+    border-radius:var(--radius-full);
+    font-size:11px;
+    font-weight:700;
+    backdrop-filter:blur(8px);
+    letter-spacing:0.3px;
+  }
+
+  /* 卡片中段 */
+  .mcard-mid{
+    z-index:2;
+    position:relative;
+    margin:auto 0;
+  }
+  .mcard-headline{
+    font-size:22px;
+    font-weight:800;
+    line-height:1.2;
+    margin-bottom:6px;
+  }
+  .mcard-sub{
+    font-size:12.5px;
+    opacity:0.85;
+    line-height:1.5;
+  }
+
+  /* 卡片下栏 */
+  .mcard-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    z-index:2;
+    position:relative;
+  }
+  .mcard-meta{
+    font-size:11px;
+    opacity:0.75;
+    line-height:1.5;
+  }
+  .mcard-meta b{font-weight:700;opacity:1;}
+
+  .mcard-cta{
+    background:rgba(255,255,255,0.95);
+    color:#000;
+    font-size:12px;
+    font-weight:700;
+    padding:8px 14px;
+    border-radius:var(--radius-full);
+    border:none;
+    cursor:pointer;
+    transition:transform 0.15s ease;
+    white-space:nowrap;
+  }
+  .mcard-cta:active{transform:scale(0.96);}
+
+  /* 装饰 */
+  .mcard-deco{
+    position:absolute;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* ============ 状态1：未开通 ============ */
+  .mcard.s-unopen{
+    background:linear-gradient(135deg,#1A1A1A 0%,#0E0E0E 100%);
+    border:1px solid var(--bg-3);
+  }
+  .mcard.s-unopen .mcard-status-pill{
+    background:rgba(255,255,255,0.06);
+    color:var(--text-2);
+    border:1px solid var(--bg-3);
+  }
+  .mcard.s-unopen .mcard-headline{color:var(--text-1);}
+  .mcard.s-unopen .mcard-sub{color:var(--text-2);}
+  .mcard.s-unopen .mcard-meta{color:var(--text-3);}
+  .mcard.s-unopen .mcard-cta{
+    background:var(--accent-gradient);
+    color:#fff;
+    box-shadow:0 4px 16px var(--accent-glow);
+  }
+  .mcard.s-unopen .mcard-deco-1{
+    width:200px;height:200px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,96,15,0.15) 0%,transparent 70%);
+    top:-50px;right:-50px;
+  }
+
+  /* ============ 状态2：试用中·早期（5-7天） ============ */
+  .mcard.s-trial-early{
+    background:linear-gradient(135deg,#FF600F 0%,#FFB800 100%);
+  }
+  .mcard.s-trial-early .mcard-status-pill{
+    background:rgba(0,0,0,0.25);
+    color:#fff;
+  }
+  .mcard.s-trial-early .mcard-cta{
+    background:#000;
+    color:#fff;
+  }
+  .mcard.s-trial-early .mcard-deco-1{
+    width:240px;height:240px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,0.18) 0%,transparent 60%);
+    top:-80px;right:-80px;
+  }
+  .mcard.s-trial-early .mcard-deco-2{
+    width:180px;height:180px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,0.10) 0%,transparent 60%);
+    bottom:-60px;left:-30px;
+  }
+
+  /* ============ 状态3：试用中·末期（≤2天） ============ */
+  .mcard.s-trial-late{
+    background:linear-gradient(135deg,#3A0E00 0%,#1A0500 100%);
+    border:1px solid var(--accent);
+    box-shadow:0 0 30px var(--accent-glow),0 12px 40px rgba(0,0,0,0.6);
+  }
+  .mcard.s-trial-late .mcard-status-pill{
+    background:var(--accent);
+    color:#fff;
+    animation:pulse-glow 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse-glow{
+    0%,100%{box-shadow:0 0 0 0 rgba(255,96,15,0.6);}
+    50%{box-shadow:0 0 0 8px rgba(255,96,15,0);}
+  }
+  .mcard.s-trial-late .mcard-headline{color:#fff;}
+  .mcard.s-trial-late .mcard-headline .accent-num{color:var(--accent);}
+  .mcard.s-trial-late .mcard-cta{
+    background:var(--accent-gradient);
+    color:#fff;
+    box-shadow:0 4px 16px var(--accent-glow);
+  }
+  .mcard.s-trial-late .mcard-deco-1{
+    inset:0;
+    background:
+      repeating-linear-gradient(45deg,
+        transparent 0,
+        transparent 18px,
+        rgba(255,96,15,0.04) 18px,
+        rgba(255,96,15,0.04) 19px);
+  }
+
+  /* ============ 状态4：试用已结束 ============ */
+  .mcard.s-trial-end{
+    background:linear-gradient(135deg,#1A1A1A 0%,#0A0A0A 100%);
+    border:1px solid var(--bg-3);
+  }
+  .mcard.s-trial-end .mcard-status-pill{
+    background:rgba(255,255,255,0.08);
+    color:var(--text-2);
+  }
+  .mcard.s-trial-end .mcard-headline{color:var(--text-2);}
+  .mcard.s-trial-end .mcard-sub{color:var(--text-3);}
+  .mcard.s-trial-end .mcard-meta{color:var(--text-3);}
+  .mcard.s-trial-end .mcard-cta{
+    background:var(--accent-gradient);
+    color:#fff;
+    box-shadow:0 4px 16px var(--accent-glow);
+  }
+  .mcard.s-trial-end::after{
+    content:"已结束";
+    position:absolute;
+    top:50%;
+    right:-30px;
+    transform:translateY(-50%) rotate(-15deg);
+    font-size:46px;
+    font-weight:900;
+    color:rgba(255,255,255,0.04);
+    letter-spacing:6px;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* ============ 状态5：创始会员·生效中 ============ */
+  .mcard.s-active{
+    background:
+      linear-gradient(135deg,#FF600F 0%,#CC4D0C 50%,#1A0500 100%);
+    box-shadow:0 0 40px rgba(255,96,15,0.35),0 16px 50px rgba(0,0,0,0.7);
+  }
+  .mcard.s-active .mcard-status-pill{
+    background:rgba(255,184,0,0.95);
+    color:#1a0500;
+    font-weight:800;
+  }
+  .mcard.s-active .mcard-cta{
+    background:rgba(0,0,0,0.7);
+    color:#FFB800;
+    border:1px solid rgba(255,184,0,0.4);
+  }
+  .mcard.s-active .mcard-deco-1{
+    inset:0;
+    background:
+      linear-gradient(110deg,transparent 30%,rgba(255,255,255,0.20) 50%,transparent 70%);
+    background-size:200% 100%;
+    animation:shimmer 4s ease-in-out infinite;
+  }
+  @keyframes shimmer{
+    0%{background-position:-100% 0;}
+    100%{background-position:200% 0;}
+  }
+  .mcard.s-active .mcard-deco-2{
+    width:260px;height:260px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,184,0,0.25) 0%,transparent 60%);
+    top:-100px;right:-100px;
+  }
+  .mcard.s-active .mcard-headline{
+    background:linear-gradient(90deg,#fff,#FFE7B0);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  /* ============ 状态6：会员即将到期 ============ */
+  .mcard.s-expiring{
+    background:linear-gradient(135deg,#3A0E00 0%,#0A0500 100%);
+    border:1px solid var(--accent);
+  }
+  .mcard.s-expiring .mcard-status-pill{
+    background:var(--accent);
+    color:#fff;
+  }
+  .mcard.s-expiring .mcard-cta{
+    background:var(--accent-gradient);
+    color:#fff;
+    box-shadow:0 4px 16px var(--accent-glow);
+  }
+  .mcard.s-expiring .mcard-deco-1{
+    width:220px;height:220px;
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,96,15,0.30) 0%,transparent 60%);
+    bottom:-90px;right:-60px;
+  }
+  .mcard.s-expiring .progress-mini{
+    width:100%;height:4px;
+    background:rgba(255,255,255,0.15);
+    border-radius:var(--radius-full);
+    overflow:hidden;
+    margin-top:6px;
+  }
+  .mcard.s-expiring .progress-mini-fill{
+    height:100%;
+    width:8%;
+    background:var(--accent-gradient-h);
+    border-radius:var(--radius-full);
+  }
+
+  /* ============ 状态7：会员已过期 ============ */
+  .mcard.s-expired{
+    background:linear-gradient(135deg,#222 0%,#0A0A0A 100%);
+    border:1px solid var(--bg-3);
+    filter:saturate(0.7);
+  }
+  .mcard.s-expired .mcard-status-pill{
+    background:rgba(255,59,48,0.15);
+    color:var(--error);
+    border:1px solid rgba(255,59,48,0.3);
+  }
+  .mcard.s-expired .mcard-headline{color:var(--text-2);}
+  .mcard.s-expired .mcard-sub{color:var(--text-3);}
+  .mcard.s-expired .mcard-cta{
+    background:var(--accent-gradient);
+    color:#fff;
+    box-shadow:0 4px 16px var(--accent-glow);
+  }
+  .mcard.s-expired::after{
+    content:"EXPIRED";
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%) rotate(-12deg);
+    font-size:50px;
+    font-weight:900;
+    color:rgba(255,59,48,0.06);
+    letter-spacing:8px;
+    pointer-events:none;
+    z-index:1;
+  }
+
+  /* ====== 卡片下方信息区 ====== */
+  .info-section{
+    background:var(--bg-1);
+    border-radius:var(--radius-md);
+    padding:16px;
+    margin-top:var(--space-md);
+  }
+  .info-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--bg-3);
+    font-size:13px;
+  }
+  .info-row:last-child{border-bottom:none;}
+  .info-label{color:var(--text-2);}
+  .info-value{color:var(--text-1);font-weight:600;}
+  .info-value.accent{color:var(--accent);}
+  .info-value.success{color:var(--success);}
+  .info-value.error{color:var(--error);}
+
+  /* ====== Toggle 开关 ====== */
+  .toggle{
+    width:38px;height:22px;
+    background:var(--bg-3);
+    border-radius:var(--radius-full);
+    position:relative;
+    cursor:pointer;
+    transition:background 0.2s ease;
+  }
+  .toggle.on{background:var(--accent);}
+  .toggle::after{
+    content:"";
+    position:absolute;
+    top:2px;left:2px;
+    width:18px;height:18px;
+    background:#fff;
+    border-radius:50%;
+    transition:transform 0.2s ease;
+  }
+  .toggle.on::after{transform:translateX(16px);}
+
+  /* ====== Footer 备注 ====== */
+  .footer-note{
+    margin-top:var(--space-xl);
+    padding:14px;
+    background:var(--bg-1);
+    border-radius:var(--radius-md);
+    color:var(--text-3);
+    font-size:11.5px;
+    line-height:1.7;
+    border-left:2px solid var(--bg-3);
+  }
+  .footer-note b{color:var(--text-2);}
+
+  /* ====== 切换面板可见性 ====== */
+  .panel{display:none;animation:slide-up 0.4s ease both;}
+  .panel.active{display:block;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="doc-head">
+    <div class="doc-title">会员卡 · 七态原型</div>
+    <div class="doc-sub">头号听力 · 会员中心身份卡视觉规范<br/>切换下方标签查看每种状态下的卡片样式与文案</div>
+  </div>
+
+  <!-- 状态切换 -->
+  <div class="state-tabs">
+    <button class="state-tab active" data-state="unopen">① 未开通</button>
+    <button class="state-tab" data-state="trial-early">② 试用·早期</button>
+    <button class="state-tab" data-state="trial-late">③ 试用·末期</button>
+    <button class="state-tab" data-state="trial-end">④ 试用结束</button>
+    <button class="state-tab" data-state="active">⑤ 会员生效</button>
+    <button class="state-tab" data-state="expiring">⑥ 即将到期</button>
+    <button class="state-tab" data-state="expired">⑦ 已过期</button>
+  </div>
+
+  <!-- ============ ① 未开通 ============ -->
+  <div class="panel active" data-panel="unopen">
+    <div class="state-desc">
+      <div class="state-desc-label">STATE 01 · 未开通</div>
+      <div class="state-desc-title">中性引导 · 把"试用"塞到最显眼的位置</div>
+      <div class="state-desc-body">
+        新用户从没体验过任何付费内容。卡片视觉<b>克制低调</b>，避免一上来就推销。CTA 用<b>"免费试 3 天"</b>而非"立即购买"——降低决策门槛。橙色 glow 仅作为"暗夜中的灯"出现在右上角，暗示价值即将到来。<br/>
+        <b>触发时机：</b>用户首次进入会员中心 / Day 3 推送试用机会
+      </div>
+    </div>
+    <div class="card-stage">
+      <div class="mcard s-unopen">
+        <div class="mcard-deco mcard-deco-1"></div>
+        <div class="mcard-top">
+          <div class="mcard-brand">
+            <div class="mcard-brand-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF600F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            头号听力
+          </div>
+          <div class="mcard-status-pill">未开通</div>
+        </div>
+        <div class="mcard-mid">
+          <div class="mcard-headline">解锁完整能力</div>
+          <div class="mcard-sub">深度复习 · AI 教练 · 数据报告 · 全部题型</div>
+        </div>
+        <div class="mcard-bottom">
+          <div class="mcard-meta">先体验 3 天<br/><b>所有功能 · 0 元 · 无需绑卡</b></div>
+          <button class="mcard-cta">免费试 3 天</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-row"><span class="info-label">当前身份</span><span class="info-value">普通用户</span></div>
+      <div class="info-row"><span class="info-label">已享免费功能</span><span class="info-value">刷视频 · 闪答 · 字幕 · 收藏</span></div>
+      <div class="info-row"><span class="info-label">创始会员价</span><span class="info-value accent">¥299/年</span></div>
+    </div>
+  </div>
+
+  <!-- ============ ② 试用·早期 ============ -->
+  <div class="panel" data-panel="trial-early">
+    <div class="state-desc">
+      <div class="state-desc-label">STATE 02 · 试用中（剩 5-7 天）</div>
+      <div class="state-desc-title">轻快橙金 · 制造"我现在是 VIP"的爽感</div>
+      <div class="state-desc-body">
+        用户刚开始试用，处于<b>蜜月期</b>。卡片用<b>橙金渐变 + 大面积明亮</b>，让用户感受身份升级。状态 pill 半透明黑底，营造高级感。<br/>
+        重点不是催付，而是让用户<b>"享受这个状态"</b>——只有他享受了才会舍不得失去。CTA 写"提前锁定"而非"立即续费"，给主动权。<br/>
+        <b>触发时机：</b>试用 Day 1 - Day 5
+      </div>
+    </div>
+    <div class="card-stage">
+      <div class="mcard s-trial-early">
+        <div class="mcard-deco mcard-deco-1"></div>
+        <div class="mcard-deco mcard-deco-2"></div>
+        <div class="mcard-top">
+          <div class="mcard-brand">
+            <div class="mcard-brand-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            头号听力
+          </div>
+          <div class="mcard-status-pill">体验中 · TRIAL</div>
+        </div>
+        <div class="mcard-mid">
+          <div class="mcard-headline">7 天全功能体验</div>
+          <div class="mcard-sub">畅享 AI 教练、深度题型、数据报告</div>
+        </div>
+        <div class="mcard-bottom">
+          <div class="mcard-meta">体验剩余<br/><b>5 天 · 至 5/7 24:00</b></div>
+          <button class="mcard-cta">提前锁定 ¥299</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-row"><span class="info-label">体验状态</span><span class="info-value success">进行中</span></div>
+      <div class="info-row"><span class="info-label">体验剩余</span><span class="info-value">5 天 8 小时</span></div>
+      <div class="info-row"><span class="info-label">体验结束日</span><span class="info-value">2026-05-07 24:00</span></div>
+      <div class="info-row"><span class="info-label">创始会员价</span><span class="info-value accent">¥299/年（永久锁价）</span></div>
+    </div>
+  </div>
+
+  <!-- ============ ③ 试用·末期 ============ -->
+  <div class="panel" data-panel="trial-late">
+    <div class="state-desc">
+      <div class="state-desc-label">STATE 03 · 试用中（剩 ≤ 2 天）</div>
+      <div class="state-desc-title">紧迫橙 · 倒数到小时，唤起损失厌恶</div>
+      <div class="state-desc-body">
+        体验快结束了，是<b>转化率最高的窗口</b>。视觉切到深底+红橙边框+脉冲发光的 pill，制造紧迫感。<br/>
+        倒计时<b>精确到小时</b>，比"还剩 1 天"刺激得多。文案从"享受体验"切到<b>"别让它消失"</b>——损失厌恶比获得感强 2 倍。<br/>
+        <b>触发时机：</b>体验剩余 ≤ 48 小时
+      </div>
+    </div>
+    <div class="card-stage">
+      <div class="mcard s-trial-late">
+        <div class="mcard-deco mcard-deco-1"></div>
+        <div class="mcard-top">
+          <div class="mcard-brand">
+            <div class="mcard-brand-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF600F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            头号听力
+          </div>
+          <div class="mcard-status-pill">即将结束</div>
+        </div>
+        <div class="mcard-mid">
+          <div class="mcard-headline">体验仅剩 <span class="accent-num">18</span> 小时</div>
+          <div class="mcard-sub">明天起将无法使用 AI 教练、深度题型、数据报告</div>
+        </div>
+        <div class="mcard-bottom">
+          <div class="mcard-meta">现在锁定创始价<br/><b style="color:var(--accent);">¥299/年 · 永不上涨</b></div>
+          <button class="mcard-cta">立即开通</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-row"><span class="info-label">体验状态</span><span class="info-value error">即将结束</span></div>
+      <div class="info-row"><span class="info-label">剩余时间</span><span class="info-value">18 小时 32 分</span></div>
+      <div class="info-row"><span class="info-label">这 7 天你已学习</span><span class="info-value accent">26 个视频 · 142 个生词</span></div>
+      <div class="info-row"><span class="info-label">创始会员价</span><span class="info-value accent">¥299/年</span></div>
+    </div>
+  </div>
+
+  <!-- ============ ④ 试用结束 ============ -->
+  <div class="panel" data-panel="trial-end">
+    <div class="state-desc">
+      <div class="state-desc-label">STATE 04 · 试用已结束（未付费）</div>
+      <div class="state-desc-title">灰色遗憾感 · "已结束"水印是无声的钩子</div>
+      <div class="state-desc-body">
+        用户没把握住机会。卡片<b>整体褪色变灰</b>，配合斜向"已结束"水印——视觉上是失去感，不是惩罚感。<br/>
+        关键文案策略：<b>展示用户在试用期产生的"沉没成本"</b>（已收藏/已学习数量），告诉他"放弃 = 之前的努力打水漂"。CTA 重新拉回橙色，是唯一的色彩出口。<br/>
+        <b>触发时机：</b>试用期结束后 0-30 天
+      </div>
+    </div>
+    <div class="card-stage">
+      <div class="mcard s-trial-end">
+        <div class="mcard-top">
+          <div class="mcard-brand">
+            <div class="mcard-brand-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            头号听力
+          </div>
+          <div class="mcard-status-pill">体验已结束</div>
+        </div>
+        <div class="mcard-mid">
+          <div class="mcard-headline">你的 142 个生词正在等你</div>
+          <div class="mcard-sub">续费即可继续守护，否则它们将逐步降级遗忘</div>
+        </div>
+        <div class="mcard-bottom">
+          <div class="mcard-meta">创始会员价仍开放<br/><b>¥299/年 · 名额有限</b></div>
+          <button class="mcard-cta">立即开通</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-row"><span class="info-label">体验状态</span><span class="info-value">已结束（5/7）</span></div>
+      <div class="info-row"><span class="info-label">体验期成果</span><span class="info-value">142 词 · 26 视频</span></div>
+      <div class="info-row"><span class="info-label">即将面临降级</span><span class="info-value error">8 个生词</span></div>
+      <div class="info-row"><span class="info-label">创始会员价</span><span class="info-value accent">¥299/年</span></div>
+    </div>
+  </div>
+
+  <!-- ============ ⑤ 创始会员·生效中 ============ -->
+  <div class="panel" data-panel="active">
+    <div class="state-desc">
+      <div class="state-desc-label">STATE 05 · 创始会员生效中</div>
+      <div class="state-desc-title">浓郁橙金 · 微光扫描 · 让"身份"被看见</div>
+      <div class="state-desc-body">
+        会员卡的<b>主秀场</b>。橙金渐变 + 持续的微光扫描动画 + 金色 pill，营造"尊贵感"。标题用浅金渐变文字，每一像素都在喊"你不一样"。<br/>
+        重点信息升级：<b>"剩余天数 + 累计学习成就"</b>——成就反向强化付费决策的正确性。CTA 切成"管理订阅"（次要），不抢戏。<br/>
+        <b>隐藏要素：</b>自动续费开关常驻可见，过期后才好召回。
+      </div>
+    </div>
+    <div class="card-stage">
+      <div class="mcard s-active">
+        <div class="mcard-deco mcard-deco-1"></div>
+        <div class="mcard-deco mcard-deco-2"></div>
+        <div class="mcard-top">
+          <div class="mcard-brand">
+            <div class="mcard-brand-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            头号听力
+          </div>
+          <div class="mcard-status-pill">★ 创始会员</div>
+        </div>
+        <div class="mcard-mid">
+          <div class="mcard-headline">FOUNDER MEMBER</div>
+          <div class="mcard-sub">会员编号 No.0027 · 永久锁定 ¥299/年</div>
+        </div>
+        <div class="mcard-bottom">
+          <div class="mcard-meta">有效期至<br/><b>2027-05-02</b></div>
+          <button class="mcard-cta">管理订阅</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-row"><span class="info-label">会员等级</span><span class="info-value accent">创始会员 · Founder</span></div>
+      <div class="info-row"><span class="info-label">会员编号</span><span class="info-value">No.0027</span></div>
+      <div class="info-row"><span class="info-label">开通时间</span><span class="info-value">2026-05-02</span></div>
+      <div class="info-row"><span class="info-label">到期时间</span><span class="info-value">2027-05-02（剩 365 天）</span></div>
+      <div class="info-row"><span class="info-label">价格保护</span><span class="info-value success">永久锁定 ¥299，下次续费仍是此价</span></div>
+      <div class="info-row"><span class="info-label">自动续费</span><span class="toggle on"></span></div>
+    </div>
+  </div>
+
+  <!-- ============ ⑥ 即将到期 ============ -->
+  <div class="panel" data-panel="expiring">
+    <div class="state-desc">
+      <div class="state-desc-label">STATE 06 · 即将到期（≤ 30 天）</div>
+      <div class="state-desc-title">警示橙 · 进度条直观看到"还剩多少"</div>
+      <div class="state-desc-body">
+        从浓郁橙金<b>褪色到深橙红</b>，状态 pill 变红，提示用户身份"快没了"。新增<b>到期进度条</b>——文字说"剩 27 天"是抽象的，进度条剩一根线是直观的恐慌。<br/>
+        关键文案：强调<b>"价格保护"</b>——"现在续费仍是 ¥299，断签后再开通就是 ¥399"。让用户算账，不需要你催。<br/>
+        <b>触发时机：</b>到期前 30 / 14 / 7 / 3 / 1 天分别推送提醒
+      </div>
+    </div>
+    <div class="card-stage">
+      <div class="mcard s-expiring">
+        <div class="mcard-deco mcard-deco-1"></div>
+        <div class="mcard-top">
+          <div class="mcard-brand">
+            <div class="mcard-brand-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF600F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            头号听力
+          </div>
+          <div class="mcard-status-pill">即将到期</div>
+        </div>
+        <div class="mcard-mid">
+          <div class="mcard-headline">还有 27 天到期</div>
+          <div class="mcard-sub">现在续费仍是 ¥299，断签后再开通将上调至 ¥399</div>
+          <div class="progress-mini" style="margin-top:8px;"><div class="progress-mini-fill" style="width:8%;"></div></div>
+        </div>
+        <div class="mcard-bottom">
+          <div class="mcard-meta">续费即享<br/><b>价格永久锁定</b></div>
+          <button class="mcard-cta">立即续费</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-row"><span class="info-label">会员状态</span><span class="info-value accent">即将到期</span></div>
+      <div class="info-row"><span class="info-label">剩余天数</span><span class="info-value">27 天</span></div>
+      <div class="info-row"><span class="info-label">本年累计</span><span class="info-value">学习 89 天 · 收藏 1240 词</span></div>
+      <div class="info-row"><span class="info-label">续费价</span><span class="info-value accent">¥299/年（创始锁价）</span></div>
+      <div class="info-row"><span class="info-label">断签后价格</span><span class="info-value error">¥399/年</span></div>
+    </div>
+  </div>
+
+  <!-- ============ ⑦ 已过期 ============ -->
+  <div class="panel" data-panel="expired">
+    <div class="state-desc">
+      <div class="state-desc-label">STATE 07 · 会员已过期</div>
+      <div class="state-desc-title">冷灰 · "EXPIRED" 水印 · 召回话术要克制</div>
+      <div class="state-desc-body">
+        卡片整体降饱和，加上斜向"EXPIRED"水印——<b>是凭证，不是失败感</b>。状态 pill 用红色描边而非填充，避免攻击性。<br/>
+        召回话术不要用"再不来你就没机会了"的威胁式，改成<b>"你的学习数据还在等你"</b>——用沉没成本拉人，不是用惩罚赶人。如果用户在锁价窗口内，依然展示老价格作为善意。<br/>
+        <b>触发时机：</b>到期 1 天后 / 7 天 / 30 天 / 90 天分别推送召回
+      </div>
+    </div>
+    <div class="card-stage">
+      <div class="mcard s-expired">
+        <div class="mcard-top">
+          <div class="mcard-brand">
+            <div class="mcard-brand-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            </div>
+            头号听力
+          </div>
+          <div class="mcard-status-pill">已过期</div>
+        </div>
+        <div class="mcard-mid">
+          <div class="mcard-headline">你的 1240 个生词在等你</div>
+          <div class="mcard-sub">数据仍保留 · 重新开通即可继续守护</div>
+        </div>
+        <div class="mcard-bottom">
+          <div class="mcard-meta">为创始会员保留 7 天<br/><b style="color:var(--accent);">原价 ¥299 召回中</b></div>
+          <button class="mcard-cta">重新开通</button>
+        </div>
+      </div>
+    </div>
+    <div class="info-section">
+      <div class="info-row"><span class="info-label">会员状态</span><span class="info-value error">已过期 12 天</span></div>
+      <div class="info-row"><span class="info-label">历史身份</span><span class="info-value">创始会员 No.0027</span></div>
+      <div class="info-row"><span class="info-label">数据保留</span><span class="info-value success">已保留 · 永不删除</span></div>
+      <div class="info-row"><span class="info-label">召回价</span><span class="info-value accent">¥299/年（剩 7 天）</span></div>
+      <div class="info-row"><span class="info-label">7 天后</span><span class="info-value">¥399/年</span></div>
+    </div>
+  </div>
+
+  <!-- 底部说明 -->
+  <div class="footer-note">
+    <b>策划补充说明</b><br/>
+    7 个状态覆盖完整生命周期：未开通 → 试用早期 → 试用末期 → 试用结束 → 会员生效 → 即将到期 → 已过期。<br/><br/>
+    <b>视觉策略：</b>橙金浓淡程度 = 用户身份温度。从灰（未开通/已过期）到黄金（创始会员），中间过渡靠橙色饱和度变化，形成情绪曲线。<br/><br/>
+    <b>文案策略：</b>试用末期用紧迫倒计时，过期用沉没成本召回，避免威胁式催付。所有 CTA 不超过 4 字。<br/><br/>
+    <b>未列入但建议补充的状态：</b>① 续费成功瞬间（短暂动效卡片）② 退款中（灰色 pending）③ 客服冻结（极少出现）。
+  </div>
+
+</div>
+
+<script>
+  const tabs=document.querySelectorAll('.state-tab');
+  const panels=document.querySelectorAll('.panel');
+  tabs.forEach(t=>{
+    t.addEventListener('click',()=>{
+      const target=t.dataset.state;
+      tabs.forEach(x=>x.classList.toggle('active',x===t));
+      panels.forEach(p=>p.classList.toggle('active',p.dataset.panel===target));
+      window.scrollTo({top:document.querySelector('.state-tabs').offsetTop+80,behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>
