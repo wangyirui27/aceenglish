@@ -298,6 +298,165 @@ Keep it tight. The user is iterating fast — don't bloat the response.
 
 ---
 
+## Dialogue Naturalness (CRITICAL — all lines must sound like real speech, not textbook)
+
+This skill is used for English-learning content. The temptation is to write "correct" English that reads like a textbook example. **Resist this.** Every line of dialogue must sound like something a real person would actually say in the scene.
+
+**Checklist — apply to EVERY line before output:**
+
+| Textbook English ❌ | Real Spoken English ✅ | Why |
+|---|---|---|
+| "This is Maya. She is your partner today." | "This is Kai — he'll help you today." | Contractions, natural phrasing |
+| "It is a trumpet." | "A trumpet." | Drop obvious subjects when context is clear |
+| "Nice to meet you. How are you?" | "Hey!" / "Oh — hi!" | Real people use minimal greetings |
+| "Where are my keys? I cannot find them." | "My keys? ...Where are my keys?" | Repetition, fragments, trailing off |
+| "Please take the blue cup." | "The blue one." / "Can you grab the blue cup?" | Polite but not robotic |
+| "Is this your phone? It was on the seat." | "This yours? — was on the back seat." | Dropping subjects, combining sentences |
+| "I am new here. This is my first day." | "New girl? Over here." | Context makes full sentences unnecessary |
+
+**Core principles:**
+1. **Use contractions always** — he's, she's, it's, don't, can't, won't, I'm, that's
+2. **Drop subjects when context is clear** — "A trumpet." not "It is a trumpet." / "My keys?" not "Where are my keys?"
+3. **Use fragments** — "Over here." / "By the door." / "The blue one."
+4. **Allow hesitation in dialogue** — "This is… yours?" (the pause IS the realism)
+5. **Use casual openers** — "Hey" / "Oh" / "So" / "Well" / "Right"
+6. **Don't over-explain in dialogue** — if the visual shows it, the character doesn't need to say it
+7. **Keep it SHORT** — real spoken sentences in casual settings are 2-7 words, rarely more
+
+**The test**: read each line out loud. If it sounds like something you'd say to a friend, it's good. If it sounds like a line from an English textbook, rewrite it.
+
+**Important**: contractions and fragments do NOT raise the CEFR level. "A trumpet." is still A0. "This is Kai — he'll help you today." is still A0-A1. Naturalness ≠ difficulty.
+
+---
+
+## Scene Selection for Learning Content (how to pick a scene that carries simple dialogue)
+
+When designing a scene for English-learning content, the scene must carry ALL the narrative weight because the dialogue is intentionally simple (A0-A2). This means the scene choice is the single most important design decision.
+
+**The principle**: Simple dialogue × flat scene = boring. Simple dialogue × rich scene = powerful.
+
+**What makes a scene "rich":**
+- The character has a **micro-predicament** (lost, confused, embarrassed, late, overwhelmed, new)
+- The scene has a **built-in emotional arc** (tension → resolution, or curiosity → discovery)
+- The space has **natural asymmetry** (different heights, through a window, across a counter)
+- The scene has a **built-in hook** (an invitation, a discovery, a small kindness that lingers)
+
+**What makes a scene "flat":**
+- Characters just exchanging information with no stakes
+- "Meet and greet" with no emotional texture
+- Two people at the same height in a neutral space
+- Ending on "Thanks, bye." with no residue
+
+**Examples:**
+
+| Scene type | Flat version | Rich version |
+|---|---|---|
+| Introducing people | Three people stand in a clean office, shake hands | A nervous newcomer holds a lumpy clay bowl in a dusty pottery workshop, the master potter calls her over from his wheel |
+| Finding objects | Someone calmly asks "Where's my phone?" at a tidy desk | A person just hung up a tense call, is juggling three things in the rain, pats their pocket in panic |
+| Giving directions | "The elevator is over there." in a generic lobby | An elderly woman with a suitcase squints at signs in a foreign airport, a volunteer points gently toward the far gate |
+
+**The "mute test" for scene selection**: Before designing the scene, imagine it as a silent video. Would you still feel like something is happening to these people? If yes, the scene is rich enough. If no, add predicament, relationship texture, or environmental stakes.
+
+**Never choose a scene where the ONLY thing happening is the dialogue.** The dialogue should feel like a small moment inside a bigger world that's already in motion.
+
+---
+
+## Difficulty vs. Dramatic Density (they are independent dimensions)
+
+**A common mistake**: assuming that simple dialogue (A0) requires simple visuals. This is WRONG.
+
+- **Dialogue difficulty** = what words and grammar the characters use (controlled by CEFR level)
+- **Visual richness** = how much is happening in the scene (controlled by scene design)
+
+These two dimensions are completely independent. You can have:
+- Simple dialogue + rich visuals = ✅ (the Cinque Terre scene — A0 dialogue, five-star visuals)
+- Simple dialogue + flat visuals = ❌ (textbook energy)
+- Complex dialogue + flat visuals = 😐 (academic lecture feel)
+- Complex dialogue + rich visuals = ✅ (but not relevant for A0-A2 learning content)
+
+**The takeaway**: When the user constrains dialogue difficulty (e.g., "this is A0 level"), do NOT constrain visual richness. In fact, **the simpler the dialogue, the MORE you should invest in visual richness** — because the scene has to carry all the engagement on its own.
+
+---
+
+## Standard Workflow for Level-Based Scene Design
+
+When the user gives you a **level (A0/A1/A2/B1…)** and **target vocabulary/sentences** for a lesson, follow this exact workflow:
+
+### Step 1: Assess the actual CEFR level
+- Read the target vocabulary/sentences
+- Assess the real level based on: sentence length, grammar complexity, vocabulary frequency, typical learner profile
+- If the user says "A2" but the sentences are all 2-3 word fragments, the real level might be A1 — trust your assessment, not the label
+
+### Step 2: Calculate the seed word level
+- **Seed level = assessed level + exactly 1**
+- A0 → seed A1
+- A0+ → seed A1
+- A1 → seed A1+
+- A2 → seed A2+
+- A2- → seed A2
+- A2 → seed B1
+- **Never skip levels.** If assessed level is A0+, the seed MUST be A1 — not A2, not A1+
+
+### Step 3: Choose a scene with dramatic weight
+- Use the Scene Selection criteria above
+- The scene must have: a predicament + an emotional arc + spatial asymmetry
+- **Do NOT default to the most obvious scene** for the target language. "What's this?" doesn't have to be in a classroom — try a backstage jazz room, a flea market, a pottery workshop
+
+### Step 4: Write 4 lines of dialogue (15 seconds)
+- Must cover 1-3 of the target vocabulary/sentences from the user's lesson
+- Seed exactly 1-2 words from the seed level
+- Apply Dialogue Naturalness checklist to every line
+- **Target words should be the ones the user explicitly asked to teach** — don't invent new targets
+
+### Step 5: Design the 4 shots
+- Apply Spatial Asymmetry Rule (stick-figure test)
+- Apply Dramatic Density Rule (at least 2 of 4 dimensions: predicament / relationship / environment / hook)
+- Apply Hook Typology (invitation / anticipation / realization for Ace content)
+- Every shot must use muscle/movement language, never emotion words
+
+### Step 6: Write the full Jimeng prompt
+- Follow Required Prompt Structure exactly
+- Pass Jimeng Review-Safe Checklist
+- Character Rotation: new names + new ethnicity + new look vs. every prior scene in this session
+
+### Step 7: Verify
+- [ ] All dialogue is English only
+- [ ] All dialogue sounds like real speech (Dialogue Naturalness)
+- [ ] Seed word(s) are exactly 1 level above assessed level
+- [ ] Seed word has matching visual cue in the shot
+- [ ] At least 2 of 4 Dramatic Density dimensions enriched
+- [ ] Spatial Asymmetry applied (stick-figure ≠ two circles at same height)
+- [ ] Hook type selected and last line delivers it
+- [ ] No Jimeng review triggers
+- [ ] Characters visually distinct from all prior scenes in session
+- [ ] Target vocabulary from user's lesson is present in dialogue
+
+### Input format (what user will give you)
+
+The user will typically provide something like:
+
+```
+关卡：2-5 拿蓝色那个
+难度：A1
+语言焦点：Which one? / The red one. / The blue cup. / Not that one. / Yes, that one.
+```
+
+Or simply:
+```
+学这句话：Where are my keys?
+```
+
+Or:
+```
+词汇：wallet, keys, charger
+短语：Is this your ___? / It's mine.
+级别：A1
+```
+
+In all cases: extract the target language, assess the real level, pick a scene, and go.
+
+---
+
 ## Failure Modes to Avoid
 
 - ❌ Writing the dialogue in Chinese and then the rest in English. Dialogue must be English.
