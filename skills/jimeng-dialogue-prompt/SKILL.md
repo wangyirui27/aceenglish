@@ -153,42 +153,53 @@ The team's favorite output so far came from the user prompt: *"再来一个：I'
 
 ---
 
+## Prompt Language: Chinese for prompt body, English for dialogue lines
+
+**The entire Jimeng prompt is written in Chinese** (scene description, character description, shot descriptions, environment details, negative prompt) — because:
+1. Jimeng is a Chinese model, Chinese prompts are understood more accurately
+2. Chinese tokens are ~30-40% more efficient than English tokens for the same meaning
+3. Saves token budget for richer visual detail
+
+**Exception: dialogue lines stay in English** — because the target learning language is English. Each dialogue line is explicitly formatted as: `[角色]用英语说道："..."`
+
+---
+
 ## Required Prompt Structure
 
 Output a single fenced code block containing, in this exact order:
 
-1. **AI-creation disclaimer** (first line):
-   `This is an AI-generated [genre] short film using AI-created original characters for creative storytelling, not based on real persons.`
+1. **AI声明**（第一行）：
+   `这是一个AI生成的[类型]短片，使用AI原创角色进行创意叙事，不基于真实人物。`
 
-2. **Global specs paragraph** — include all of these phrases:
-   - `15-second realistic cinematic [tone] drama`
-   - `9:16 vertical format`
-   - `ARRI Alexa look with subtle 35mm film grain`
-   - Specific lighting (color temp / time of day / physical light source)
-   - `shallow depth of field, PBR materials`
-   - `realistic skin with [detail] and fine pore detail`
-   - `photographic realism, NOT stylized CG, NOT anime, NOT cartoon`
+2. **全局规格段落** — 必须包含以下关键词：
+   - `15秒写实电影感[情绪]短剧`
+   - `9:16竖屏`
+   - `ARRI Alexa质感，35mm胶片颗粒感`
+   - 具体光源描写（色温 / 时间段 / 物理光源）
+   - `浅景深，PBR材质`
+   - `真实皮肤质感，[细节描写]，毛孔清晰可见`
+   - `摄影写实风格，非CG，非动漫，非卡通`
 
-3. **Characters section** — 2 characters, each with:
-   - Ethnicity + age + body type
-   - Skin tone with specific adjective
-   - Eye color + shape
-   - Hair (length / texture / style / any accessory)
-   - Distinctive features (nose stud / earrings / tattoo / glasses / etc.)
-   - Full outfit (top / bottom / accessories / bag / shoes as relevant)
-   - Presence descriptor (e.g. "relaxed artistic presence")
+3. **角色段落** — 2个角色，每个包含：
+   - 民族 + 年龄 + 体型
+   - 肤色（具体形容词）
+   - 眼睛颜色+形状
+   - 头发（长度/质感/发型/配饰）
+   - 特征（鼻钉/耳环/纹身/眼镜等）
+   - 完整穿搭（上衣/下装/配饰/包/鞋）
+   - 气质描写（如"沉稳的导师感"）
 
-4. **Four shots** labelled `Shot 1 【0-3s】` through `Shot 4 【11-15s】`. Each shot contains:
-   - Framing (medium close-up / over-the-shoulder / wide / etc.)
-   - Camera angle + movement (eye level / low angle / push-in / static / handheld)
-   - Physical action described as **muscle/movement language, not emotion words** (e.g. "eyebrows pull together" not "she looks confused")
-   - Exactly one line of dialogue formatted: `[Character] says [tone adverb] in English: "..."`
+4. **四个镜头**，标注为 `镜头一【0-3s】` 到 `镜头四【11-15s】`。每个镜头包含：
+   - 景别（中近景/过肩/全景等）
+   - 机位角度+运动（平视/低角度/推进/固定/手持）
+   - **用肌肉/动作语言描写**角色物理动作（如"眉心微皱"而不是"她看起来困惑"）
+   - 恰好一句台词，格式：`[角色]用英语说道："..."`
 
-5. **Environment details paragraph** — specific, physically-motivated details (not decorative): props, background blur, dust motes, ambient sound description. End with: `No subtitles on screen, no background music, only natural dialogue in English, [specific ambient sounds].`
+5. **环境细节段落** — 具体的、有物理依据的细节（不是装饰性堆砌）：道具、背景虚化、光线粒子、环境音描写。结尾：`画面无字幕，无背景音乐，仅有英语自然对话和[具体环境音]。`
 
-6. **Negative prompt line** — must include all of these baseline blockers:
+6. **负面提示词** — 必须包含以下全部基础阻断词：
    ```
-   NO subtitles, NO text overlay, NO music, NO cartoon, NO anime, NO plastic skin, NO over-smoothed faces, NO weapons, NO blood, NO violence, NO logos, NO brand names, NO horror imagery, NO non-English dialogue, NO [local language] spoken words, NO foreign language in dialogue.
+   无字幕、无文字覆盖、无音乐、无卡通风格、无动漫、无塑料皮肤、无过度磨皮、无武器、无血腥、无暴力、无品牌标志、无商标、无恐怖画面、无非英语对话、无[当地语言]口语、无外语对话。
    ```
 
 ---
@@ -197,18 +208,18 @@ Output a single fenced code block containing, in this exact order:
 
 Before finalizing, scan the draft for these review-triggering words/concepts and rewrite:
 
-| ❌ Don't write | ✅ Write instead |
+| ❌ 不要写 | ✅ 改成 |
 |---|---|
-| blood / bleeding / wound | dust smudges / sweat / flushed cheeks |
-| weapon / gun / knife / sword | (remove entirely) |
-| dead body / corpse / soldier | (remove entirely) |
-| mercenary / assassin / hitman | explorer / traveler / technician |
-| exosuit / tactical harness / military | technical jacket / utility belt |
-| haunted / cursed / ghost / demon | (drop the genre — user rejected horror/mystery) |
-| enemy / pursuers / ambush | natural threat (sandstorm / sealed path / weather) |
-| race/ethnicity words in negative prompt | only technical blockers in negative |
+| 血/流血/伤口 | 汗水/灰尘/脸颊泛红 |
+| 武器/枪/刀/剑 | （直接删除） |
+| 尸体/死者/士兵 | （直接删除） |
+| 雇佣兵/杀手/刺客 | 探险家/旅行者/技师 |
+| 外骨骼/战术装备/军用 | 技术外套/工具腰带 |
+| 闹鬼/诅咒/鬼魂/恶魔 | （换题材——用户拒绝恐怖/悬疑） |
+| 敌人/追兵/伏击 | 自然威胁（暴风雪/封路/天气） |
+| negative prompt里的种族/民族词 | 只用技术类阻断词 |
 
-Also: no alcohol, no cigarettes if avoidable (if user loved a smoking detail earlier, keep it but flag it; default to no smoking), no religious specifics in close-up, no brand names, no real celebrity likenesses.
+另外：尽量不出现酒精、烟（如果用户特别喜欢某个抽烟细节可以保留但需标注；默认不抽烟）、特写不要有宗教具体符号、不要品牌名、不要真实名人肖像。
 
 ---
 
@@ -258,30 +269,30 @@ Don't default to "two people sitting across a table." Rotate staging:
 
 ---
 
-## Output Template Skeleton
+## Output Template Skeleton (Chinese prompt body, English dialogue lines)
 
 Fill this template, then output. Do NOT show the template itself to the user, only the filled result.
 
 ```
-This is an AI-generated {GENRE} short film using AI-created original characters for creative storytelling, not based on real persons.
+这是一个AI生成的{类型}短片，使用AI原创角色进行创意叙事，不基于真实人物。
 
-15-second realistic cinematic {TONE} drama, {SCENE_ONE_LINER}, {LOCATION_DETAIL}, 9:16 vertical format, ARRI Alexa look with subtle 35mm film grain, {LIGHTING_PHYSICAL_DESCRIPTION}, {COLOR_PALETTE}, shallow depth of field, PBR materials, realistic skin with {SKIN_DETAIL} and fine pore detail, photographic realism, NOT stylized CG, NOT anime, NOT cartoon.
+15秒写实电影感{情绪}短剧，{场景一句话描术}，{地点细节}，9:16竖屏，ARRI Alexa质感，35mm胶片颗粒感，{光源物理描写}，{色板}，浅景深，PBR材质，真实皮肤质感，{皮肤细节}，毛孔清晰可见，摄影写实风格，非CG，非动漫，非卡通。
 
-Characters:
-{LEAD_NAME} — {ETHNICITY} {ROLE} in {AGE_RANGE}, {BODY_TYPE}, {SKIN_TONE}, {EYES}, {HAIR}, {DISTINCTIVE_FEATURES}, wearing {OUTFIT}, {PROPS_CARRIED}, {PRESENCE}.
-{PARTNER_NAME} — {ETHNICITY} {ROLE} in {AGE_RANGE}, {BODY_TYPE}, {SKIN_TONE}, {EYES}, {HAIR}, {DISTINCTIVE_FEATURES}, wearing {OUTFIT}, {PROPS_CARRIED}, {PRESENCE}.
+角色：
+{角色名}——{民族}{身份}，{年龄段}，{体型}，{肤色}，{眼睛}，{头发}，{特征}，穿着{穿搭}，{手持道具}，{气质}。
+{角色名}——{民族}{身份}，{年龄段}，{体型}，{肤色}，{眼睛}，{头发}，{特征}，穿着{穿搭}，{手持道具}，{气质}。
 
-Shot 1 【0-3s】{FRAMING}, {ANGLE}, {CAMERA_MOVEMENT}. {PHYSICAL_ACTION_IN_MUSCLE_LANGUAGE}. {SPEAKER} says {TONE} in English: "{LINE_1}"
+镜头一【0-3s】{景别}，{机位}，{运镜}。{肌肉动作描写}。{角色}用英语说道："{台词1}"
 
-Shot 2 【3-7s】{FRAMING}, {ANGLE}, {CAMERA_MOVEMENT}. {PHYSICAL_ACTION_IN_MUSCLE_LANGUAGE}. {SPEAKER} says {TONE} in English: "{LINE_2}"
+镜头二【3-7s】{景别}，{机位}，{运镜}。{肌肉动作描写}。{角色}用英语说道："{台词2}"
 
-Shot 3 【7-11s】{FRAMING}, {ANGLE}, {CAMERA_MOVEMENT}. {PHYSICAL_ACTION_IN_MUSCLE_LANGUAGE}. {SPEAKER} says {TONE} in English: "{LINE_3}"
+镜头三【7-11s】{景别}，{机位}，{运镜}。{肌肉动作描写}。{角色}用英语说道："{台词3}"
 
-Shot 4 【11-15s】{FRAMING}, {ANGLE}, {CAMERA_MOVEMENT}. {PHYSICAL_ACTION_IN_MUSCLE_LANGUAGE}. {SPEAKER} says {TONE} in English: "{LINE_4}"
+镜头四【11-15s】{景别}，{机位}，{运镜}。{肌肉动作描写}。{角色}用英语说道："{台词4}"
 
-Environment details: {5_TO_8_SPECIFIC_PROPS_AND_BACKGROUND_ELEMENTS}, {AMBIENT_PARTICLES_OR_WEATHER}. Subtle handheld micro-movement on camera. No subtitles on screen, no background music, only natural dialogue in English, {AMBIENT_SOUNDS}.
+环境细节：{5-8个具体道具和背景元素}，{光线粒子或天气}。手持微晃镜头。画面无字幕，无背景音乐，仅有英语自然对话，{环境音}。
 
-Negative prompt: NO subtitles, NO text overlay, NO music, NO cartoon, NO anime, NO plastic skin, NO over-smoothed faces, NO weapons, NO blood, NO violence, NO logos, NO brand names, NO horror imagery, NO non-English dialogue, NO {LOCAL_LANGUAGE} spoken words, NO foreign language in dialogue.
+负面提示词：无字幕、无文字覆盖、无音乐、无卡通风格、无动漫、无塑料皮肤、无过度磨皮、无武器、无血腥、无暴力、无品牌标志、无商标、无恐怖画面、无非英语对话、无{当地语言}口语、无外语对话。
 ```
 
 ---
