@@ -100,6 +100,59 @@ Both have the same 4-5 words of target dialogue. One is forgettable. The other m
 
 ---
 
+## Spatial Asymmetry Rule (the single biggest quality multiplier)
+
+**Default human intuition for "two-person dialogue" = two people sitting across a table at equal height.** This is the most boring choice possible and must be actively avoided unless the scene specifically requires it (e.g. restaurant, interview).
+
+Instead, stage the two characters with **asymmetrical spatial relationships** that create automatic visual interest:
+
+| Asymmetry type | Example | Why it works |
+|---|---|---|
+| **Upper / Lower** | One on balcony, one on street. One on stairs, one at the bottom. One standing, one sitting on the floor. | Creates natural high-angle + low-angle shots; forces looking-up / looking-down body language; amplifies "help-giver / help-seeker" dynamics |
+| **Inside / Outside** | One inside a shop, the other at the doorway. One in a car, the other at the window. | Creates doorway/window framing; adds a physical boundary that dialogue crosses |
+| **Near / Far (depth)** | One in foreground, the other deep in background walking closer. | Forces push-in / pull-back camera moves; creates "arrival" moments |
+| **Stationary / Moving** | One sitting, the other walking past or approaching. | Creates narrative direction; the moving character carries the scene forward |
+| **Doing / Waiting** | One actively doing something (cooking, folding laundry, fixing a bike), the other asking a question. | The active character's props become additional visual storytelling tools |
+
+**The test**: draw a stick-figure diagram of your two characters in the scene. If the diagram is two circles at the same height facing each other, you've defaulted. Redesign.
+
+**The landmark reference**: the Cinque Terre Vernazza scene (landlady on balcony, backpacker on cobbled street below, Italian grandma holding a bed sheet while answering) — this was the team's favorite output and it's almost entirely because of the up/down + stationary/arriving + doing/asking asymmetries stacked together.
+
+---
+
+## Hook Typology (what kind of ending your 15s should have)
+
+The final line of a 15s short must leave **emotional residue**. Pick the right hook type for the tone of the scene:
+
+| Hook type | When to use | Example | Feeling left with viewer |
+|---|---|---|---|
+| **Invitation hook** 🫂 | Warm / slice-of-life / travel / everyday kindness | "Come back tonight — I make pasta!" / "Want to grab coffee later?" | "I wish someone treated me like that" |
+| **Anticipation hook** ✨ | Discovery / arrival / first-time scenes | "I heard it's magical at sunset." / "Wait till you see what's upstairs." | "I want to see what happens next" |
+| **Realization hook** 💡 | Learning / help / small epiphany | "Ohh, so it's not about actual beans?" / "Oh, I was looking in the wrong place." | "A tiny joy of understanding" |
+| **Warmth-shift hook** 🌅 | When the scene has emotional arc (guarded → open) | "...Come inside. Let me see it." / "Alright — I'll help you." | "Two strangers just became human to each other" |
+| **Suspense hook** ❓ | ONLY for mystery / thriller tone | "...What do you mean?" | "I need episode 2 right now" — but user rejected this genre, so avoid |
+
+**Default for Ace English content = Invitation / Anticipation / Realization.** Never default to Suspense — user explicitly rejected horror/mystery genres.
+
+**Anti-pattern**: ending a 15s scene on a flat "Thanks, bye." or "Okay, see you." — that's not a hook, that's a period. The hook should slightly crack the scene open so the viewer wants to keep the world alive in their head.
+
+---
+
+## How to Read User Prompts (meta-insight on constraint quality)
+
+The team's favorite output so far came from the user prompt: *"再来一个：I'll be staying at this hotel. 加入一个前提，背景必须是出国旅行"*. Why this produced a great scene:
+
+1. **"再来一个" = implicit "don't repeat"** — forces you to differ from every prior scene on every axis (lead appearance, location, relationship, emotional arc). Don't take shortcuts; actively rotate.
+2. **The target line was dramatically *flat*** — "I'll be staying at this hotel" has zero built-in tension. This is a gift: it forces the *scene* to carry all narrative weight, which produces richer visuals than a dramatic line would. Simple lines → richer pictures.
+3. **"Must be abroad" = half-tight, half-loose constraint** — specific enough to rule out domestic settings, loose enough to leave country/culture/vibe fully open. This is the ideal constraint shape for creativity.
+
+**Takeaway when user gives you a line + constraint**:
+- Treat the line's flatness as a green light to invent rich circumstances around it, not as a limitation.
+- When the constraint is "half-tight half-loose", use that freedom to find **specific + non-cliché** locations (Vernazza, Marrakech — not Paris / Tokyo / NYC).
+- When the user says "再来一个" / "another one" / "next", enforce the **non-repetition rule hard**: new ethnicity, new age, new profession, new emotional arc, new spatial staging, new hook type.
+
+---
+
 ## Required Prompt Structure
 
 Output a single fenced code block containing, in this exact order:
