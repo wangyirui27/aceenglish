@@ -299,13 +299,15 @@ Fill this template, then output. Do NOT show the template itself to the user, on
 
 ## Reply Format
 
-After the prompt code block, add a short section (in 中文, matching the user's language):
+提示词代码块之后，用中文加一个简短说明：
 
-1. **🌟 这版的新意** — a small table explaining what makes this version different from prior ones (new location, new lead appearance, new arc)
-2. **✅ 过审清单** — 3-5 bullets confirming review-safe choices
-3. **下一站？** — invite the user to give another sentence or pick a next location
+1. **🌟 这版的新意** — 一个小表格，说明这版和之前版本的差异（新场景、新人物形象、新情绪弧）
+2. **✅ 过审清单** — 3-5条确认审核安全
+3. **覆盖的语言点** — 列出这15秒覆盖了原策划里的哪些目标句型/词汇
+4. **种子词** — 列出唯一的i+1种子词及为什么选它
+5. **下一站？** — 邀请用户给下一句话或选下一个场景
 
-Keep it tight. The user is iterating fast — don't bloat the response.
+保持精简。用户迭代很快——不要写长篇大论。
 
 ---
 
@@ -470,15 +472,16 @@ In all cases: extract the target language, assess the real level, pick a scene, 
 
 ## Failure Modes to Avoid
 
-- ❌ Writing the dialogue in Chinese and then the rest in English. Dialogue must be English.
-- ❌ Mixing foreign phrases into dialogue lines (Buongiorno, Sì, Merci).
-- ❌ Repeating the same "cute Asian girl with glasses" lead across sessions.
-- ❌ Defaulting to sci-fi / cyberpunk / mystery / horror — user rejected these.
-- ❌ Including `blood / weapon / dead / ghost / violence` anywhere in the prompt.
-- ❌ Writing emotion words ("she feels sad") instead of muscle language ("her brow furrows, lower lip tightens").
-- ❌ Forgetting the AI-creation disclaimer on line 1.
-- ❌ Forgetting to add `in English` after each `says`.
-- ❌ Negative prompt missing the non-English dialogue blocker.
+- ❌ Writing the prompt body in English (should be Chinese — more token-efficient, better understood by Jimeng)
+- ❌ Writing the dialogue lines in Chinese (must stay in English — target learning language)
+- ❌ Mixing foreign phrases into dialogue lines (Buongiorno, Sì, Merci)
+- ❌ Repeating the same character look across sessions
+- ❌ Defaulting to sci-fi / cyberpunk / mystery / horror — user rejected these
+- ❌ Including 血/武器/死/鬼/暴力 anywhere in the Chinese prompt
+- ❌ Writing emotion words ("她看起来很伤心") instead of muscle language ("眉心微皱，下唇收紧")
+- ❌ Forgetting the AI声明 on line 1
+- ❌ Forgetting to add `用英语说道` before each dialogue line
+- ❌ Negative prompt missing the non-English dialogue blocker
 
 ---
 
