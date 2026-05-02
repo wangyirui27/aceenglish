@@ -343,6 +343,13 @@ This skill is used for English-learning content. The temptation is to write "cor
 
 **The test**: read each line out loud. If it sounds like something you'd say to a friend, it's good. If it sounds like a line from an English textbook, rewrite it.
 
+**CRITICAL — Native Speaker Rule for Target Language**: The character who speaks the TARGET SENTENCE (the one the learner is supposed to learn) MUST be a native English speaker. Non-native speaker characters can have dialogue, but only for non-target lines (casual reactions, filler, non-teaching content). This prevents the learner picking up accented pronunciation of the target phrase.
+
+When designing a scene: first decide who is the native speaker, then design the dialogue so the target sentences NATURALLY fall on the native speaker's lips. If the target sentence logically belongs to the non-native character (e.g. a Thai vendor saying "Here you are"), either:
+1. Redesign the scene so the target sentence belongs to the native speaker, OR
+2. Replace that target sentence with one the native speaker can naturally say, OR
+3. Have the non-native character deliver the item silently (gesture = visual definition) and have the native speaker acknowledge it
+
 **CRITICAL — Speaker Logic Check**: before finalizing, verify EVERY line against these three questions:
 1. **Who is speaking?** Does this character have the item / knowledge / position to say this line? (e.g. a vendor holding a pen should NOT ask "Can I have the pen?")
 2. **Who are they speaking to?** Is the listener present, and can they respond? (e.g. don't have a character ask a question to someone who's not in the shot)
