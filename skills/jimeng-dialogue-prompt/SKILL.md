@@ -34,6 +34,69 @@ Do **not** use this skill for:
 4. **Every female lead must be visually distinct from any previous session's lead.** Rotate across: ethnicity (Asian / Black / Latina / Middle Eastern / mixed European / etc.), body type (slim / athletic / curvy), hair (straight / curly / braided / locs / undercut / bangs), style signifiers (glasses / nose stud / henna / hoops / tattoos). Pick something you haven't used recently. This rule exists because the user called out repeated-face on earlier outputs.
 5. **Genre default = real-world travel / slice-of-life / warm human encounter.** Do NOT default to sci-fi, horror, mystery, thriller unless the user explicitly asks for that genre. This was a hard user preference correction.
 6. **One single prompt block, English, pasteable as-is into Jimeng.** Never split into multiple prompts — Jimeng supports 15s one-shot generation.
+7. **i+1 level mixing (comprehensible input) — RELATIVE, not absolute.** First, **assess the actual CEFR level of the current scene/lesson yourself** (look at sentence length, grammar, vocabulary frequency, visual complexity). Then seed **1-2 words from exactly one level above** your assessed level. Do NOT apply a fixed "A2 + B1" rule regardless of actual lesson difficulty — that would overshoot easy lessons and undershoot hard ones. The seeded word must be **inferrable from visual context**.
+
+   Examples:
+   - If the scene is A0+ (very basic "This is X / What's this"), seed 1 A1 word like "actually" or "over there"
+   - If the scene is A1 (basic spatial / possession), seed 1-2 A1+/A2 words like "grab", "spare", "hang on"
+   - If the scene is A2 (complex noun phrases, multi-clue tasks), seed 1-2 B1 words like "figure out", "in a rush", "make it work"
+
+---
+
+## i+1 Vocabulary Layering (how to pick the seeded words)
+
+Goal: make dialogue feel **real** (not textbook-flat) while staying listenable.
+
+**Good seeds** (natural, frequent, context-clear):
+- Discourse fillers: `actually, probably, anyway, well, by the way`
+- Informal verbs: `grab, hang on, figure out, check on, look after`
+- Emphasis words: `totally, seriously, honestly, definitely`
+- Soft qualifiers: `a bit, kind of, sort of, pretty + adj`
+- Common idioms tied to action on screen: `in a rush, no worries, my bad, hold on`
+
+**Bad seeds** (avoid):
+- Academic / formal words (`nevertheless, furthermore, consequently`)
+- Low-frequency vocabulary (`ambiguous, meticulous, rudimentary`)
+- Multi-word phrasal verbs with non-obvious meaning (`put up with, come across as`)
+- Anything the picture can't explain
+
+**Placement rule**: put the seeded word in the character's line that has the **strongest matching visual cue**. If the line is "I'll grab a spare charger", the camera should show them actually grabbing a charger — the visual IS the definition.
+
+**Counter per 15s script**: max 2 seeded B1 words total across all 4 lines. Never stack 2 new words in the same sentence.
+
+---
+
+## Dramatic Density Rule (CRITICAL — prevents boring A0/A1 scenes)
+
+**The problem**: When dialogue is intentionally simple (A0-A2 for English-learning listening content), the scene feels flat and childish if the visual storytelling doesn't compensate. Simple lines × bland visuals = textbook energy, not short-drama energy.
+
+**The principle**: Dialogue dictates what characters *say*, not what's *happening*. Even with 4 short A0 lines, a 15-second scene must feel like a slice of a real adult life with real stakes, real relationships, and real atmosphere.
+
+**The rule**: Every 15s script must enrich **at least TWO** of these four non-dialogue dimensions:
+
+1. **Situational weight (情境)** — give the character a small predicament. Are they running late? Just got bad news? Their hands are full? Something spilled? The simple line "Where's my phone?" hits completely differently when the character is juggling three things in the rain vs sitting calmly at a clean desk.
+
+2. **Relational tension (关系)** — two people in the scene have a micro-dynamic beyond "friendly coworkers." Maybe one has a crush. Maybe they're in a quiet disagreement. Maybe one is a mentor who's proud of the other. Convey this through glances, body angle, micro-pauses, physical distance — NOT through extra dialogue.
+
+3. **Environmental storytelling (环境)** — time of day, weather, light quality, ambient activity in the background, sound layers. Rain-just-stopped morning ≠ exhausted late-afternoon ≠ bright lunchtime. Pick one with specific atmosphere, not generic "office daytime."
+
+4. **Unspoken narrative hooks (钩子)** — small visual details the dialogue does NOT mention but the audience notices: a half-eaten breakfast, a jacket draped over the chair back, a notification buzzing on screen, a specific photo frame, a trembling hand, an eye-line that lingers half a second too long. These create micro-story seeds without stealing focus from the learning target.
+
+**What to avoid**:
+- ❌ Characters standing in clean empty rooms delivering lines like props.
+- ❌ "Generic friendly smile" on both faces the whole time.
+- ❌ Backgrounds that are visually busy but narratively empty (just decoration).
+- ❌ Anything that competes with the target dialogue for attention (e.g. a TV playing in the background, loud argument elsewhere).
+
+**The test**: After writing the 4 shot descriptions, ask yourself: "If I muted this video entirely, would I still feel like something is happening to these people?" If the answer is no, add situational weight or relational tension until the answer is yes.
+
+**Example — same line, two treatments**:
+
+| Line | Flat version | Dense version |
+|---|---|---|
+| "Where's my phone?" | Alex at a tidy desk, calmly asks Maya. She points. He picks it up. | Alex just hung up a tense video call, rubs his temple, pats his pocket. He starts flipping through scattered papers with slightly shaking hands. Maya arrives carrying two coffees, reads his stress in one glance, gently says "It's next to the laptop." Camera catches the phone screen still lit with "Mom: call me back". He stares for two seconds before picking it up. |
+
+Both have the same 4-5 words of target dialogue. One is forgettable. The other makes the viewer care.
 
 ---
 
