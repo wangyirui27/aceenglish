@@ -343,6 +343,13 @@ This skill is used for English-learning content. The temptation is to write "cor
 
 **The test**: read each line out loud. If it sounds like something you'd say to a friend, it's good. If it sounds like a line from an English textbook, rewrite it.
 
+**CRITICAL — Speaker Logic Check**: before finalizing, verify EVERY line against these three questions:
+1. **Who is speaking?** Does this character have the item / knowledge / position to say this line? (e.g. a vendor holding a pen should NOT ask "Can I have the pen?")
+2. **Who are they speaking to?** Is the listener present, and can they respond? (e.g. don't have a character ask a question to someone who's not in the shot)
+3. **Why are they saying this NOW?** Does the situation motivate this specific line? (e.g. "Here you are" only makes sense when physically handing something over)
+
+Common mistake: mechanically inserting the target vocabulary into the wrong character's mouth. If the target line is "Can I have…", the person who NEEDS something should say it — not the person who HAS it.
+
 **Important**: contractions and fragments do NOT raise the CEFR level. "A trumpet." is still A0. "This is Kai — he'll help you today." is still A0-A1. Naturalness ≠ difficulty.
 
 ---
