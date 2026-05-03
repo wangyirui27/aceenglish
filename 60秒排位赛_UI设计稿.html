@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>头号听力 · 60秒排位赛 · UI设计稿</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#FF600F;--accent-hover:#E85500;--accent-light:#FF7A33;--accent-glow:rgba(255,96,15,.3);--accent-subtle:rgba(255,96,15,.1);--accent-gradient:linear-gradient(135deg,#FF600F,#FF7A33);--accent-gradient-h:linear-gradient(90deg,#FF600F,#FFB800);--bg-0:#000;--bg-1:#111;--bg-2:#1A1A1A;--bg-3:#222;--bg-accent:#2A1508;--secondary:#FFB800;--success:#00C853;--info:#448AFF;--error:#FF3B30;--text-1:#fff;--text-2:#AAA;--text-3:#666;--text-accent:#FF600F;--r-sm:6px;--r-md:12px;--r-lg:16px;--r-xl:20px;--r-full:999px;--s-xs:4px;--s-sm:8px;--s-md:16px;--s-lg:24px;--s-xl:32px;}
+*{box-sizing:border-box;margin:0;}
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0a0a;padding:20px;}
+.device{width:402px;margin:0 auto;background:var(--bg-0);border-radius:44px;overflow:hidden;box-shadow:0 0 0 1.5px #1a1a1a,0 0 0 3.5px #0d0d0d,0 12px 48px rgba(0,0,0,.55);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue","PingFang SC",Arial,sans-serif;position:relative;color:var(--text-1);}
+.f-saira{font-family:'Saira','SF Pro Display',-apple-system,sans-serif;}
+.notch{width:126px;height:34px;background:#000;border-radius:0 0 20px 20px;margin:0 auto;position:relative;z-index:10;}
+.stbar{display:flex;align-items:center;justify-content:space-between;padding:14px 30px 4px;font-size:13px;font-weight:600;color:var(--text-1);}
+.stbar svg{display:block;}
+.page{display:none;flex-direction:column;min-height:840px;}
+.page.on{display:flex;}
+.nav-row{display:flex;align-items:center;gap:var(--s-sm);padding:6px 20px 10px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;}
+.nav-row::-webkit-scrollbar{display:none;}
+.nav-tag{font-size:13px;color:var(--text-3);padding:5px 14px;border-radius:var(--r-full);background:transparent;cursor:pointer;transition:all .15s;flex-shrink:0;font-weight:500;}
+.nav-tag.on{color:var(--text-1);background:var(--bg-2);font-weight:600;}
+.nav-tag.arena{background:var(--bg-accent);color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:4px;}
+
+.tab-bar{display:flex;align-items:center;justify-content:space-around;padding:8px 16px calc(8px+20px);background:rgba(0,0,0,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:.5px solid var(--bg-3);margin-top:auto;}
+.tab-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:var(--text-3);transition:color .15s;}
+.tab-item.on{color:var(--accent);}
+.tab-item svg{width:22px;height:22px;}
+.tab-item span{font-size:10px;font-weight:500;}
+
+.btn-pr{display:inline-flex;align-items:center;gap:var(--s-sm);background:var(--accent-gradient);color:#fff;font-weight:700;font-size:16px;padding:14px 48px;border-radius:var(--r-md);border:none;box-shadow:0 4px 20px var(--accent-glow);cursor:pointer;transition:all .2s;font-family:inherit;}
+.btn-pr:active{transform:scale(.97);box-shadow:0 2px 10px var(--accent-glow);}
+.btn-gh{background:transparent;color:var(--text-2);font-weight:600;font-size:13px;padding:12px 20px;border-radius:var(--r-md);border:.5px solid var(--bg-3);cursor:pointer;transition:background .15s;font-family:inherit;}
+.btn-gh:active{background:var(--bg-2);}
+
+@keyframes slide-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes count-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes timer-beat{to{box-shadow:0 0 0 6px var(--accent-subtle)}}
+@keyframes coin-pop{0%{opacity:0;transform:translateY(10px) scale(.8)}60%{opacity:1;transform:translateY(-4px) scale(1.1)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes fog-in{from{opacity:0;backdrop-filter:blur(0)}to{opacity:1;backdrop-filter:blur(12px)}}
+@keyframes pulse-dot{0%,to{opacity:1}50%{opacity:.4}}
+
+.home-bar{width:134px;height:5px;background:var(--bg-3);border-radius:3px;margin:var(--s-md) auto var(--s-sm);}
+
+/* Start */
+.start-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 var(--s-xl);text-align:center;}
+.icon-box{width:72px;height:72px;border-radius:var(--r-lg);background:var(--bg-accent);display:flex;align-items:center;justify-content:center;margin-bottom:var(--s-lg);}
+.icon-box svg{width:32px;height:32px;color:var(--accent);}
+.start-body h2{font-size:28px;font-weight:700;color:var(--text-1);line-height:1.3;margin-bottom:var(--s-xs);}
+.start-body .desc{font-size:14px;color:var(--text-2);line-height:1.6;margin-bottom:var(--s-xs);}
+.live-count{font-size:12px;color:var(--text-3);margin-bottom:var(--s-lg);display:flex;align-items:center;gap:6px;}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse-dot 1.5s ease-in-out infinite;}
+
+.skill-section{margin-bottom:var(--s-lg);width:100%;}
+.skill-section .skill-label{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--s-sm);text-align:left;}
+.skill-row{display:flex;gap:var(--s-sm);overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.skill-row::-webkit-scrollbar{display:none;}
+.skill-card{flex:0 0 110px;background:var(--bg-1);border:.5px solid var(--bg-3);border-radius:var(--r-md);padding:var(--s-md) var(--s-sm);cursor:pointer;transition:all .15s;text-align:center;}
+.skill-card:active{background:var(--bg-2)}
+.skill-card.sel{border-color:var(--accent);box-shadow:0 0 16px var(--accent-subtle);background:var(--bg-accent);}
+.skill-card .sk-icon{width:36px;height:36px;border-radius:var(--r-sm);background:var(--bg-2);display:flex;align-items:center;justify-content:center;margin:0 auto var(--s-sm);}
+.skill-card.sel .sk-icon{background:var(--bg-accent)}
+.skill-card .sk-icon svg{width:18px;height:18px;color:var(--text-3);}
+.skill-card.sel .sk-icon svg{color:var(--accent)}
+.skill-card .sk-name{font-size:12px;font-weight:600;color:var(--text-2);margin-bottom:2px;}
+.skill-card.sel .sk-name{color:var(--accent)}
+.skill-card .sk-desc{font-size:10px;color:var(--text-3);line-height:1.4;}
+
+.leaderboard-preview{width:100%;background:var(--bg-1);border:.5px solid var(--bg-3);border-radius:var(--r-md);padding:var(--s-md);margin-bottom:var(--s-lg);text-align:left;}
+.lb-title{font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin-bottom:var(--s-sm);display:flex;align-items:center;justify-content:space-between;}
+.lb-title .lb-more{font-size:11px;color:var(--accent);cursor:pointer;font-weight:500;}
+.lb-row{display:flex;align-items:center;gap:var(--s-sm);padding:6px 0;border-bottom:.5px solid var(--bg-2);font-size:12px;color:var(--text-2);}
+.lb-row:last-child{border-bottom:none}
+.lb-rank{width:20px;text-align:center;font-weight:700;font-size:12px;color:var(--text-3);}
+.lb-rank.top{color:var(--secondary)}
+.lb-name{flex:1;}
+.lb-score{font-weight:600;color:var(--text-1);}
+.lb-you{background:var(--bg-accent);border-radius:var(--r-sm);padding:4px 0;border-bottom:none;margin-top:2px;}
+
+/* Video area */
+.video-area{width:100%;aspect-ratio:9/16;max-height:210px;position:relative;overflow:hidden;background:linear-gradient(160deg,#0f0f1a,#141e30 50%,#0a1628 100%);}
+.video-area .scene-tag{position:absolute;top:12px;left:16px;background:rgba(0,0,0,.55);padding:4px 10px;border-radius:var(--r-sm);font-size:11px;color:rgba(255,255,255,.7);z-index:2;}
+.video-area .star-tag{position:absolute;top:12px;right:16px;font-size:12px;color:var(--secondary);z-index:2;}
+.subtitle-text{position:absolute;bottom:40px;left:0;right:0;text-align:center;padding:6px 16px;z-index:2;}
+.subtitle-text .en{font-size:15px;font-weight:600;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8);margin-bottom:2px;}
+.subtitle-text .cn{font-size:12px;color:#ccc;text-shadow:0 1px 2px rgba(0,0,0,.8);}
+.subtitle-text .en .hl-sub{color:var(--secondary);background:rgba(255,184,0,.15);padding:1px 3px;border-radius:2px;}
+
+.back-btn{position:absolute;top:14px;left:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;border:none;color:#fff;padding:0;}
+.back-btn:active{background:rgba(255,255,255,.15)}
+
+.fog-overlay{position:absolute;inset:0;background:rgba(0,0,0,.7);z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;animation:fog-in .4s ease forwards;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.fog-overlay.show{display:flex}
+.fog-prompt{font-size:13px;color:var(--text-2);margin-bottom:var(--s-md);}
+.fog-word{font-size:28px;font-weight:700;color:var(--text-1);margin-bottom:var(--s-lg);letter-spacing:1px;}
+.fog-opts{display:flex;gap:var(--s-md);}
+.fog-opt{padding:14px 28px;border-radius:var(--r-md);border:.5px solid var(--bg-3);background:var(--bg-1);color:var(--text-1);font-size:15px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit;}
+.fog-opt:active{background:var(--bg-2)}
+.fog-opt.right{background:rgba(0,200,83,.15);border-color:rgba(0,200,83,.4);color:var(--success);}
+.fog-opt.wrong{background:rgba(255,96,15,.15);border-color:rgba(255,96,15,.4);color:var(--accent);}
+
+
+.fog-overlay{position:absolute;inset:0;background:rgba(0,0,0,.7);z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;animation:fog-in .4s ease forwards;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}{display:flex;align-items:center;justify-content:space-between;padding:var(--s-sm) var(--s-md);background:var(--bg-0);border-bottom:.5px solid var(--bg-3);}
+.vid-info .vid-title{font-size:12px;color:var(--text-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+.vid-info .vid-meta{font-size:11px;color:var(--text-3);flex-shrink:0;margin-left:var(--s-sm);display:flex;align-items:center;gap:var(--s-sm);}
+
+.game-body{flex:1;padding:var(--s-md);display:flex;flex-direction:column;}
+.hud{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s-sm);}
+.hud-l{display:flex;align-items:center;gap:var(--s-sm);}
+.timer-ring{width:48px;height:48px;border-radius:50%;border:2.5px solid var(--bg-3);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:var(--text-1);transition:border-color .3s,color .3s,box-shadow .3s;}
+.timer-ring.urgent{border-color:var(--accent);color:var(--accent);animation:timer-beat .5s ease-in-out infinite alternate;}
+.combo-pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:var(--r-full);background:var(--bg-2);color:var(--text-3);transition:all .2s;}
+.combo-pill.fire{background:var(--bg-accent);color:var(--accent);}
+.gold-pill{font-size:11px;font-weight:700;padding:4px 10px;border-radius:var(--r-full);background:rgba(255,184,0,.1);color:var(--secondary);display:inline-flex;align-items:center;gap:3px;}
+.hud-r{text-align:right;}
+.hud-r .score-num{font-size:26px;font-weight:700;color:var(--text-1);line-height:1;}
+.hud-r .score-lbl{font-size:10px;color:var(--text-3);}
+.speed-badge{font-size:10px;color:var(--text-3);background:var(--bg-2);padding:3px 8px;border-radius:var(--r-sm);display:inline-flex;align-items:center;gap:3px;}
+
+.q-card{background:var(--bg-1);border:.5px solid var(--bg-3);border-radius:var(--r-lg);padding:var(--s-md);flex:1;display:flex;flex-direction:column;animation:slide-up .3s ease;}
+.q-card .q-type{font-size:11px;font-weight:600;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.q-badge{background:var(--bg-accent);color:var(--accent);padding:2px 8px;border-radius:var(--r-sm);font-size:10px;font-weight:600;}
+.q-card .q-stem{font-size:15px;font-weight:500;color:var(--text-1);line-height:1.55;margin-bottom:4px;}
+.q-card .q-stem .hl{color:var(--accent);background:var(--bg-accent);padding:1px 4px;border-radius:3px;font-weight:600;}
+.q-card .q-ctx{font-size:12px;color:var(--text-3);line-height:1.5;margin-bottom:var(--s-md);font-style:italic;}
+.q-card .opts{display:flex;flex-direction:column;gap:var(--s-sm);margin-top:auto;}
+.q-card .opt{width:100%;text-align:left;padding:12px 14px;border-radius:var(--r-md);border:.5px solid var(--bg-3);background:var(--bg-2);cursor:pointer;font-size:13px;color:var(--text-2);font-family:inherit;transition:all .12s;}
+.q-card .opt:active{background:var(--bg-3)}
+.q-card .opt.right{background:rgba(0,200,83,.08);border-color:rgba(0,200,83,.35);color:var(--success);}
+.q-card .opt.wrong{background:rgba(255,96,15,.08);border-color:rgba(255,96,15,.35);color:var(--accent);}
+.q-card .opt:disabled{pointer-events:none}
+
+.feedback{text-align:center;font-size:14px;font-weight:700;padding:var(--s-sm);min-height:32px;line-height:1;}
+.feedback.good{color:var(--success)}
+.feedback.bad{color:var(--accent)}
+
+.bottom-actions{display:flex;gap:var(--s-sm);padding:0 var(--s-md) var(--s-sm);}
+.btn-cont{flex:1;background:var(--accent-gradient);color:#fff;font-weight:700;font-size:14px;padding:12px;border-radius:var(--r-md);border:none;cursor:pointer;font-family:inherit;display:none;}
+.btn-cont:active{transform:scale(.97)}
+.btn-exit{background:transparent;color:var(--text-3);font-size:14px;padding:12px 16px;border-radius:var(--r-md);border:.5px solid var(--bg-3);cursor:pointer;font-family:inherit;display:none;}
+.coin-toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,184,0,.15);border:.5px solid rgba(255,184,0,.25);border-radius:var(--r-full);padding:6px 18px;font-size:13px;font-weight:700;color:var(--secondary);animation:coin-pop .5s ease forwards;pointer-events:none;z-index:5;display:none;}
+
+.dot-row{display:flex;gap:6px;justify-content:center;margin-bottom:var(--s-sm);}
+.dot-row .dot{width:6px;height:6px;border-radius:50%;background:var(--bg-3);transition:all .2s;}
+.dot-row .dot.done{background:var(--success)}
+.dot-row .dot.cur{background:var(--accent);transform:scale(1.4);}
+
+/* Result */
+.result-body{flex:1;display:flex;flex-direction:column;align-items:center;padding:var(--s-lg) var(--s-lg) var(--s-md);text-align:center;}
+.tier-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg-1);border:.5px solid var(--bg-3);border-radius:var(--r-full);padding:5px 18px;font-size:12px;color:var(--text-2);margin-bottom:var(--s-md);}
+.tier-dot{width:8px;height:8px;border-radius:50%;}
+.tier-dot.silver{background:linear-gradient(135deg,#C0C0C0,#E8E8E8)}
+.tier-dot.bronze{background:linear-gradient(135deg,#CD7F32,#E8A860)}
+.tier-dot.gold{background:linear-gradient(135deg,#FFD700,#FFA500)}
+.result-rank{font-size:12px;color:var(--text-3);margin-bottom:var(--s-xs);}
+.result-score{font-size:36px;font-weight:800;color:var(--accent);line-height:1.2;animation:count-up .5s ease;}
+.result-score .unit{font-size:16px;font-weight:500;color:var(--text-2);}
+.result-sub{font-size:13px;color:var(--text-2);margin-bottom:var(--s-md);}
+.familiarity-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,200,83,.06);border:.5px solid rgba(0,200,83,.15);border-radius:var(--r-full);padding:5px 14px;font-size:11px;color:var(--success);margin-bottom:var(--s-sm);}
+.tier-progress{width:100%;margin-bottom:var(--s-md);}
+.tier-progress .tp-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text-3);margin-bottom:4px;}
+.progress-track{background:var(--bg-3);border-radius:var(--r-full);height:6px;overflow:hidden;}
+.progress-fill{background:var(--accent-gradient-h);border-radius:var(--r-full);height:100%;transition:width .6s ease;}
+.near-miss{background:var(--bg-accent);border:.5px solid rgba(255,96,15,.18);border-radius:var(--r-md);padding:12px var(--s-md);font-size:13px;font-weight:500;color:var(--accent);width:100%;margin-bottom:var(--s-lg);display:flex;align-items:center;gap:var(--s-sm);}
+.near-miss svg{flex-shrink:0;width:18px;height:18px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-sm);width:100%;margin-bottom:var(--s-lg);}
+.stat-card{background:var(--bg-1);border-radius:var(--r-md);padding:14px var(--s-sm);animation:slide-up .3s ease backwards;}
+.stat-card:nth-child(1){animation-delay:.05s}.stat-card:nth-child(2){animation-delay:.12s}.stat-card:nth-child(3){animation-delay:.19s}.stat-card:nth-child(4){animation-delay:.26s}
+.stat-card .sv{font-size:20px;font-weight:700;color:var(--text-1);}
+.stat-card .sl{font-size:10px;color:var(--text-3);}
+.share-row{display:flex;gap:var(--s-sm);width:100%;margin-bottom:var(--s-sm);}
+.btn-again{flex:2;background:var(--accent-gradient);color:#fff;font-weight:700;font-size:15px;padding:14px;border-radius:var(--r-md);border:none;box-shadow:0 4px 16px var(--accent-glow);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-again:active{transform:scale(.97)}
+.btn-share{flex:1;background:transparent;color:var(--text-2);font-weight:600;font-size:13px;padding:14px;border-radius:var(--r-md);border:.5px solid var(--bg-3);cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:4px;}
+.btn-share:active{background:var(--bg-2)}
+.btn-review{width:100%;background:transparent;color:var(--text-3);font-weight:500;font-size:12px;padding:10px;border-radius:var(--r-md);border:.5px solid var(--bg-3);cursor:pointer;font-family:inherit;}
+.btn-review:active{background:var(--bg-2)}
+.sub-switch-toast{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,200,83,.15);border:.5px solid rgba(0,200,83,.25);border-radius:var(--r-full);padding:4px 16px;font-size:10px;color:var(--success);z-index:5;animation:coin-pop .4s ease forwards;display:none;}
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="notch"></div>
+  <div class="stbar">
+    <span>9:41</span>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <svg width="15" height="11" viewBox="0 0 15 11" fill="none"><rect x="0" y="7" width="2" height="4" rx=".4" fill="#fff"/><rect x="3" y="5" width="2" height="6" rx=".4" fill="#fff"/><rect x="6" y="3" width="2" height="8" rx=".4" fill="#fff"/><rect x="9" y="0" width="2" height="11" rx=".4" fill="#fff"/></svg>
+      <span style="font-size:11px;">5G</span>
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0" y="0" width="21" height="12" rx="2.5" stroke="#fff" stroke-width="1" fill="none"/><rect x="2" y="2" width="17" height="8" rx="1.2" fill="#fff"/><rect x="22" y="3.5" width="2" height="5" rx="1" fill="#fff"/></svg>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <span class="nav-tag">VR</span>
+    <span class="nav-tag on">推荐</span>
+    <span class="nav-tag">关注</span>
+    <span class="nav-tag">发现</span>
+    <span class="nav-tag">科技</span>
+    <span class="nav-tag">娱乐</span>
+    <span class="nav-tag arena">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>排位赛</span>
+    <span style="margin-left:auto;cursor:pointer;flex-shrink:0;" onclick="alert('搜索单词/短语/视频')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </span>
+  </div>
+
+  <!-- START -->
+  <div class="page on" id="p-start">
+    <div class="start-body">
+      <div class="icon-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <h2>60 秒排位赛</h2>
+      <div class="desc">基于刚看完的视频片段限时答题</div>
+
+      <!-- ====== 老虎机 + 合成按钮 ====== -->
+      <div class="stamina-section" style="width:100%;margin-bottom:var(--s-md);">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s-sm);">
+          <span style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;">🎰 开战抽奖</span>
+          <span style="font-size:11px;color:var(--text-3);" id="spin-info">剩余 3 次 · 上限 5</span>
+        </div>
+        <div class="slot-machine" style="background:var(--bg-1);border:.5px solid var(--bg-3);border-radius:var(--r-lg);padding:var(--s-md);text-align:center;">
+          <div class="slot-frame" style="display:flex;gap:12px;justify-content:center;margin-bottom:var(--s-md);">
+            <div class="slot-reel" id="reel-0" style="width:68px;height:68px;background:var(--bg-2);border-radius:var(--r-md);overflow:hidden;position:relative;">
+              <div class="reel-cell" style="width:68px;height:68px;display:flex;align-items:center;justify-content:center;font-size:30px;transition:transform .05s linear;">❓</div>
+            </div>
+            <div class="slot-reel" id="reel-1" style="width:68px;height:68px;background:var(--bg-2);border-radius:var(--r-md);overflow:hidden;position:relative;">
+              <div class="reel-cell" style="width:68px;height:68px;display:flex;align-items:center;justify-content:center;font-size:30px;transition:transform .05s linear;">❓</div>
+            </div>
+            <div class="slot-reel" id="reel-2" style="width:68px;height:68px;background:var(--bg-2);border-radius:var(--r-md);overflow:hidden;position:relative;">
+              <div class="reel-cell" style="width:68px;height:68px;display:flex;align-items:center;justify-content:center;font-size:30px;transition:transform .05s linear;">❓</div>
+            </div>
+          </div>
+          <div class="slot-result" id="slot-result" style="font-size:13px;font-weight:600;color:var(--text-2);min-height:20px;margin-bottom:var(--s-sm);">消耗 1 次机会 · 抽奖后自动开战</div>
+          <button class="btn-pr" id="btn-fight" onclick="fightAndSpin()" style="width:100%;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            开战
+          </button>
+          <button class="btn-slot-buy" id="btn-buy-spin" onclick="buySpin()" style="margin-top:var(--s-sm);background:transparent;color:var(--secondary);font-weight:600;font-size:11px;padding:6px 14px;border-radius:var(--r-md);border:.5px solid rgba(255,184,0,.3);cursor:pointer;font-family:inherit;">
+            💰 100 金币买 1 次
+            <span style="font-size:10px;color:var(--text-3);" id="buy-spin-limit">(今日剩 3 次)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ====== 当前道具 ====== -->
+      <div class="mounted-section" style="width:100%;margin-bottom:var(--s-md);">
+        <span style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:var(--s-sm);">🎒 当前道具</span>
+        <div class="mounted-display" id="mounted-display" style="background:var(--bg-1);border:.5px solid var(--bg-3);border-radius:var(--r-md);padding:var(--s-md);display:flex;align-items:center;gap:var(--s-sm);min-height:48px;">
+          <span style="font-size:12px;color:var(--text-3);">暂无道具</span>
+        </div>
+      </div>
+
+      <!-- ====== 排行榜 ====== -->
+      <div class="leaderboard-preview">
+        <div class="lb-title"><span>🏆 今日白银 III 排行榜</span><span class="lb-more">全部 ›</span></div>
+        <div class="lb-row"><span class="lb-rank top">1</span><span class="lb-name">Luna</span><span class="lb-score">9,240</span></div>
+        <div class="lb-row"><span class="lb-rank top">2</span><span class="lb-name">Mike</span><span class="lb-score">8,710</span></div>
+        <div class="lb-row"><span class="lb-rank top">3</span><span class="lb-name">Sarah</span><span class="lb-score">8,320</span></div>
+        <div class="lb-row lb-you"><span class="lb-rank" style="color:var(--accent)">184</span><span class="lb-name" style="color:var(--accent)">你</span><span class="lb-score" style="color:var(--accent)">4,280</span></div>
+      </div>
+
+      <div class="live-count">
+        <span class="live-dot"></span>今日已匹配 1,284 人 · 白银 III
+        <span style="margin-left:6px;color:var(--secondary);" id="equipped-item-label"></span>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <div class="tab-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>收藏夹</span></div>
+      <div class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/></svg><span>刷剧</span></div>
+      <div class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>排位赛</span></div>
+      <div class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>学习</span></div>
+      <div class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>我的</span></div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div class="page" id="p-game" style="position:relative;">
+    <div class="video-area" id="video-area">
+      <button class="back-btn" onclick="exitGame()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="scene-tag" id="scene-tag">Friends · S02E14</span>
+      <span class="star-tag" id="star-tag">★★★</span>
+      <div class="subtitle-text" id="subtitle-text">
+        <div class="en">Rachel: "You <span class="hl-sub">got dressed up</span> for me?"</div>
+        <div class="cn">Rachel: "你为我打扮好了？"</div>
+      </div>
+      <div class="fog-overlay" id="fog-overlay">
+        <div class="fog-prompt">🎧 你听到了哪个词？</div>
+        <div class="fog-word" id="fog-word">dressed up</div>
+        <div class="fog-opts">
+          <button class="fog-opt" id="fog-opt-a" onclick="answerFog(0)">dressed up</button>
+          <button class="fog-opt" id="fog-opt-b" onclick="answerFog(1)">dress up</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-top:var(--s-md);" id="fog-hint">闪答 · 保持专注</div>
+      </div>
+      <div class="sub-switch-toast" id="sub-switch-toast">已切换至中英字幕模式</div>
+    </div>
+    <div class="vid-info">
+      <span class="vid-title" id="vid-title">The One with the Prom Video</span>
+      <div class="vid-meta">
+        <span class="speed-badge" id="speed-badge">×0.8</span>
+        <span class="gold-pill" id="gold-pill">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>
+          <span id="gold-num" class="f-saira">240</span>
+        </span>
+      </div>
+    </div>
+    <div class="game-body">
+      <div class="hud">
+        <div class="hud-l">
+          <div class="timer-ring" id="timer-ring">60</div>
+          <div class="combo-pill" id="combo-pill">combo 0</div>
+          <div style="font-size:10px;color:var(--text-3);" id="skill-active"></div>
+        </div>
+        <div class="hud-r">
+          <div class="score-lbl" style="display:flex;align-items:center;gap:4px;justify-content:flex-end;">
+            <span class="gold-pill" id="earned-gold" style="font-size:10px;visibility:hidden;">+0</span>
+            得分
+          </div>
+          <div class="score-num f-saira" id="score-num">0</div>
+        </div>
+      </div>
+      <div class="dot-row" id="dot-row"></div>
+      <div class="q-card">
+        <div class="q-type"><span class="q-badge" id="q-badge"></span><span id="q-type"></span></div>
+        <div class="q-stem" id="q-stem"></div>
+        <div class="q-ctx" id="q-ctx"></div>
+        <div class="opts" id="opts"></div>
+      </div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+    <div class="bottom-actions">
+      <button class="btn-cont" id="btn-cont" onclick="nextQ()">继续</button>
+      <button class="btn-exit" id="btn-exit" onclick="exitGame()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="coin-toast" id="coin-toast"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="page" id="p-result">
+    <div class="result-body">
+      <div class="tier-badge" id="tier-badge"><span class="tier-dot silver"></span>白银 III</div>
+      <div class="familiarity-badge" id="familiarity-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span>3 个单词已升级：<b>dressed up</b> 眼熟→熟悉 · <b>big deal</b> 生词→眼熟</span>
+      </div>
+      <div class="result-rank" id="result-rank"></div>
+      <div class="result-score" id="result-score"></div>
+      <div class="result-sub" id="result-sub"></div>
+      <div class="tier-progress" id="tier-progress">
+        <div class="tp-label"><span>白银 III</span><span id="tp-next">黄金 IV</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:62%;"></div></div>
+        <div style="font-size:10px;color:var(--text-3);text-align:right;margin-top:2px;" id="tp-remain">还差 320 分</div>
+      </div>
+      <div class="near-miss" id="near-miss"></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="sv" id="stat-combo"></div><div class="sl">最高连对</div></div>
+        <div class="stat-card"><div class="sv" id="stat-beat"></div><div class="sl">击败玩家</div></div>
+        <div class="stat-card"><div class="sv" id="stat-rank"></div><div class="sl">今日排名</div></div>
+        <div class="stat-card"><div class="sv f-saira" id="stat-gold"></div><div class="sl">获得金币</div></div>
+      </div>
+      <div class="share-row">
+        <button class="btn-again" onclick="fightAndSpin()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>再来一局</button>
+        <button class="btn-share" onclick="alert('已复制战绩图到剪贴板')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>分享</button>
+      </div>
+      <button class="btn-review" onclick="reviewMistakes()">查看错题</button>
+      <button class="btn-gh" style="width:100%;margin-top:8px;" onclick="backToStart()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        返回首页
+      </button>
+    </div>
+    <div class="tab-bar">
+      <div class="tab-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg><span>收藏夹</span></div>
+      <div class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/></svg><span>刷剧</span></div>
+      <div class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>排位赛</span></div>
+      <div class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span>学习</span></div>
+      <div class="tab-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>我的</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const VIDEOS=[{scene:"Friends · S02E14",title:"The One with the Prom Video",stars:"★★★",diff:1.0,len:"1:48",tier:"silver",subEn:'Rachel: "You <span class=\\"hl-sub\\">got dressed up</span> for me?"',subCn:"Rachel: \"你为我打扮好了？\""},{scene:"The Crown · S03E06",title:"Tywysog Cymru",stars:"★★★★",diff:1.15,len:"1:52",tier:"gold",subEn:'Elizabeth: "I have learned more about <span class=\\"hl-sub\\">patience</span> in this room..."',subCn:"伊丽莎白：\"在这个房间里我学到了更多关于耐心的事……\""},{scene:"Breaking Bad · S05E14",title:"Ozymandias",stars:"★★★★★",diff:1.3,len:"2:04",tier:"gold",subEn:'Walter: "I <span class=\\"hl-sub\\">did it</span> for me."',subCn:"沃尔特：\"我是为我自己做的。\""}];
+const QS=[{type:"选视频主要内容",q:"这段视频主要在讲什么？",ctx:"Ross、Rachel 和 Monica 正在回忆高中舞会。",opts:["Ross 在准备婚礼致辞","大家在看高中舞会录像带，<span class='hl'>Rachel</span> 意识到 Ross 对她的好","Monica 在组织班级聚会","Joey 在模仿 Chandler 的舞蹈"],a:1,d:.9},{type:"预测完型 3选1",q:"Ross: \"If things had been ______ back then...\"",ctx:"Ross 看着旧录像带对 Rachel 说。",opts:["difference","different","differently"],a:1,d:.85},{type:"选台词含义",q:"Rachel 说 \"You <span class='hl'>got dressed up</span> for me?\" 是什么意思？",ctx:"Rachel 看完录像带后转向 Ross。",opts:["她觉得 Ross 穿得太正式了","她很惊讶 Ross 当年为她做了这么多","她在开玩笑","她让 Ross 再穿一次"],a:1,d:1.0},{type:"选最合适的表达",q:"哪个表达最符合 Ross 当时的心情？",ctx:"Ross 本想约 Rachel 去舞会，但她舞伴临时来了。",opts:["overjoyed","indifferent","heartbroken but hiding it","furious at Monica"],a:2,d:1.1},{type:"8词选4",q:"下面 8 个词中，哪 4 个在刚才的视频里出现了？",ctx:"",opts:["prom","corsage","embarrassed","guitar","awkward","penguin","tuxedo","chocolate"],a:[0,2,4,5],d:1.2,multi:!0},{type:"预测完型 3选1",q:"Monica: \"You had such a ______ on him.\"",ctx:"Monica 调侃 Rachel。",opts:["crush","crash","crusher"],a:0,d:.8},{type:"选台词含义",q:"Ross 说 \"It's not a <span class='hl'>big deal</span>\" 真正的情绪是？",ctx:"Ross 看到 Rachel 的舞伴来了后说的。",opts:["他觉得无所谓","他在掩饰自己的失落","他很生气","他没注意 Rachel"],a:1,d:.95},{type:"选最合适的表达",q:"录像带播完后，Rachel 的表情最适合用哪个词？",ctx:"",opts:["indifferent","moved / touched","confused","annoyed"],a:1,d:.9},{type:"预测完型 3选1",q:"Chandler: \"Could there BE any more ______ in this room?\"",ctx:"Chandler 讽刺气氛太伤感。",opts:["emotional","emotion","emoting"],a:0,d:.85},{type:"选视频主要内容",q:"这个片段的情感转折点是什么？",ctx:"",opts:["Joey 讲了个笑话","Rachel 看到录像带里 Ross 穿好礼服准备带她去舞会","Monica 和 Ross 的父母来了","Chandler 开始跳舞"],a:1,d:1.0}];
+const FOG_QUESTIONS=[{word:"dressed up",opts:["dressed up","dress up"],a:0},{word:"embarrassed",opts:["embarrassed","embracing"],a:0}];
+
+let st={score:0,combo:0,maxCombo:0,correct:0,wrong:0,qi:0,time:60,timer:null,locked:!1,mistakes:[],vi:0,skill:-1,shield:!1,double:!1,totalGold:240};
+let deck=[];let gameGold=0;let fogDone=!1;
+
+// ---- 老虎机 + 体力 + 道具挂载 ----
+let spins=3;
+let maxSpins=5;
+let spinTimer=5400;
+let spinTimerInterval=null;
+let buySpinsToday=0;
+let maxBuySpins=3;
+let buySpinCost=100;
+let mountedItem=null; // {name,icon,desc,id} 当前挂载的道具，null=无
+let slotAnimating=false;
+
+const ITEMS=[
+  {id:'shield',name:'护盾',icon:'🛡️',desc:'答错不打断 combo'},
+  {id:'double',name:'双倍',icon:'⚡',desc:'连对3题后翻倍'},
+  {id:'exclude',name:'排除',icon:'✂️',desc:'去掉一个错误选项'},
+  {id:'slow',name:'慢放',icon:'🎯',desc:'某题可慢速重听'},
+  {id:'revenge',name:'复仇',icon:'❤️',desc:'输了再战额外加成'}
+];
+const SLOT_POOL=['🛡️','⚡','✂️','🎯','❤️','💰','💎','🔥','⭐','🍀','🎪','🎲','🎰','🎮','🎯'];
+
+function updateMountedUI(){
+  let el=document.getElementById('mounted-display');
+  let eq=document.getElementById('equipped-item-label');
+  if(mountedItem){
+    el.innerHTML='<span style="font-size:22px;">'+mountedItem.icon+'</span><span style="font-size:13px;font-weight:600;color:var(--accent);">'+mountedItem.name+'</span><span style="font-size:10px;color:var(--text-3);">'+mountedItem.desc+'</span>';
+    eq.textContent='· '+mountedItem.icon+mountedItem.name;
+  }else{
+    el.innerHTML='<span style="font-size:12px;color:var(--text-3);">暂无道具</span>';
+    eq.textContent='';
+  }
+}
+
+function updateSpinUI(){
+  document.getElementById('spin-info').textContent=
+    spins>0
+      ? '剩余 '+spins+' 次 · 上限 '+maxSpins
+      : '暂无次数 · '+formatTime(spinTimer)+' 后恢复';
+  let btn=document.getElementById('btn-fight');
+  btn.disabled=spins<=0||slotAnimating;
+  btn.style.opacity=spins<=0||slotAnimating?'.5':'1';
+  let buyBtn=document.getElementById('btn-buy-spin');
+  let buyLim=document.getElementById('buy-spin-limit');
+  if(buySpinsToday>=maxBuySpins){
+    buyBtn.disabled=!0;buyBtn.style.opacity='.4';
+    buyLim.textContent='(今日已用完)';
+  }else if(spins>=maxSpins){
+    buyBtn.disabled=!0;buyBtn.style.opacity='.4';
+    buyLim.textContent='(次数已满)';
+  }else{
+    buyBtn.disabled=!1;buyBtn.style.opacity='1';
+    buyLim.textContent='(今日剩 '+(maxBuySpins-buySpinsToday)+' 次)';
+  }
+}
+
+function formatTime(s){let m=Math.floor(s/60),sec=s%60;return m+':'+(sec<10?'0':'')+sec;}
+
+function startSpinTimer(){
+  clearInterval(spinTimerInterval);
+  spinTimerInterval=setInterval(()=>{
+    if(spins>=maxSpins){clearInterval(spinTimerInterval);return}
+    spinTimer--;
+    if(spinTimer<=0){spins=Math.min(spins+1,maxSpins);spinTimer=7200;}
+    updateSpinUI();
+  },1000);
+}
+
+// ====== 合并抽奖+开战的按钮 ======
+function fightAndSpin(){
+  if(spins<=0||slotAnimating)return;
+  // 先确定结果
+  let r=Math.random();
+  let resultType,itemData=null,goldAmt=0;
+  if(r<.3){resultType='item';itemData=ITEMS[Math.floor(Math.random()*ITEMS.length)]}
+  else if(r<.6){resultType='gold';goldAmt=Math.floor(Math.random()*41)+10}
+  else{resultType='empty'}
+
+  // 拼 final symbol
+  let finalIcon;
+  if(resultType==='item')finalIcon=itemData.icon;
+  else if(resultType==='gold')finalIcon='💰';
+  else finalIcon='💨';
+
+  // 准备 reels
+  spins--;slotAnimating=true;updateSpinUI();startSpinTimer();
+  document.getElementById('btn-fight').disabled=!0;
+  document.getElementById('btn-buy-spin').disabled=!0;
+
+  // 三列：各自 reel，用 rAF 动画
+  let reelEls=[document.getElementById('reel-0'),document.getElementById('reel-1'),document.getElementById('reel-2')];
+  let reelStates=[{el:reelEls[0],vel:1800,pos:0,final:SLOT_POOL[Math.floor(Math.random()*SLOT_POOL.length)],stopAfter:600},{el:reelEls[1],vel:1900,pos:0,final:SLOT_POOL[Math.floor(Math.random()*SLOT_POOL.length)],stopAfter:900},{el:reelEls[2],vel:2000,pos:0,final:finalIcon,stopAfter:1300}];
+
+  // 初始化 reel 显示
+  reelStates.forEach((rs,i)=>{
+    rs.el.querySelector('.reel-cell').textContent=SLOT_POOL[Math.floor(Math.random()*SLOT_POOL.length)];
+    rs.el.style.background='var(--bg-2)';
+  });
+
+  let startTime=performance.now();
+  function animReel(rs,now){
+    let elapsed=now-startTime;
+    if(elapsed<rs.stopAfter){
+      // 高速滚动阶段
+      let speed=rs.vel;
+      // 接近停止时减速
+      let timeToStop=rs.stopAfter-elapsed;
+      if(timeToStop<300)speed=rs.vel*(timeToStop/300);
+      rs.pos+=speed*(16/1000); // 假设16ms每帧
+      if(rs.pos>=64){rs.pos-=64;rs.el.querySelector('.reel-cell').textContent=SLOT_POOL[Math.floor(Math.random()*SLOT_POOL.length)];}
+    }else if(elapsed<rs.stopAfter+200){
+      // 减速到停止
+      let settleT=elapsed-rs.stopAfter;
+      let progress=settleT/200;
+      // ease-out cubic
+      let eased=1-Math.pow(1-progress,3);
+      rs.pos=eased*64;
+      rs.el.querySelector('.reel-cell').textContent=rs.final;
+    }else{
+      // 锁定
+      rs.pos=0;
+      rs.el.querySelector('.reel-cell').textContent=rs.final;
+      rs.el.style.background=i===2?'var(--bg-accent)':'var(--bg-2)';
+      return true; // 停止
+    }
+    rs.el.querySelector('.reel-cell').style.transform='translateY('+(-rs.pos)+'px)';
+    return false;
+  }
+
+  function tick(now){
+    let allDone=true;
+    reelStates.forEach((rs,i)=>{
+      if(!animReel(rs,now))allDone=false;
+    });
+    if(!allDone)requestAnimationFrame(tick);
+    else finishSlot(resultType,itemData,goldAmt);
+  }
+  requestAnimationFrame(tick);
+}
+
+function finishSlot(resultType,itemData,goldAmt){
+  // 处理结果
+  if(resultType==='item'){
+    mountedItem=itemData;
+    document.getElementById('slot-result').textContent='🎉 '+itemData.icon+' '+itemData.name+'！';
+    document.getElementById('slot-result').style.color='var(--success)';
+  }else if(resultType==='gold'){
+    st.totalGold+=goldAmt;
+    document.getElementById('gold-num').textContent=st.totalGold;
+    document.getElementById('slot-result').textContent='💰 +'+goldAmt+' 金币';
+    document.getElementById('slot-result').style.color='var(--secondary)';
+  }else{
+    document.getElementById('slot-result').textContent='💨 加油！';
+    document.getElementById('slot-result').style.color='var(--text-3)';
+  }
+  updateMountedUI();
+  slotAnimating=false;
+  updateSpinUI();
+
+  // 自动进入游戏（短暂延迟让用户看到结果）
+  setTimeout(()=>{startGameAfterSlot();},600);
+}
+
+function startGameAfterSlot(){
+  clearInterval(st.timer);
+  let thisShield=!1,thisDouble=!1;
+  if(mountedItem){
+    if(mountedItem.id==='shield')thisShield=!0;
+    else if(mountedItem.id==='double')thisDouble=!0;
+  }
+  let usedItem=mountedItem;
+  mountedItem=null;
+  updateMountedUI();
+
+  st={score:0,combo:0,maxCombo:0,correct:0,wrong:0,qi:0,time:60,timer:null,locked:!1,mistakes:[],vi:Math.floor(Math.random()*VIDEOS.length),skill:-1,shield:thisShield,double:thisDouble,totalGold:st.totalGold};
+  gameGold=0;fogDone=!1;
+  deck=shuf([...QS]);
+  let v=VIDEOS[st.vi];
+  document.getElementById('scene-tag').textContent=v.scene;
+  document.getElementById('star-tag').textContent=v.stars;
+  document.getElementById('vid-title').textContent=v.title;
+  document.getElementById('subtitle-text').innerHTML='<div class="en">'+v.subEn+'</div><div class="cn">'+v.subCn+'</div>';
+  document.getElementById('timer-ring').textContent='60';document.getElementById('timer-ring').classList.remove('urgent');
+  document.getElementById('combo-pill').textContent='combo 0';document.getElementById('combo-pill').className='combo-pill';
+  document.getElementById('score-num').textContent='0';
+  document.getElementById('gold-num').textContent=st.totalGold;
+  document.getElementById('earned-gold').style.visibility='hidden';
+  document.getElementById('feedback').textContent='';document.getElementById('feedback').className='feedback';
+  let sa=thisShield?'护盾已激活':thisDouble?'双倍已激活':'';
+  document.getElementById('skill-active').textContent=sa;
+  document.getElementById('p-start').classList.remove('on');document.getElementById('p-result').classList.remove('on');
+  document.getElementById('p-game').classList.add('on');
+  document.getElementById('btn-cont').style.display='none';document.getElementById('btn-exit').style.display='none';
+  document.getElementById('fog-overlay').classList.add('show');
+  renderDots();
+  showFogQuestion();
+}
+
+function buySpin(){
+  if(buySpinsToday>=maxBuySpins||spins>=maxSpins||slotAnimating)return;
+  if(st.totalGold<buySpinCost){alert('金币不足！需要 '+buySpinCost+' 金币');return}
+  st.totalGold-=buySpinCost;
+  buySpinsToday++;
+  spins++;
+  document.getElementById('gold-num').textContent=st.totalGold;
+  updateSpinUI();
+  startSpinTimer();
+  document.getElementById('slot-result').textContent='✅ +1 次机会';
+  document.getElementById('slot-result').style.color='var(--success)';
+}
+function shuf(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+// ---- game entry via fightAndSpin/startGameAfterSlot ----
+
+function showFogQuestion(){
+  let fq=FOG_QUESTIONS[Math.floor(Math.random()*FOG_QUESTIONS.length)];
+  document.getElementById('fog-word').textContent=fq.word;
+  document.getElementById('fog-opt-a').textContent=fq.opts[0];document.getElementById('fog-opt-a').className='fog-opt';
+  document.getElementById('fog-opt-b').textContent=fq.opts[1];document.getElementById('fog-opt-b').className='fog-opt';
+  document.getElementById('fog-hint').textContent='闪答 · 保持专注';
+  document.getElementById('fog-overlay')._ans=fq.a;
+}
+
+function answerFog(idx){
+  if(fogDone)return;
+  fogDone=!0;
+  let correct=idx===document.getElementById('fog-overlay')._ans;
+  if(correct){
+    document.getElementById('fog-hint').textContent='正确！+5 金币';
+    gameGold+=5;
+  }else{
+    document.getElementById('fog-hint').textContent='正确答案：'+['A','B'][document.getElementById('fog-overlay')._ans];
+  }
+  let a=document.getElementById('fog-opt-a'),b=document.getElementById('fog-opt-b');
+  let ca=document.getElementById('fog-overlay')._ans===0?a:b;
+  let wa=document.getElementById('fog-overlay')._ans===0?b:a;
+  ca.classList.add('right');if(!correct)wa.classList.add('wrong');
+  a.disabled=!0;b.disabled=!0;
+  setTimeout(()=>{
+    document.getElementById('fog-overlay').classList.remove('show');
+    tickQ();
+    st.timer=setInterval(timerTick,1000);
+  },1200);
+}
+
+function exitGame(){
+  clearInterval(st.timer);
+  document.getElementById('p-game').classList.remove('on');
+  document.getElementById('p-start').classList.add('on');
+  document.getElementById('gold-num').textContent=st.totalGold;
+  updateMountedUI();
+  updateSpinUI();
+}
+
+function backToStart(){
+  document.getElementById('p-result').classList.remove('on');
+  document.getElementById('p-start').classList.add('on');
+  document.getElementById('gold-num').textContent=st.totalGold;
+  updateMountedUI();
+  updateSpinUI();
+}
+
+function timerTick(){
+  st.time--;
+  let el=document.getElementById('timer-ring');el.textContent=st.time;
+  if(st.time<=15)el.classList.add('urgent');
+  if(st.time<=0)endGame()
+}
+
+function renderDots(){
+  let h='';
+  for(let i=0;i<deck.length;i++){let c='dot';if(i<st.qi)c+=' done';else if(i===st.qi)c+=' cur';h+='<div class="'+c+'"></div>'}
+  document.getElementById('dot-row').innerHTML=h
+}
+
+function tickQ(){
+  if(st.qi>=deck.length){endGame();return}
+  renderDots();
+  let q=deck[st.qi];
+  document.getElementById('q-badge').textContent=q.type;
+  document.getElementById('q-type').textContent=q.multi?'多选题':'';
+  document.getElementById('q-stem').innerHTML=q.q;
+  document.getElementById('q-ctx').textContent=q.ctx||'';
+  st.locked=!1;
+  let letters='ABCDEFGH',h='';
+  q.opts.forEach((o,i)=>{h+='<button class="opt" onclick="pick('+i+')">'+letters[i]+'. '+o+'</button>'});
+  document.getElementById('opts').innerHTML=h;
+  document.getElementById('feedback').textContent='';document.getElementById('feedback').className='feedback';
+  document.getElementById('btn-cont').style.display='none';document.getElementById('btn-exit').style.display='none';
+  setTimeout(()=>{let c=document.querySelector('.q-card');c.style.animation='none';c.offsetHeight;c.style.animation='slide-up .3s ease'},50)
+}
+
+function pick(idx){
+  if(st.locked)return;
+  st.locked=!0;
+  let q=deck[st.qi];
+  let correct=q.multi?q.a.includes(idx):idx===q.a;
+  let btns=document.querySelectorAll('.opt');
+  btns.forEach((b,i)=>{b.disabled=!0;let isR=q.multi?q.a.includes(i):i===q.a;if(isR)b.classList.add('right');else if(i===idx&&!correct)b.classList.add('wrong')});
+  if(correct){
+    st.correct++;st.combo++;
+    if(st.combo>st.maxCombo)st.maxCombo=st.combo;
+    let m=1+Math.min(st.combo-1,5)*.15;if(st.double&&st.combo>=3)m*=2;
+    let pts=Math.round(100*VIDEOS[st.vi].diff*m);
+    st.score+=pts;gameGold+=Math.round(pts*.15);
+    document.getElementById('feedback').textContent=st.combo>=5?'PERFECT ×'+st.combo+'! +'+pts:st.combo>=3?'连对 ×'+st.combo+'! +'+pts:'正确 +'+pts;
+    document.getElementById('feedback').className='feedback good';
+    showCoinToast(gameGold);
+  }else{
+    if(st.shield){st.shield=!1;document.getElementById('skill-active').textContent='护盾已消耗'}
+    else{st.wrong++;st.combo=0}
+    st.mistakes.push({t:q.type,q:q.q.replace(/<[^>]*>/g,''),picked:q.opts[idx].replace(/<[^>]*>/g,''),correct:q.multi?q.a.map(i=>q.opts[i].replace(/<[^>]*>/g,'')).join(', '):q.opts[q.a].replace(/<[^>]*>/g,'')});
+    document.getElementById('feedback').textContent=st.shield?'护盾挡下一次失误！':'答错了';
+    document.getElementById('feedback').className=st.shield?'feedback good':'feedback bad';
+  }
+  document.getElementById('score-num').textContent=st.score;
+  document.getElementById('gold-num').textContent=st.totalGold+gameGold;
+  let p=document.getElementById('combo-pill');p.textContent='combo '+st.combo;p.className=st.combo>=5?'combo-pill fire':'combo-pill';
+  document.getElementById('btn-cont').style.display='inline-flex';
+  document.getElementById('btn-exit').style.display='inline-flex';
+  document.getElementById('btn-cont').textContent=st.qi+1>=deck.length?'查看战绩':'继续';
+  document.getElementById('sub-switch-toast').textContent='已切换至中英字幕模式';
+  document.getElementById('sub-switch-toast').style.display='block';document.getElementById('sub-switch-toast').style.animation='none';document.getElementById('sub-switch-toast').offsetHeight;document.getElementById('sub-switch-toast').style.animation='coin-pop .4s ease forwards';
+  setTimeout(()=>{document.getElementById('sub-switch-toast').style.display='none'},1500);
+}
+
+function nextQ(){st.qi++;if(st.time<=0)endGame();else tickQ()}
+
+function showCoinToast(g){
+  let t=document.getElementById('coin-toast');
+  t.innerHTML='+'+g+' <span style="font-size:10px">金币</span>';t.style.display='block';t.style.animation='none';t.offsetHeight;t.style.animation='coin-pop .5s ease forwards';
+  setTimeout(()=>{t.style.display='none'},1200)
+}
+
+function endGame(){
+  clearInterval(st.timer);
+  document.getElementById('p-game').classList.remove('on');document.getElementById('p-result').classList.add('on');
+  let beat=Math.min(93,Math.max(18,Math.round(st.score/50+25+Math.random()*12)));
+  let rank=Math.floor(Math.random()*350)+40;
+  let tierPct=Math.min(95,Math.round(st.score/80+30));
+  let tb=document.getElementById('tier-badge');
+  if(beat>70){tb.innerHTML='<span class="tier-dot silver"></span>白银 III'}
+  else if(beat>50){tb.innerHTML='<span class="tier-dot bronze"></span>青铜 I'}
+  else{tb.innerHTML='<span class="tier-dot bronze"></span>青铜 III'}
+  document.getElementById('result-score').innerHTML=st.score.toLocaleString()+'<span class="unit"> 分</span>';
+  document.getElementById('result-sub').textContent='答对 '+st.correct+' / '+(st.correct+st.wrong)+' 题';
+  document.getElementById('result-rank').textContent='今日排名 #'+rank;
+  document.getElementById('progress-fill').style.width=tierPct+'%';
+  document.getElementById('tp-remain').textContent='还差 '+(Math.round((100-tierPct)*8))+' 分升级';
+  let nm=document.getElementById('near-miss');
+  if(beat>70){nm.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>再答对 1 题即可超越 '+(beat+3)+'% 玩家，挺进黄金段位'}
+  else if(beat>50){nm.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>差 '+(Math.round((70-beat)/3))+' 题进入前 70%，连击节奏已经起来了'}
+  else{nm.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>连续答对可激活 combo 翻倍，保持准确率就能冲段'}
+  document.getElementById('stat-combo').textContent=st.maxCombo;
+  document.getElementById('stat-beat').textContent=beat+'%';
+  document.getElementById('stat-rank').textContent='#'+rank;
+  document.getElementById('stat-gold').textContent='+'+gameGold;
+  document.getElementById('familiarity-badge').innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>'+(st.correct>=5?'3':'1')+' 个单词已升级：<b>dressed up</b> 眼熟→熟悉'+'</span>';
+}
+
+function reviewMistakes(){
+  if(!st.mistakes.length){alert('全对！');return}
+  let t='错题回顾：\n\n';st.mistakes.forEach((m,i)=>{t+=(i+1)+'. ['+m.t+'] '+m.q+'\n   你的答案: '+m.picked+'\n   正确答案: '+m.correct+'\n\n'});alert(t)
+}
+
+// 初始化老虎机 + 道具挂载
+updateMountedUI();
+updateSpinUI();
+startSpinTimer();
+</script>
+
+</body>
+</html>
