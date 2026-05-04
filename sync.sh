@@ -31,11 +31,11 @@ HEADER
 # 扫描所有 HTML 文件（排除 index.html），按修改时间倒序
 BASE_URL="https://wangyirui27.github.io/aceenglish"
 found=0
-for f in $(ls -t *.html 2>/dev/null); do
+while IFS= read -r f; do
   [ "$f" = "index.html" ] && continue
+  [ -z "$f" ] && continue
   title="${f%.html}"
-  # URL 编码文件名
-  encoded=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$f'))" 2>/dev/null || echo "$f")
+  encoded=$(FILENAME="$f" python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['FILENAME']))" 2>/dev/null || echo "$f")
   cat >> index.html << CARD
   <a class="card" href="${BASE_URL}/${encoded}">
     <div class="card-name">$title</div>
@@ -43,7 +43,7 @@ for f in $(ls -t *.html 2>/dev/null); do
   </a>
 CARD
   found=1
-done
+done < <(ls -t *.html 2>/dev/null)
 
 # 如果没有其他 HTML 文件
 if [ "$found" = "0" ]; then
