@@ -37,7 +37,7 @@ while IFS= read -r f; do
   title="${f%.html}"
   encoded=$(FILENAME="$f" python3 -c "import urllib.parse, os; print(urllib.parse.quote(os.environ['FILENAME']))" 2>/dev/null || echo "$f")
   cat >> index.html << CARD
-  <a class="card" href="${BASE_URL}/${encoded}">
+  <a class="card" href="${BASE_URL}/${encoded}" target="_blank" rel="noopener">
     <div class="card-name">$title</div>
     <div class="card-desc">点击查看 →</div>
   </a>

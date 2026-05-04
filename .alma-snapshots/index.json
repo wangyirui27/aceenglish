@@ -10,11 +10,11 @@
   "poe-preview (9).html": "21b04bd894613522af425cb74f255582de3085320bc7d5c2228bcf61b4712783",
   "prototype_membership_card.html": "bd3cdc303941fa1fa3007591f372dce3208cb9c231fe9e1aacaba0a71a83a6f9",
   "prototype_membership_compare.html": "1f84c0d10b2fbe32aa31a4fefde35a6abd99d80e38de0c62eb839b6919a7c81c",
-  "index.html": "62c872d22acd045ff2c07f6dc682eaa2083c78858751890d1a804d172d5b09ff",
+  "index.html": "c2e2fa1120fef8b851265b632fcb8468b2206c0de9e58acadc1fa73d144788c0",
   "prototype_micro-ordering-v2.html": "e7b65c3c5b9c6c585537f68084a8eb35d667bf5ab280a70b916549710f183e66",
   "prototype_micro-ordering.html": "f0081301f41169aa4fdd3d880ea281615e6b4828ced32d44de2d8768a726a43c",
   "v0.6_收藏夹.html": "36a6cbcb3146d735f066de654569d62ef07ab1144e3ff16a8d0998339faccda4",
-  "sync.sh": "646aaffa02adf3a0005c42dfdaa0747772c27cb901500f3941ee0e6f6400f7b5",
+  "sync.sh": "e15249fc9f4f86409704df8bc87b7fe24797efe05166269f81651ee266197431",
   "v0.6_需求脑图.html": "196f88048213205772b49ca9332c1fe8c5abb1539ff3d23b288c09cfa6c312e3",
   "头号听力_产品说明文档.md": "7e081e6b1df0325bdb4a171767277e0eacaacd3f4fa39ae57f58d26d0dca147a",
   "战略讨论_国际版与闯关_2026-05-03.md": "d543e0fd0b16b3dc30422f4d50d7c6f206ea142d6b9ed77eccdb0d0a3be78c9a",
@@ -82,7 +82,6 @@
   "短剧研究/制作流程/竖屏vs横屏提示词语法差异完全指南.md": "fe0f2d68d2aa07dd02c8b466ff28cb22508d029fb4d5744571285074c2d31751",
   "短剧研究/制作流程/观棋4公式入门流程.md": "1f41fdb0caad54de1c3dda63205899e2fc8d912f3ba55e5c152d3aa87d26c41e",
   "短剧研究/制作流程/角色造型卡片模板_分镜提示词专用.md": "c9484231e1a20aa7b014144532b49ec77f3c80ab1598dfd6fdb92ee11a88ae6b",
-  "短剧研究/案例拆解/INFINITY_YAY_Valentino_高维视觉逻辑拆解.md": "50658c1e43952e75260aada3b68ec1eda5aa7bfa6b6ca8d682c598eebbab2ae9",
   "短剧研究/参考资料/AI反向提示词法让皮肤更真实_原文存档.md": "8e4769f3a0f1e3698bf71a1de3c7bf6fe1c878c005699c799a83d388e0c962c0",
   "短剧研究/参考资料/AI微表情控制3个方法_原文存档.md": "ceb0e1f332e6ccb52dda2e8182398a4d139632cf037f4009cabfc3e53a6773e4",
   "短剧研究/参考资料/AI视频15种镜头角度控制技巧_原文存档.md": "b513003229e3811eef39b0a0d548e6ae50e467c776d2c2e4dcb5b141884bddca",
@@ -102,5 +101,6 @@
   "短剧研究/参考资料/电影大师美学体系_原文存档.md": "6de638f6c45ed2e50bd4ce34ac5a4496ca1cac97b5c65c2fd0708379dfe9d303",
   "短剧研究/参考资料/电影感5维框架_原文存档.md": "88250a19e7287a0b8489ce2cec5a903f50184c466c68afb30223bb4224c73cc3",
   "短剧研究/参考资料/观棋4公式入门_原文存档.md": "af18f521b86d6df60240b866ac829557600753b16047889f6e489a81062fb884",
-  "短剧研究/行业分析/英文短剧出海指南.md": "c43b803f3d47d046c43531d898a5458df91b23af24149dfe1e9c316ee4a3d56d"
+  "短剧研究/行业分析/英文短剧出海指南.md": "c43b803f3d47d046c43531d898a5458df91b23af24149dfe1e9c316ee4a3d56d",
+  "短剧研究/案例拆解/INFINITY_YAY_Valentino_高维视觉逻辑拆解.md": "50658c1e43952e75260aada3b68ec1eda5aa7bfa6b6ca8d682c598eebbab2ae9"
 }
