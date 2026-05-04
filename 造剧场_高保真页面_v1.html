@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>造剧场 · 头号听力</title>
+  <style>
+    :root {
+      /* 主色 */
+      --accent: #FF600F;
+      --accent-hover: #E85500;
+      --accent-light: #FF7A33;
+      --accent-dark: #CC4D0C;
+      --accent-glow: rgba(255, 96, 15, 0.3);
+      --accent-subtle: rgba(255, 96, 15, 0.1);
+      --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+      --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+
+      /* 背景 */
+      --bg-0: #000000;
+      --bg-1: #111111;
+      --bg-2: #1A1A1A;
+      --bg-3: #222222;
+      --bg-accent: #2A1508;
+
+      /* 辅助色 */
+      --secondary: #FFB800;
+      --success: #00C853;
+      --info: #448AFF;
+      --warning: #FF600F;
+      --error: #FF3B30;
+
+      /* 文字 */
+      --text-1: #FFFFFF;
+      --text-2: #AAAAAA;
+      --text-3: #666666;
+      --text-accent: #FF600F;
+
+      /* 间距 */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+
+      /* 圆角 */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 999px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                   "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+      background: var(--bg-0);
+      color: var(--text-1);
+    }
+
+    .page {
+      max-width: 402px;
+      margin: 0 auto;
+      padding: 20px 16px 120px;
+      background: var(--bg-0);
+      min-height: 100vh;
+    }
+
+    .section {
+      margin-bottom: var(--space-xl);
+      opacity: 0;
+      animation: slideUp 0.4s ease-out forwards;
+    }
+
+    .section:nth-child(1) { animation-delay: 0s; }
+    .section:nth-child(2) { animation-delay: 0.1s; }
+    .section:nth-child(3) { animation-delay: 0.2s; }
+    .section:nth-child(4) { animation-delay: 0.3s; }
+    .section:nth-child(5) { animation-delay: 0.4s; }
+    .section:nth-child(6) { animation-delay: 0.5s; }
+    .section:nth-child(7) { animation-delay: 0.6s; }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ========== 排版 ========== */
+    .h1 {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: var(--space-md);
+    }
+
+    .h2 {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .h3 {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: var(--space-sm);
+    }
+
+    .body {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--text-2);
+    }
+
+    .caption {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--text-3);
+    }
+
+    /* ========== 按钮 ========== */
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: var(--text-1);
+      font-weight: 700;
+      font-size: 16px;
+      padding: 14px 32px;
+      border-radius: var(--radius-md);
+      border: none;
+      width: 100%;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(255, 96, 15, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-2);
+      color: var(--text-2);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--bg-3);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary:active {
+      background: var(--bg-3);
+    }
+
+    .btn-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: var(--bg-2);
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      font-size: 20px;
+    }
+
+    .btn-icon:active {
+      background: var(--bg-3);
+    }
+
+    /* ========== 卡片 ========== */
+    .card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      transition: border-color 0.2s ease;
+    }
+
+    .card-highlight {
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 20px var(--accent-subtle);
+    }
+
+    /* ========== Badge ========== */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .badge-hot {
+      background: var(--bg-accent);
+      color: var(--accent);
+    }
+
+    .badge-live {
+      background: rgba(0, 200, 83, 0.12);
+      color: var(--success);
+    }
+
+    .badge-building {
+      background: rgba(68, 138, 255, 0.12);
+      color: var(--info);
+    }
+
+    .badge-new {
+      background: rgba(255, 184, 0, 0.12);
+      color: var(--secondary);
+    }
+
+    /* ========== Hero ========== */
+    .hero {
+      text-align: center;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: var(--space-md);
+    }
+
+    .hero-title {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: var(--space-md);
+    }
+
+    .hero-subtitle {
+      font-size: 16px;
+      color: var(--text-2);
+      line-height: 1.6;
+      margin-bottom: var(--space-lg);
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 240px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, var(--bg-2) 0%, var(--bg-accent) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      margin-bottom: var(--space-lg);
+      overflow: hidden;
+    }
+
+    /* ========== 社会证明 ========== */
+    .social-proof {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .stat-box {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-3);
+      font-weight: 500;
+    }
+
+    /* ========== 功能列表 ========== */
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: var(--bg-2);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-md);
+      transition: background 0.15s ease;
+    }
+
+    .feature-item:active {
+      background: var(--bg-3);
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-accent);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 20px;
+    }
+
+    .feature-content {
+      flex: 1;
+    }
+
+    .feature-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      font-size: 12px;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    /* ========== 流程步骤 ========== */
+    .steps-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .step {
+      display: flex;
+      gap: var(--space-md);
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      background: var(--bg-accent);
+      color: var(--accent);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+      padding-top: 2px;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    /* ========== 进度条 ========== */
+    .progress-track {
+      background: var(--bg-3);
+      border-radius: var(--radius-full);
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: var(--accent-gradient-h);
+      border-radius: var(--radius-full);
+      height: 100%;
+      transition: width 0.6s ease;
+    }
+
+    /* ========== 价格 ========== */
+    .price-section {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .price-label {
+      font-size: 12px;
+      color: var(--text-3);
+      font-weight: 500;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .price-display {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .price-symbol {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-right: 4px;
+    }
+
+    .price-number {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .price-unit {
+      font-size: 14px;
+      color: var(--text-2);
+      margin-left: 4px;
+      align-self: flex-end;
+    }
+
+    .price-original {
+      text-decoration: line-through;
+      color: var(--text-3);
+      font-size: 14px;
+    }
+
+    /* ========== 权益表 ========== */
+    .benefit-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .benefit-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-md);
+      background: var(--bg-2);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+    }
+
+    .benefit-label {
+      color: var(--text-2);
+    }
+
+    .benefit-value {
+      color: var(--text-1);
+      font-weight: 600;
+    }
+
+    .benefit-check {
+      color: var(--success);
+      font-weight: bold;
+    }
+
+    /* ========== 词语选择卡 ========== */
+    .word-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+
+    .word-chip {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      color: var(--text-2);
+      padding: 8px 12px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .word-chip.selected {
+      background: var(--bg-accent);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .word-chip:active {
+      transform: scale(0.95);
+    }
+
+    /* ========== 风格选择 ========== */
+    .style-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .style-card {
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .style-card:active {
+      border-color: var(--accent);
+    }
+
+    .style-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .style-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    /* ========== Tab ========== */
+    .tab-bar {
+      display: flex;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--bg-3);
+      padding-bottom: var(--space-md);
+    }
+
+    .tab {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-3);
+      padding-bottom: 8px;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* ========== 底部浮窗 ========== */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--bg-3);
+      padding: var(--space-md) 16px;
+      padding-bottom: calc(var(--space-md) + 20px);
+      z-index: 100;
+      max-width: 402px;
+      margin: 0 auto;
+    }
+
+    .bottom-bar-content {
+      display: flex;
+      gap: var(--space-md);
+      align-items: center;
+    }
+
+    .bottom-bar-text {
+      flex: 1;
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    /* ========== 弹窗 ========== */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: flex-end;
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: var(--bg-1);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      padding: var(--space-lg);
+      width: 100%;
+      max-width: 402px;
+      margin: 0 auto;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUpModal 0.3s ease-out;
+    }
+
+    @keyframes slideUpModal {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: var(--space-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-2);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* ========== 等待页面 ========== */
+    .loading-stage {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-md);
+      text-align: center;
+    }
+
+    .loading-stage.active {
+      border-color: var(--accent);
+      background: var(--bg-accent);
+    }
+
+    .loading-icon {
+      font-size: 32px;
+      margin-bottom: var(--space-md);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .loading-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .loading-desc {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    /* ========== 实用工具 ========== */
+    .text-center {
+      text-align: center;
+    }
+
+    .text-accent {
+      color: var(--accent);
+    }
+
+    .mt-md {
+      margin-top: var(--space-md);
+    }
+
+    .mt-lg {
+      margin-top: var(--space-lg);
+    }
+
+    .gap-md {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 480px) {
+      .page {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .hero-title {
+        font-size: 32px;
+      }
+
+      .h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- ========== HERO ========== -->
+    <section class="section">
+      <div class="hero">
+        <div class="hero-tag">🎬 新功能</div>
+        <h1 class="hero-title">造剧场</h1>
+        <p class="hero-subtitle">选 5 个词，AI 给你造一段戏。从学习者变成导演。</p>
+        <div class="hero-image">🎭</div>
+      </div>
+    </section>
+
+    <!-- ========== 社会证明 ========== -->
+    <section class="section">
+      <div class="social-proof">
+        <div class="stat-box">
+          <div class="stat-number">12.5K</div>
+          <div class="stat-label">剧目已开拍</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">94%</div>
+          <div class="stat-label">用户满意度</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 核心价值 ========== -->
+    <section class="section">
+      <h2 class="h2">为什么要造剧</h2>
+      <div class="feature-item">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-content">
+          <div class="feature-title">记忆留存率 ×3-5</div>
+          <div class="feature-desc">自创内容的记忆效果是被动学习的 3-5 倍。你导演过的词永远忘不了。</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🎬</div>
+        <div class="feature-content">
+          <div class="feature-title">从观众变导演</div>
+          <div class="feature-desc">不止是刷剧学英语，现在你是创作者。打造属于自己的剧场。</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-content">
+          <div class="feature-title">90 秒拍出一段戏</div>
+          <div class="feature-desc">选词 → 选风格 → 看脚本 → 开拍。AI 做导演的繁琐活儿。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 生成流程 ========== -->
+    <section class="section">
+      <h2 class="h2">怎么开拍</h2>
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <div class="step-title">选词</div>
+            <div class="step-desc">从收藏夹挑 1-5 个词做主演。你的词，你的舞台。</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <div class="step-title">选形式</div>
+            <div class="step-desc">剧照（图片）或剧目（15 秒视频）。快速体验或沉浸式享受。</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <div class="step-title">选风格 + 场景</div>
+            <div class="step-desc">职场、浪漫、悬疑、科幻…… AI 也可以自动推荐。</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <div class="step-title">预览脚本</div>
+            <div class="step-desc">看到台词再确认。不满意可微调、重写，都不消耗额度。</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <div class="step-title">开拍 · 杀青</div>
+            <div class="step-desc">90 秒后你的剧目就出炉了。可首映、可练习、可分享。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 功能亮点 ========== -->
+    <section class="section">
+      <h2 class="h2">剧场不只是娱乐</h2>
+      <div class="feature-item">
+        <div class="feature-icon">📚</div>
+        <div class="feature-content">
+          <div class="feature-title">一键做微练习</div>
+          <div class="feature-desc">基于你的剧目自动生成 5 道练习题。看过、用过、练过，掌握度直线上升。</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🎤</div>
+        <div class="feature-content">
+          <div class="feature-title">跟读评分</div>
+          <div class="feature-desc">在自己的作品里跟读，AI 教练评分。这回你演的是真主角。</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔁</div>
+        <div class="feature-content">
+          <div class="feature-title">熟悉度推进 ×1.5</div>
+          <div class="feature-desc">你导演过的词，学习权重翻倍。升级更快，掌握更牢。</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-content">
+          <div class="feature-title">首映 + 分享</div>
+          <div class="feature-desc">分享到朋友圈，让朋友看看你"拍"的戏。有机会被平台精选推荐。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 权益对比 ========== -->
+    <section class="section">
+      <h2 class="h2">权益体系</h2>
+      
+      <div class="tab-bar">
+        <div class="tab active" onclick="switchTab(event, 'free')">免费用户</div>
+        <div class="tab" onclick="switchTab(event, 'paid')">付费会员</div>
+        <div class="tab" onclick="switchTab(event, 'vip')">创始会员</div>
+      </div>
+
+      <div id="free" class="benefit-grid">
+        <div class="benefit-row">
+          <span class="benefit-label">首次体验</span>
+          <span class="benefit-value">✅ 1 张免费</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">剧照生成</span>
+          <span class="benefit-value">30 金币 / 张</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">视频生成</span>
+          <span class="benefit-value">❌ 不开放</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">脚本预览</span>
+          <span class="benefit-value">1 次 / 月</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">风格选择</span>
+          <span class="benefit-value">仅默认</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">作品保留</span>
+          <span class="benefit-value">7 天后归档</span>
+        </div>
+      </div>
+
+      <div id="paid" class="benefit-grid hidden">
+        <div class="benefit-row">
+          <span class="benefit-label">每月赠送</span>
+          <span class="benefit-value">5 张剧照 + 3 段视频</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">超出购买</span>
+          <span class="benefit-value">150 金币 / 视频</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">脚本预览</span>
+          <span class="benefit-value">✅ 无限次</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">风格选择</span>
+          <span class="benefit-value">✅ 全部解锁</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">生成队列</span>
+          <span class="benefit-value">快速（1-2 分钟）</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">去水印</span>
+          <span class="benefit-value">✅ 可选</span>
+        </div>
+      </div>
+
+      <div id="vip" class="benefit-grid hidden">
+        <div class="benefit-row">
+          <span class="benefit-label">每月赠送</span>
+          <span class="benefit-value">5 张剧照 + 3 段视频</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">额外购买折扣</span>
+          <span class="benefit-value">8.5 折</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">风格选择</span>
+          <span class="benefit-value">✅ 全部 + 独家限定</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">VIP 队列</span>
+          <span class="benefit-value">&lt; 1 分钟优先</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">4K 增强</span>
+          <span class="benefit-value">✅ 默认</span>
+        </div>
+        <div class="benefit-row">
+          <span class="benefit-label">精选优先</span>
+          <span class="benefit-value">⭐ 优先上主流</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 定价 ========== -->
+    <section class="section">
+      <h2 class="h2">开始造剧</h2>
+      <div class="price-section">
+        <div class="price-label">剧照 · 单次</div>
+        <div class="price-display">
+          <span class="price-symbol">¥</span>
+          <span class="price-number">1</span>
+          <span class="price-unit">/ 张</span>
+        </div>
+        <div class="price-original">或 30 金币</div>
+      </div>
+
+      <div class="price-section card-highlight">
+        <div class="price-label">剧目 · 单次（会员专享）</div>
+        <div class="price-display">
+          <span class="price-symbol">¥</span>
+          <span class="price-number">6</span>
+          <span class="price-unit">/ 段</span>
+        </div>
+        <div class="price-original">或 150 金币 / 10 段套餐 50 元</div>
+      </div>
+    </section>
+
+    <!-- ========== CTA ========== -->
+    <section class="section text-center">
+      <p class="body mt-lg" style="margin-bottom: var(--space-lg);">首次造剧免费体验 🎬</p>
+      <button class="btn-primary" onclick="openModal()">立即开拍</button>
+      <p class="caption mt-lg">无需充值，首次剧照完全免费</p>
+    </section>
+  </div>
+
+  <!-- ========== 底部浮窗 ========== -->
+  <div class="bottom-bar">
+    <div class="bottom-bar-content">
+      <div class="bottom-bar-text">
+        <div style="color: var(--text-1); font-weight: 600;">开拍就现在</div>
+        <div style="color: var(--text-3); font-size: 11px;">首次免费，0 额度消耗</div>
+      </div>
+      <button class="btn-primary" style="width: 120px; padding: 10px 16px; font-size: 14px;" onclick="openModal()">开始造剧</button>
+    </div>
+  </div>
+
+  <!-- ========== 生成流程弹窗 ========== -->
+  <div class="modal" id="flowModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span>造一场剧</span>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+
+      <!-- Step 1: 选词 -->
+      <div id="step1" class="flow-step">
+        <h3 class="h3">第 1 步：选词</h3>
+        <p class="body" style="margin-bottom: var(--space-lg); color: var(--text-3);">从收藏夹选择 1-5 个词做主演</p>
+        <div class="word-list">
+          <div class="word-chip" onclick="toggleWord(event, 'reluctantly')">reluctantly</div>
+          <div class="word-chip" onclick="toggleWord(event, 'commit')">commit</div>
+          <div class="word-chip" onclick="toggleWord(event, 'showdown')">showdown</div>
+          <div class="word-chip" onclick="toggleWord(event, 'whisper')">whisper</div>
+          <div class="word-chip" onclick="toggleWord(event, 'betray')">betray</div>
+        </div>
+        <div style="text-align: right; color: var(--text-3); font-size: 12px; margin-bottom: var(--space-lg);">已选 <span id="wordCount">0</span> / 5</div>
+        <button class="btn-primary" onclick="nextStep(2)">下一步</button>
+      </div>
+
+      <!-- Step 2: 选形式 -->
+      <div id="step2" class="flow-step hidden">
+        <h3 class="h3">第 2 步：选形式</h3>
+        <p class="body" style="margin-bottom: var(--space-lg); color: var(--text-3);">哪种方式最适合你？</p>
+        <div class="style-grid">
+          <div class="style-card" onclick="selectForm(event, 'image')">
+            <div class="style-icon">🖼️</div>
+            <div class="style-name">剧照</div>
+            <div class="caption" style="margin-top: 4px;">30 秒出图</div>
+          </div>
+          <div class="style-card" onclick="selectForm(event, 'video')">
+            <div class="style-icon">🎬</div>
+            <div class="style-name">剧目</div>
+            <div class="caption" style="margin-top: 4px;">15 秒视频</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
+          <button class="btn-secondary" style="flex: 1;" onclick="prevStep(1)">上一步</button>
+          <button class="btn-primary" style="flex: 1;" onclick="nextStep(3)">下一步</button>
+        </div>
+      </div>
+
+      <!-- Step 3: 选风格 -->
+      <div id="step3" class="flow-step hidden">
+        <h3 class="h3">第 3 步：选风格</h3>
+        <p class="body" style="margin-bottom: var(--space-lg); color: var(--text-3);">为你的剧选个舞台</p>
+        <div class="style-grid">
+          <div class="style-card" onclick="selectStyle(event, 'sitcom')">
+            <div class="style-icon">🎭</div>
+            <div class="style-name">美剧情景</div>
+          </div>
+          <div class="style-card" onclick="selectStyle(event, 'thriller')">
+            <div class="style-icon">🎪</div>
+            <div class="style-name">悬疑惊悚</div>
+          </div>
+          <div class="style-card" onclick="selectStyle(event, 'office')">
+            <div class="style-icon">💼</div>
+            <div class="style-name">职场办公</div>
+          </div>
+          <div class="style-card" onclick="selectStyle(event, 'romance')">
+            <div class="style-icon">❤️</div>
+            <div class="style-name">浪漫日常</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
+          <button class="btn-secondary" style="flex: 1;" onclick="prevStep(2)">上一步</button>
+          <button class="btn-primary" style="flex: 1;" onclick="nextStep(4)">下一步</button>
+        </div>
+      </div>
+
+      <!-- Step 4: 脚本预览 -->
+      <div id="step4" class="flow-step hidden">
+        <h3 class="h3">第 4 步：预览脚本</h3>
+        <p class="body" style="margin-bottom: var(--space-lg); color: var(--text-3);">杀青前最后一次修改</p>
+        
+        <div class="card">
+          <div style="font-size: 12px; color: var(--text-3); margin-bottom: var(--space-sm);">🎭 场景：办公室会议室，下午</div>
+          <div style="font-size: 12px; color: var(--text-3); margin-bottom: var(--space-lg);">👥 角色：Sarah（女）/ Mark（男）</div>
+          
+          <div style="border-top: 1px solid var(--bg-3); padding-top: var(--space-md); margin-bottom: var(--space-md);">
+            <p style="font-size: 13px; line-height: 1.6; margin-bottom: var(--space-md);">
+              Sarah: I'm <span class="text-accent" style="font-weight: 600;">reluctantly</span> committing to this <span class="text-accent" style="font-weight: 600;">showdown</span>, but you'd better be ready.
+            </p>
+            <p style="font-size: 12px; color: var(--text-3); line-height: 1.6; margin-bottom: var(--space-md);">
+              (我极不情愿地接下这场对决，但你最好准备好。)
+            </p>
+            <p style="font-size: 13px; line-height: 1.6;">
+              Mark: Then let's not waste another minute.
+            </p>
+            <p style="font-size: 12px; color: var(--text-3); line-height: 1.6;">
+              (那就别再浪费时间了。)
+            </p>
+          </div>
+        </div>
+
+        <p class="caption" style="margin: var(--space-md) 0; text-align: center;">✨ 你的目标词已全部融入脚本</p>
+
+        <div style="display: flex; gap: var(--space-md); margin-top: var(--space-lg);">
+          <button class="btn-secondary" style="flex: 1;" onclick="prevStep(3)">调整</button>
+          <button class="btn-primary" style="flex: 1;" onclick="nextStep(5)">开拍</button>
+        </div>
+      </div>
+
+      <!-- Step 5: 生成中 -->
+      <div id="step5" class="flow-step hidden">
+        <h3 class="h3">杀青倒计时</h3>
+        <p class="body" style="margin-bottom: var(--space-lg); color: var(--text-3); text-align: center;">你的剧正在制作中…</p>
+
+        <div class="loading-stage active">
+          <div class="loading-icon">🎬</div>
+          <div class="loading-text">导演构思中</div>
+          <div class="loading-desc">选词：reluctantly · commit · showdown</div>
+        </div>
+
+        <div class="loading-stage">
+          <div class="loading-icon">🎭</div>
+          <div class="loading-text">演员就位中</div>
+          <div class="loading-desc">Sarah 和 Mark 准备好了</div>
+        </div>
+
+        <div class="loading-stage">
+          <div class="loading-icon">✂️</div>
+          <div class="loading-text">剪辑中</div>
+          <div class="loading-desc">快好了，准备首映</div>
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-lg);">
+          <p class="caption" style="color: var(--text-3);">预计还需 30 秒</p>
+        </div>
+
+        <button class="btn-secondary" style="width: 100%; margin-top: var(--space-lg);" onclick="closeModal()">返回</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedWords = [];
+    let selectedForm = '';
+    let selectedStyle = '';
+
+    function openModal() {
+      document.getElementById('flowModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('flowModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+      resetFlow();
+    }
+
+    function resetFlow() {
+      selectedWords = [];
+      selectedForm = '';
+      selectedStyle = '';
+      document.querySelectorAll('.flow-step').forEach(step => step.classList.add('hidden'));
+      document.getElementById('step1').classList.remove('hidden');
+      document.querySelectorAll('.word-chip').forEach(chip => chip.classList.remove('selected'));
+      document.getElementById('wordCount').textContent = '0';
+    }
+
+    function toggleWord(e, word) {
+      const chip = e.target;
+      chip.classList.toggle('selected');
+      if (chip.classList.contains('selected')) {
+        selectedWords.push(word);
+      } else {
+        selectedWords = selectedWords.filter(w => w !== word);
+      }
+      document.getElementById('wordCount').textContent = selectedWords.length;
+    }
+
+    function selectForm(e, form) {
+      selectedForm = form;
+      document.querySelectorAll('#step2 .style-card').forEach(card => {
+        card.style.borderColor = 'var(--bg-3)';
+      });
+      e.currentTarget.style.borderColor = 'var(--accent)';
+    }
+
+    function selectStyle(e, style) {
+      selectedStyle = style;
+      document.querySelectorAll('#step3 .style-card').forEach(card => {
+        card.style.borderColor = 'var(--bg-3)';
+      });
+      e.currentTarget.style.borderColor = 'var(--accent)';
+    }
+
+    function nextStep(stepNum) {
+      if (stepNum === 2 && selectedWords.length === 0) {
+        alert('请至少选择 1 个词');
+        return;
+      }
+      if (stepNum === 3 && !selectedForm) {
+        alert('请选择形式');
+        return;
+      }
+      if (stepNum === 4 && !selectedStyle) {
+        alert('请选择风格');
+        return;
+      }
+      
+      document.querySelectorAll('.flow-step').forEach(step => step.classList.add('hidden'));
+      document.getElementById('step' + stepNum).classList.remove('hidden');
+      document.querySelector('.modal-content').scrollTop = 0;
+    }
+
+    function prevStep(stepNum) {
+      document.querySelectorAll('.flow-step').forEach(step => step.classList.add('hidden'));
+      document.getElementById('step' + stepNum).classList.remove('hidden');
+      document.querySelector('.modal-content').scrollTop = 0;
+    }
+
+    function switchTab(e, tab) {
+      // 更新选中状态
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      e.target.classList.add('active');
+      
+      // 更新内容显示
+      ['free', 'paid', 'vip'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(tab).classList.remove('hidden');
+    }
+
+    // 页面加载时关闭 modal
+    window.addEventListener('load', () => {
+      document.getElementById('flowModal').classList.remove('active');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>造剧场 — 头号听力</title>
+<style>
+:root {
+  --accent: #FF600F;
+  --accent-hover: #E85500;
+  --accent-light: #FF7A33;
+  --accent-dark: #CC4D0C;
+  --accent-glow: rgba(255, 96, 15, 0.3);
+  --accent-subtle: rgba(255, 96, 15, 0.1);
+  --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+  --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+  --bg-0: #000000;
+  --bg-1: #111111;
+  --bg-2: #1A1A1A;
+  --bg-3: #222222;
+  --bg-accent: #2A1508;
+  --secondary: #FFB800;
+  --success: #00C853;
+  --info: #448AFF;
+  --text-1: #FFFFFF;
+  --text-2: #AAAAAA;
+  --text-3: #666666;
+  --text-accent: #FF600F;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+  background: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.app {
+  width: 100%;
+  max-width: 402px;
+  min-height: 100vh;
+  background: var(--bg-0);
+  position: relative;
+  overflow: hidden;
+  color: var(--text-1);
+}
+
+/* Page container */
+.page {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  min-height: 100vh;
+  padding: 20px 16px 120px;
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  overflow-y: auto;
+}
+.page.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+/* Nav dots */
+.nav-dots {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 200;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(10px);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--bg-3);
+}
+.nav-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--bg-3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.nav-dot.active {
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* Typography */
+.h1 { font-size:28px; font-weight:700; line-height:1.3; }
+.h2 { font-size:20px; font-weight:700; line-height:1.4; }
+.h3 { font-size:16px; font-weight:600; line-height:1.5; }
+.body { font-size:14px; font-weight:400; line-height:1.6; color:var(--text-2); }
+.caption { font-size:12px; font-weight:400; line-height:1.5; color:var(--text-3); }
+.overline { font-size:11px; font-weight:600; line-height:1.4; }
+.display { font-size:36px; font-weight:800; line-height:1.2; color:var(--accent); }
+
+/* Cards */
+.card {
+  background: var(--bg-1);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: all 0.2s ease;
+  animation: slideUp 0.4s ease backwards;
+}
+.card:active { background: var(--bg-2); }
+.card-sm { padding: 12px; }
+
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(16px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--accent-gradient);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 32px;
+  border-radius: var(--radius-md);
+  border: none;
+  width: 100%;
+  box-shadow: 0 4px 20px var(--accent-glow);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: block;
+}
+.btn-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+.btn-primary:disabled,.btn-primary:disabled.pulse { animation: none; }
+.btn-primary:disabled {
+  background: var(--bg-3);
+  color: var(--text-3);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.btn-outline {
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--bg-3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+.btn-outline:active { background: var(--bg-3); transform: scale(0.97); }
+
+/* Bottom bar */
+.bottom-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  max-width: 402px;
+  margin: 0 auto;
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--bg-3);
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 20px));
+  z-index: 100;
+}
+
+/* === PAGE 1: Favorites Multi-Select === */
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: var(--space-md);
+}
+.word-card {
+  background: var(--bg-1);
+  border-radius: var(--radius-md);
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  border: 1.5px solid transparent;
+  animation: slideUp 0.4s ease backwards;
+}
+.word-card:nth-child(1) { animation-delay: 0.02s; }
+.word-card:nth-child(2) { animation-delay: 0.04s; }
+.word-card:nth-child(3) { animation-delay: 0.06s; }
+.word-card:nth-child(4) { animation-delay: 0.08s; }
+.word-card:nth-child(5) { animation-delay: 0.10s; }
+.word-card:nth-child(6) { animation-delay: 0.12s; }
+.word-card:nth-child(7) { animation-delay: 0.14s; }
+.word-card:nth-child(8) { animation-delay: 0.16s; }
+.word-card:nth-child(9) { animation-delay: 0.18s; }
+.word-card:nth-child(10) { animation-delay: 0.20s; }
+.word-card:nth-child(11) { animation-delay: 0.22s; }
+.word-card:nth-child(12) { animation-delay: 0.24s; }
+.word-card:active { transform: scale(0.97); }
+.word-card .word { color: var(--text-1); font-size: 15px; font-weight: 600; }
+.word-card .familiarity { font-size: 10px; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; }
+.word-card .fam-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.fam-dot.mastered { background: var(--success); }
+.fam-dot.familiar { background: var(--info); }
+.fam-dot.recognized { background: var(--text-3); }
+
+/* Multi-select states */
+.word-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-subtle);
+}
+.word-card.dimmed { opacity: 0.4; }
+.word-card .select-badge {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.word-card.selected .select-badge { display: flex; }
+
+.select-bar {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  margin-bottom: 4px;
+}
+.select-bar.visible { display: flex; }
+.select-bar .count { color: var(--accent); font-weight: 700; font-size: 15px; }
+.select-bar .cancel { color: var(--text-2); cursor: pointer; font-size: 14px; padding: 4px 8px; }
+
+.cta-bottom-bar {
+  position: fixed;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  max-width: 402px;
+  width: 100%;
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 20px));
+  background: rgba(0,0,0,0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid var(--bg-3);
+  z-index: 100;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* === PAGE 2: Word Selection + Format === */
+.actor-cards-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.actor-cards-scroll::-webkit-scrollbar { display: none; }
+.actor-card {
+  flex-shrink: 0;
+  background: var(--bg-1);
+  border: 1px solid var(--bg-3);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  min-width: 100px;
+  text-align: center;
+}
+.actor-card .aword { color: var(--text-1); font-size: 16px; font-weight: 700; }
+.actor-card .pos { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+.combo-card {
+  background: var(--bg-1);
+  border: 1px solid var(--bg-3);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.combo-card:active { background: var(--bg-2); }
+.combo-card .theme { color: var(--accent); font-weight: 700; font-size: 14px; }
+.combo-card .words { color: var(--text-1); font-size: 13px; margin-top: 4px; }
+.combo-card .desc { color: var(--text-3); font-size: 12px; margin-top: 2px; }
+
+.format-row { display: flex; gap: 12px; }
+.format-option {
+  flex: 1;
+  background: var(--bg-1);
+  border: 1.5px solid var(--bg-3);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+.format-option.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-subtle);
+}
+.format-option:active { transform: scale(0.97); }
+.format-option .type-icon { font-size: 28px; margin-bottom: 4px; }
+.format-option .type-name { font-size: 16px; font-weight: 700; color: var(--text-1); }
+.format-option .type-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.format-option .type-price { font-size: 13px; font-weight: 700; color: var(--accent); margin-top: 6px; }
+.format-option.locked { opacity: 0.6; }
+.format-option .lock-icon { font-size: 12px; color: var(--secondary); margin-left: 2px; }
+
+/* === PAGE 3: Script Preview === */
+.scene-info {
+  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: var(--space-md);
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.8;
+}
+.script-card {
+  background: var(--bg-1);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: var(--space-md);
+}
+.script-char {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  margin-top: 16px;
+}
+.script-char:first-child { margin-top: 0; }
+.script-line {
+  color: var(--text-1);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.script-trans {
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+.script-sep {
+  border: none;
+  border-top: 1px solid var(--bg-3);
+  margin: 14px 0;
+}
+.highlight { color: var(--accent); font-weight: 600; }
+.version-dots { display: flex; gap: 6px; align-items: center; margin-bottom: var(--space-md); }
+.version-dots .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bg-3); }
+.version-dots .dot.on { background: var(--accent); }
+.version-dots span { font-size: 12px; color: var(--text-3); margin-left: 4px; }
+
+.check-words {
+  color: var(--text-2);
+  font-size: 12px;
+  margin-bottom: var(--space-md);
+  padding: 8px 12px;
+  background: var(--bg-accent);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+/* === PAGE 4: Waiting === */
+.wait-stage {
+  text-align: center;
+  padding: 40px 20px;
+  transition: opacity 0.4s ease;
+}
+.wait-stage .stage-icon { font-size: 48px; margin-bottom: 16px; }
+.wait-stage .stage-title { font-size: 20px; font-weight: 700; color: var(--text-1); margin-bottom: 12px; }
+.wait-stage .stage-content { color: var(--text-2); font-size: 14px; line-height: 1.8; }
+.wait-stage .example-sentences { text-align: left; max-width: 300px; margin: 16px auto 0; }
+.wait-stage .example-sentences p { color: var(--text-2); font-size: 13px; margin-bottom: 8px; padding-left: 16px; position: relative; }
+.wait-stage .example-sentences p::before { content: '•'; position: absolute; left: 0; color: var(--text-3); }
+
+.stage-indicator { display: flex; gap: 6px; justify-content: center; margin-bottom: 30px; }
+.stage-indicator .sdot { width: 8px; height: 8px; border-radius: 50%; background: var(--bg-3); transition: all 0.3s ease; }
+.stage-indicator .sdot.done { background: var(--accent); box-shadow: 0 0 6px var(--accent-glow); }
+
+.wait-hint { text-align: center; color: var(--text-3); font-size: 12px; margin-top: 32px; }
+
+.clapperboard-svg { display: block; margin: 0 auto 24px; opacity: 0.15; width: 80px; height: 80px; }
+
+/* === PAGE 5: Completion === */
+.video-placeholder {
+  aspect-ratio: 9/16;
+  max-height: 480px;
+  background: linear-gradient(135deg, var(--bg-2), #1a1410);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: var(--space-md);
+}
+.video-placeholder .play-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.video-placeholder .play-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.3); }
+.video-placeholder .overlay-title {
+  position: absolute; top: 16px; left: 16px;
+  font-size: 13px; color: var(--text-2);
+  background: rgba(0,0,0,0.6);
+  padding: 4px 10px; border-radius: 4px;
+}
+
+.subtitle-toggles { display: flex; gap: 6px; margin-bottom: var(--space-md); }
+.subtitle-pill {
+  font-size: 11px; padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-2);
+  color: var(--text-3);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+.subtitle-pill.active { background: var(--bg-accent); color: var(--accent); border-color: var(--accent); }
+
+.word-tags { display: flex; gap: 8px; margin-bottom: var(--space-lg); flex-wrap: wrap; }
+.word-tag {
+  padding: 6px 14px;
+  border: 1px solid var(--accent-dark);
+  border-radius: var(--radius-full);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--bg-accent);
+}
+
+.learning-actions { margin-bottom: var(--space-md); }
+.learning-action {
+  background: var(--bg-1);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.15s ease;
+}
+.learning-action:active { background: var(--bg-2); }
+.learning-action.primary { border: 1px solid var(--accent); box-shadow: 0 0 10px var(--accent-subtle); }
+.learning-action .la-icon { font-size: 22px; width: 32px; text-align: center; flex-shrink: 0; }
+.learning-action .la-text { flex:1; }
+.learning-action .la-title { color: var(--text-1); font-size: 14px; font-weight: 600; }
+.learning-action .la-sub { color: var(--text-3); font-size: 11px; }
+.beta-badge {
+  font-size: 9px; padding: 2px 6px;
+  background: rgba(68,138,255,0.15);
+  color: var(--info);
+  border-radius: 4px;
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+.production-info {
+  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: var(--space-md);
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.8;
+}
+
+.detail-actions { display: flex; gap: 12px; }
+.detail-btn {
+  flex: 1;
+  background: var(--bg-1);
+  border: 1px solid var(--bg-3);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.detail-btn:active { background: var(--bg-2); transform: scale(0.97); }
+.detail-btn.primary-action { background: var(--bg-accent); border-color: var(--accent); color: var(--accent); }
+
+/* === PAGE 6: My Theater === */
+.filter-row { display: flex; gap: 8px; margin-bottom: var(--space-md); overflow-x: auto; scrollbar-width: none; }
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-pill {
+  font-size: 13px; padding: 7px 16px;
+  border-radius: var(--radius-full);
+  background: var(--bg-2);
+  color: var(--text-3);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.filter-pill.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+.theater-cta-card {
+  background: var(--bg-accent);
+  border: 1px solid var(--accent-dark);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+  margin-bottom: var(--space-md);
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+.theater-cta-card:active { background: var(--accent-dark); opacity: 0.9; }
+
+.work-card {
+  background: var(--bg-1);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  animation: slideUp 0.4s ease backwards;
+}
+.work-card:nth-child(1) { animation-delay: 0.05s; }
+.work-card:nth-child(2) { animation-delay: 0.1s; }
+.work-card:nth-child(3) { animation-delay: 0.15s; }
+.work-card:active { background: var(--bg-2); }
+.work-card.pinned { border: 1px solid rgba(255,184,0,0.3); }
+.work-card .wc-thumb {
+  width: 60px; height: 80px;
+  background: var(--bg-2);
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  font-size: 20px;
+}
+.work-card .wc-info { flex: 1; min-width: 0; }
+.work-card .wc-title { color: var(--text-1); font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.work-card .wc-meta { font-size: 12px; color: var(--text-3); margin-bottom: 2px; }
+.work-card .wc-date { font-size: 11px; color: var(--text-3); }
+.work-card .wc-badge {
+  display: inline-block;
+  font-size: 10px; padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.badge-featured { background: rgba(255,184,0,0.12); color: var(--secondary); }
+.badge-pinned { background: rgba(255,184,0,0.12); color: var(--secondary); }
+
+/* === PAGE 7: Paywall Modal === */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.show { display: flex; }
+.modal-card {
+  background: var(--bg-1);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  width: 100%;
+  max-width: 340px;
+  position: relative;
+  border: 1px solid var(--bg-3);
+}
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  border: none;
+  color: var(--text-3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+.modal-close:active { background: var(--bg-3); }
+
+.recharge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: var(--space-md); }
+.recharge-option {
+  background: var(--bg-2);
+  border: 1.5px solid var(--bg-3);
+  border-radius: var(--radius-md);
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+}
+.recharge-option:active { transform: scale(0.97); }
+.recharge-option.selected { border-color: var(--accent); background: var(--bg-accent); }
+.recharge-option .amount { font-size: 18px; font-weight: 700; color: var(--text-1); }
+.recharge-option .price { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+.recharge-option .rec-badge {
+  position: absolute;
+  top: -8px; right: -4px;
+  font-size: 9px;
+  padding: 2px 8px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.promo-banner {
+  background: var(--bg-accent);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: var(--space-md);
+  text-align: center;
+  color: var(--secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* SVG icon base */
+svg.icon { stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Utility */
+.mt-0 { margin-top: 0; }
+.mt-sm { margin-top: var(--space-sm); }
+.mt-md { margin-top: var(--space-md); }
+.mt-lg { margin-top: var(--space-lg); }
+.mb-sm { margin-bottom: var(--space-sm); }
+.mb-md { margin-bottom: var(--space-md); }
+.mb-lg { margin-bottom: var(--space-lg); }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.text-center { text-align: center; }
+.text-accent { color: var(--accent); }
+.text-2 { color: var(--text-2); }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+
+/* Page header */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: var(--space-lg);
+}
+.back-btn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  border: none;
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.15s ease;
+}
+.back-btn:active { background: var(--bg-3); }
+
+/* Pulse animation for celebration */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 4px 20px var(--accent-glow); }
+  50% { box-shadow: 0 4px 30px rgba(255,96,15,0.5); }
+}
+.pulse { animation: pulse-glow 1.5s ease-in-out infinite; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-up { animation: fadeInUp 0.5s ease forwards; }
+
+/* Scrollbar */
+.page::-webkit-scrollbar { width: 0; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ============ PAGE 1: 收藏夹多选 ============ -->
+  <div class="page active" id="page1">
+    <div class="h1 mb-md">📚 我的收藏夹</div>
+    <div class="select-bar" id="selectBar">
+      <span class="count" id="selectCount">已选 0 / 5 个词</span>
+      <span class="cancel" id="cancelSelect">取消</span>
+    </div>
+    <div class="word-grid" id="wordGrid">
+      <div class="word-card" data-word="reluctantly" data-fam="familiar">
+        <div class="word">reluctantly</div>
+        <div class="familiarity"><span class="fam-dot familiar"></span> 熟悉</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="commit" data-fam="mastered">
+        <div class="word">commit</div>
+        <div class="familiarity"><span class="fam-dot mastered"></span> 精通</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="showdown" data-fam="familiar">
+        <div class="word">showdown</div>
+        <div class="familiarity"><span class="fam-dot familiar"></span> 熟悉</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="whisper" data-fam="mastered">
+        <div class="word">whisper</div>
+        <div class="familiarity"><span class="fam-dot mastered"></span> 精通</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="betray" data-fam="recognized">
+        <div class="word">betray</div>
+        <div class="familiarity"><span class="fam-dot recognized"></span> 眼熟</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="secret" data-fam="familiar">
+        <div class="word">secret</div>
+        <div class="familiarity"><span class="fam-dot familiar"></span> 熟悉</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="confess" data-fam="recognized">
+        <div class="word">confess</div>
+        <div class="familiarity"><span class="fam-dot recognized"></span> 眼熟</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="deadline" data-fam="mastered">
+        <div class="word">deadline</div>
+        <div class="familiarity"><span class="fam-dot mastered"></span> 精通</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="negotiate" data-fam="familiar">
+        <div class="word">negotiate</div>
+        <div class="familiarity"><span class="fam-dot familiar"></span> 熟悉</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="propose" data-fam="recognized">
+        <div class="word">propose</div>
+        <div class="familiarity"><span class="fam-dot recognized"></span> 眼熟</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="confront" data-fam="familiar">
+        <div class="word">confront</div>
+        <div class="familiarity"><span class="fam-dot familiar"></span> 熟悉</div>
+        <div class="select-badge"></div>
+      </div>
+      <div class="word-card" data-word="resign" data-fam="mastered">
+        <div class="word">resign</div>
+        <div class="familiarity"><span class="fam-dot mastered"></span> 精通</div>
+        <div class="select-badge"></div>
+      </div>
+    </div>
+
+    <div class="cta-bottom-bar" id="ctaBar">
+      <button class="btn-primary pulse" id="ctaBtn" disabled>🎬 造一场</button>
+    </div>
+  </div>
+
+  <!-- ============ PAGE 2: 选词 + 形式 ============ -->
+  <div class="page" id="page2">
+    <div class="page-header">
+      <button class="back-btn" onclick="goTo(1)">←</button>
+      <span class="h3">造剧场</span>
+    </div>
+
+    <div class="h2 mb-sm">今天让谁主演？</div>
+    <div class="caption mb-md">轻点下方组合，或从收藏夹选择的词</div>
+
+    <div class="actor-cards-scroll" id="actorCards">
+      <div class="actor-card"><div class="aword">reluctantly</div><div class="pos">adv. 不情愿地</div></div>
+      <div class="actor-card"><div class="aword">commit</div><div class="pos">v. 承诺；投入</div></div>
+      <div class="actor-card"><div class="aword">showdown</div><div class="pos">n. 对决</div></div>
+    </div>
+
+    <div class="overline text-accent mb-sm">🎯 导演推荐组合</div>
+    <div class="combo-card selected" data-combo="1">
+      <div class="theme">职场对峙</div>
+      <div class="words">reluctantly · commit · showdown</div>
+      <div class="desc">两个同事在办公室剑拔弩张的对峙</div>
+    </div>
+    <div class="combo-card" data-combo="2">
+      <div class="theme">悬疑揭秘</div>
+      <div class="words">whisper · secret · betray</div>
+      <div class="desc">深夜办公室里被窃听的秘密对话</div>
+    </div>
+    <div class="combo-card" data-combo="3">
+      <div class="theme">浪漫街角</div>
+      <div class="words">confess · whisper · propose</div>
+      <div class="desc">街角咖啡馆的意外告白</div>
+    </div>
+
+    <div class="overline text-accent mb-sm mt-lg">选形式</div>
+    <div class="format-row" id="formatRow">
+      <div class="format-option selected" data-format="image">
+        <div class="type-icon">📷</div>
+        <div class="type-name">剧照</div>
+        <div class="type-meta">单张剧照 · 15-30秒</div>
+        <div class="type-price">30 💰</div>
+      </div>
+      <div class="format-option locked" data-format="video">
+        <div class="type-icon">🎬</div>
+        <div class="type-name">剧目</div>
+        <div class="type-meta">15秒短片 · 60-120秒</div>
+        <div class="type-price">150 💰 <span class="lock-icon">🔒</span></div>
+      </div>
+    </div>
+
+    <div class="mt-md">
+      <button class="btn-primary" onclick="goTo(3)">✨ 开拍</button>
+    </div>
+  </div>
+
+  <!-- ============ PAGE 3: 脚本预览 ============ -->
+  <div class="page" id="page3">
+    <div class="page-header">
+      <button class="back-btn" onclick="goTo(2)">←</button>
+      <span class="h3">剧本预览</span>
+    </div>
+
+    <div class="h2 mb-sm">🎭 你的剧本初稿</div>
+    <div class="caption mb-md">杀青前最后一次修改</div>
+
+    <div class="scene-info">
+      📍 办公室会议室，下午<br>
+      👥 Sarah（女，资深员工）/ Mark（男，新人）
+    </div>
+
+    <div class="script-card">
+      <div class="script-char">Sarah</div>
+      <div class="script-line">I'm <span class="highlight">reluctantly</span> <span class="highlight">committing</span> to this <span class="highlight">showdown</span>, but you'd better be ready.</div>
+      <div class="script-trans">（我极不情愿地接下这场对决，你最好准备好。）</div>
+
+      <hr class="script-sep">
+
+      <div class="script-char">Mark</div>
+      <div class="script-line">Then let's not waste another minute.</div>
+      <div class="script-trans">（那就别再浪费时间了。）</div>
+    </div>
+
+    <div class="version-dots">
+      <div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      <span>版本 1 / 3</span>
+    </div>
+
+    <div class="check-words">
+      ✨ 你的目标词：reluctantly · commit · showdown 已全部融入
+    </div>
+
+    <div class="mb-sm">
+      <button class="btn-outline" style="width:100%; margin-bottom:8px;">🔄 重写一版</button>
+      <button class="btn-outline" style="width:100%; margin-bottom:12px;">✏️ 微调台词</button>
+      <button class="btn-primary pulse" onclick="goTo(4)">🎬 看起来不错，开拍！</button>
+    </div>
+  </div>
+
+  <!-- ============ PAGE 4: 生成等待 ============ -->
+  <div class="page" id="page4" style="display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+    <div class="stage-indicator" id="stageIndicator">
+      <div class="sdot done"></div>
+      <div class="sdot"></div>
+      <div class="sdot"></div>
+      <div class="sdot"></div>
+    </div>
+
+    <svg class="clapperboard-svg" viewBox="0 0 100 100">
+      <rect x="10" y="30" width="80" height="55" rx="4" stroke="white" stroke-width="2" fill="none"/>
+      <line x1="10" y1="50" x2="90" y2="50" stroke="white" stroke-width="2"/>
+      <rect x="10" y="10" width="80" height="20" rx="4" stroke="white" stroke-width="2" fill="none"/>
+      <rect x="10" y="10" width="50" height="20" rx="4" stroke="white" stroke-width="2" fill="none"/>
+      <line x1="60" y1="10" x2="60" y2="30" stroke="white" stroke-width="2"/>
+      <circle cx="50" cy="75" r="8" stroke="white" stroke-width="1.5" fill="none"/>
+    </svg>
+
+    <div class="wait-stage" id="waitStage">
+      <div class="stage-icon">🎬</div>
+      <div class="stage-title">导演构思中…</div>
+      <div class="stage-content">
+        <div class="example-sentences">
+          <p style="color:var(--text-2); margin-bottom:6px;">顺便看看 reluctantly 的例句：</p>
+          <p>She reluctantly agreed to the plan.</p>
+          <p>He reluctantly handed over the keys.</p>
+          <p>They reluctantly accepted the terms.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="wait-hint">可以先离开，完成后通知你</div>
+  </div>
+
+  <!-- ============ PAGE 5: 杀青完成 ============ -->
+  <div class="page" id="page5">
+    <div class="h2 mb-md text-center" style="text-shadow: 0 0 20px var(--accent-glow);">🎉 杀青！</div>
+
+    <div class="video-placeholder">
+      <div class="overlay-title">办公室对决</div>
+      <div class="play-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" class="icon" style="color:#fff;"><polygon points="6,4 20,12 6,20" fill="#fff" stroke="none"/></svg>
+      </div>
+    </div>
+
+    <div class="subtitle-toggles">
+      <span class="subtitle-pill active">无字</span>
+      <span class="subtitle-pill">中英</span>
+      <span class="subtitle-pill">纯英</span>
+      <span class="subtitle-pill">延迟</span>
+    </div>
+
+    <div class="word-tags">
+      <span class="word-tag">reluctantly</span>
+      <span class="word-tag">commit</span>
+      <span class="word-tag">showdown</span>
+    </div>
+
+    <div class="overline text-accent mb-sm">🎯 学习这一场</div>
+    <div class="learning-actions">
+      <div class="learning-action primary">
+        <div class="la-icon">📝</div>
+        <div class="la-text">
+          <div class="la-title">基于本片做 5 道微练习</div>
+          <div class="la-sub">用你亲手造的剧巩固记忆</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" class="icon" style="color:var(--text-3);"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="learning-action">
+        <div class="la-icon">🎤</div>
+        <div class="la-text">
+          <div class="la-title">跟读这段台词（评分）</div>
+          <div class="la-sub">在自创剧目里表演，沉浸感翻倍</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" class="icon" style="color:var(--text-3);"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="learning-action">
+        <div class="la-icon">🤖</div>
+        <div class="la-text">
+          <div class="la-title">看 AI 教练的解读<span class="beta-badge">Beta</span></div>
+          <div class="la-sub">场景化拆解台词背后的语法和用法</div>
+        </div>
+        <svg width="16" height="16" viewBox="0 0 24 24" class="icon" style="color:var(--text-3);"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+
+    <div class="production-info">
+      🎬 风格：职场办公室 &nbsp;|&nbsp; 👥 角色：Sarah / Mark<br>
+      📝 脚本版本：v1 &nbsp;|&nbsp; 🕐 拍摄于 2026-05-04
+    </div>
+
+    <div class="detail-actions">
+      <button class="detail-btn primary-action" onclick="openPaywall()">📤 首映</button>
+      <button class="detail-btn">🔄 重拍</button>
+      <button class="detail-btn" onclick="goTo(6)">💾 保存</button>
+    </div>
+  </div>
+
+  <!-- ============ PAGE 6: 我的剧场 ============ -->
+  <div class="page" id="page6">
+    <div class="page-header">
+      <button class="back-btn" onclick="goTo(1)">←</button>
+      <span class="h3">我的剧场</span>
+    </div>
+    <div class="caption mb-md">共 12 部作品</div>
+
+    <div class="filter-row">
+      <span class="filter-pill active">全部</span>
+      <span class="filter-pill">视频</span>
+      <span class="filter-pill">图片</span>
+      <span class="filter-pill">本月</span>
+    </div>
+
+    <div class="theater-cta-card" onclick="goTo(2)">+ 再开拍一场</div>
+
+    <div class="work-card pinned">
+      <div class="wc-thumb">📌</div>
+      <div class="wc-info">
+        <div class="wc-title">2026.05 月度精华</div>
+        <div class="wc-meta">100词中5词主演 · 视频 · 15s</div>
+        <span class="wc-badge badge-pinned">月度剧目</span>
+      </div>
+    </div>
+
+    <div class="work-card" onclick="goTo(5)">
+      <div class="wc-thumb">🎬</div>
+      <div class="wc-info">
+        <div class="wc-title">办公室对决</div>
+        <div class="wc-meta">reluctantly · commit · showdown</div>
+        <div class="wc-date">2026-05-04 · 视频</div>
+        <span class="wc-badge badge-featured">⭐ 已被精选</span>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="wc-thumb">📷</div>
+      <div class="wc-info">
+        <div class="wc-title">街角告白</div>
+        <div class="wc-meta">confess · whisper</div>
+        <div class="wc-date">2026-05-02 · 图片</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="wc-thumb">🎬</div>
+      <div class="wc-info">
+        <div class="wc-title">深夜泄密</div>
+        <div class="wc-meta">secret · betray · deadline</div>
+        <div class="wc-date">2026-04-28 · 视频</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="wc-thumb">📷</div>
+      <div class="wc-info">
+        <div class="wc-title">谈判桌上</div>
+        <div class="wc-meta">negotiate · confront · propose</div>
+        <div class="wc-date">2026-04-22 · 图片</div>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="wc-thumb">🎬</div>
+      <div class="wc-info">
+        <div class="wc-title">辞职信</div>
+        <div class="wc-meta">resign · reluctantly · deadline</div>
+        <div class="wc-date">2026-04-15 · 视频</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PAGE 7: 付费墙 Modal ============ -->
+  <div class="modal-overlay" id="paywallOverlay">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closePaywall()">✕</button>
+
+      <div class="h2 mb-md">🪙 金币不足</div>
+      <div class="body mb-sm">当前余额：<span style="color:var(--accent); font-weight:700;">15 💰</span></div>
+      <div class="body mb-lg">本次需要 <span style="color:var(--accent); font-weight:700;">30 金币</span></div>
+
+      <div class="overline text-accent mb-sm">选择充值金额</div>
+      <div class="recharge-grid" id="rechargeGrid">
+        <div class="recharge-option" data-amount="30" data-price="1" onclick="selectRecharge(this)">
+          <div class="amount">30 💰</div>
+          <div class="price">¥1</div>
+        </div>
+        <div class="recharge-option" data-amount="100" data-price="4" onclick="selectRecharge(this)">
+          <div class="amount">100 💰</div>
+          <div class="price">¥4</div>
+        </div>
+        <div class="recharge-option selected" data-amount="300" data-price="12" onclick="selectRecharge(this)">
+          <div class="amount">300 💰</div>
+          <div class="price">¥12</div>
+          <div class="rec-badge">🔥 推荐</div>
+        </div>
+        <div class="recharge-option" data-amount="600" data-price="24" onclick="selectRecharge(this)">
+          <div class="amount">600 💰</div>
+          <div class="price">¥24</div>
+        </div>
+      </div>
+
+      <div class="promo-banner">🎁 首次充值翻倍！100元充200元金币</div>
+
+      <button class="btn-primary" onclick="closePaywall()">充值并继续</button>
+      <div class="text-center mt-md">
+        <span class="caption" style="cursor:pointer;" onclick="closePaywall()">先不了</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- .app -->
+
+<!-- NAV DOTS -->
+<div class="nav-dots" id="navDots">
+  <div class="nav-dot active" data-page="1" onclick="goTo(1)"></div>
+  <div class="nav-dot" data-page="2" onclick="goTo(2)"></div>
+  <div class="nav-dot" data-page="3" onclick="goTo(3)"></div>
+  <div class="nav-dot" data-page="4" onclick="goTo(4)"></div>
+  <div class="nav-dot" data-page="5" onclick="goTo(5)"></div>
+  <div class="nav-dot" data-page="6" onclick="goTo(6)"></div>
+  <div class="nav-dot" data-page="7" onclick="openPaywall()"></div>
+</div>
+
+<script>
+// === PAGE NAVIGATION ===
+let currentPage = 1;
+
+function goTo(pageNum) {
+  if (pageNum === currentPage) return;
+  
+  const oldPage = document.getElementById('page' + currentPage);
+  const newPage = document.getElementById('page' + pageNum);
+  const goingForward = pageNum > currentPage;
+  
+  // Set new page initial position
+  newPage.style.transition = 'none';
+  newPage.style.transform = goingForward ? 'translateX(30px)' : 'translateX(-30px)';
+  newPage.style.opacity = '0';
+  newPage.classList.add('active');
+  
+  // Force reflow
+  newPage.offsetHeight;
+  
+  // Animate both pages
+  newPage.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  oldPage.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+  
+  oldPage.style.opacity = '0';
+  oldPage.style.transform = goingForward ? 'translateX(-30px)' : 'translateX(30px)';
+  newPage.style.opacity = '1';
+  newPage.style.transform = 'translateX(0)';
+  
+  // Clean up
+  setTimeout(() => {
+    oldPage.classList.remove('active');
+    oldPage.style.opacity = '';
+    oldPage.style.transform = '';
+    oldPage.style.transition = '';
+    newPage.style.transition = '';
+  }, 320);
+  
+  // Stop wait stages if leaving page 4
+  if (currentPage === 4 && pageNum !== 4) {
+    if (waitStageTimer) { clearInterval(waitStageTimer); waitStageTimer = null; }
+  }
+  
+  currentPage = pageNum;
+  updateNavDots();
+  
+  // CTA bar only on page 1
+  const ctaBar = document.getElementById('ctaBar');
+  if (ctaBar) ctaBar.style.display = (pageNum === 1) ? 'block' : 'none';
+  
+  // Auto-start waiting animation when going to page 4
+  if (pageNum === 4) startWaitStages();
+}
+
+function updateNavDots() {
+  document.querySelectorAll('.nav-dot').forEach(dot => {
+    dot.classList.toggle('active', parseInt(dot.dataset.page) === currentPage);
+  });
+}
+
+// === MULTI-SELECT (Page 1) ===
+let selectedWords = [];
+let multiSelectMode = false;
+
+document.getElementById('wordGrid').addEventListener('click', function(e) {
+  const card = e.target.closest('.word-card');
+  if (!card) return;
+  
+  if (!multiSelectMode) {
+    // Enter multi-select
+    multiSelectMode = true;
+    document.getElementById('selectBar').classList.add('visible');
+    selectedWords = [];
+    updateSelectUI();
+  }
+  
+  // Toggle this card
+  if (card.classList.contains('selected')) {
+    card.classList.remove('selected');
+    selectedWords = selectedWords.filter(w => w !== card.dataset.word);
+  } else {
+    if (selectedWords.length >= 5) return; // Max 5
+    card.classList.add('selected');
+    selectedWords.push(card.dataset.word);
+  }
+  
+  updateSelectUI();
+});
+
+document.getElementById('cancelSelect').addEventListener('click', function() {
+  multiSelectMode = false;
+  selectedWords = [];
+  document.getElementById('selectBar').classList.remove('visible');
+  document.querySelectorAll('.word-card').forEach(c => {
+    c.classList.remove('selected', 'dimmed');
+  });
+  updateSelectUI();
+});
+
+function updateSelectUI() {
+  const count = selectedWords.length;
+  document.getElementById('selectCount').textContent = `已选 ${count} / 5 个词`;
+  
+  // Update badges
+  document.querySelectorAll('.word-card').forEach(c => {
+    c.classList.remove('dimmed');
+    const badge = c.querySelector('.select-badge');
+    if (c.classList.contains('selected')) {
+      const idx = selectedWords.indexOf(c.dataset.word) + 1;
+      badge.textContent = idx;
+    }
+  });
+  
+  // Dim unselected if multi-select is active and has selections
+  if (multiSelectMode && count > 0) {
+    document.querySelectorAll('.word-card:not(.selected)').forEach(c => {
+      c.classList.add('dimmed');
+    });
+  }
+  
+  // Update CTA
+  const btn = document.getElementById('ctaBtn');
+  btn.disabled = count === 0;
+}
+
+document.getElementById('ctaBtn').addEventListener('click', function() {
+  if (selectedWords.length > 0) {
+    // Update page 2 actor cards
+    const actorContainer = document.getElementById('actorCards');
+    actorContainer.innerHTML = selectedWords.map(w => {
+      let pos = '';
+      if (w === 'reluctantly') pos = 'adv. 不情愿地';
+      else if (w === 'commit') pos = 'v. 承诺；投入';
+      else if (w === 'showdown') pos = 'n. 对决';
+      else if (w === 'whisper') pos = 'v./n. 低语';
+      else if (w === 'betray') pos = 'v. 背叛';
+      else if (w === 'secret') pos = 'n./adj. 秘密';
+      else if (w === 'confess') pos = 'v. 坦白';
+      else if (w === 'deadline') pos = 'n. 截止日期';
+      else if (w === 'negotiate') pos = 'v. 谈判';
+      else if (w === 'propose') pos = 'v. 提议；求婚';
+      else if (w === 'confront') pos = 'v. 面对；对峙';
+      else if (w === 'resign') pos = 'v. 辞职';
+      else pos = '—';
+      return `<div class="actor-card"><div class="aword">${w}</div><div class="pos">${pos}</div></div>`;
+    }).join('');
+    
+    goTo(2);
+  }
+});
+
+// === COMBO SELECTION (Page 2) ===
+document.querySelectorAll('.combo-card').forEach(card => {
+  card.addEventListener('click', function() {
+    document.querySelectorAll('.combo-card').forEach(c => c.style.borderColor = 'var(--bg-3)');
+    this.style.borderColor = 'var(--accent)';
+  });
+});
+
+// === FORMAT SELECTION (Page 2) ===
+document.querySelectorAll('.format-option:not(.locked)').forEach(opt => {
+  opt.addEventListener('click', function() {
+    document.querySelectorAll('.format-option').forEach(o => o.classList.remove('selected'));
+    this.classList.add('selected');
+  });
+});
+
+// === WAIT STAGES (Page 4) ===
+let waitStageTimer = null;
+
+function startWaitStages() {
+  if (waitStageTimer) clearInterval(waitStageTimer);
+  
+  const stages = [
+    {
+      icon: '🎬',
+      title: '导演构思中…',
+      html: `<div class="example-sentences">
+        <p style="color:var(--text-2); margin-bottom:6px;">顺便看看 reluctantly 的例句：</p>
+        <p>She reluctantly agreed to the plan.</p>
+        <p>He reluctantly handed over the keys.</p>
+        <p>They reluctantly accepted the terms.</p>
+      </div>`
+    },
+    {
+      icon: '🎭',
+      title: '演员就位…',
+      html: `<div class="example-sentences">
+        <p style="color:var(--text-2); margin-bottom:6px;">跟读试试：</p>
+        <p style="color:var(--text-1); font-size:16px;">"I'm reluctantly committing..."</p>
+        <p style="color:var(--text-3);">长按录音，比对发音</p>
+      </div>`
+    },
+    {
+      icon: '✂️',
+      title: '剪辑中…',
+      html: `<p style="color:var(--text-2); margin-top:12px;">快好了，准备首映 🎉</p>`
+    },
+    {
+      icon: '🎉',
+      title: '杀青！',
+      html: `<p style="color:var(--accent); font-size:18px; font-weight:700; margin-top:12px;">你的剧目已就绪！</p>
+        <button class="btn-primary mt-md" style="max-width:200px; margin:16px auto 0;" onclick="goTo(5)">去看看 →</button>`
+    }
+  ];
+  
+  let stage = 0;
+  updateWaitStage(stages[stage], stage);
+  
+  waitStageTimer = setInterval(() => {
+    stage++;
+    if (stage >= stages.length) {
+      clearInterval(waitStageTimer);
+      waitStageTimer = null;
+      return;
+    }
+    updateWaitStage(stages[stage], stage);
+  }, 3500);
+}
+
+function updateWaitStage(stageData, stageIdx) {
+  const container = document.getElementById('waitStage');
+  container.style.opacity = '0';
+  setTimeout(() => {
+    container.innerHTML = `
+      <div class="stage-icon">${stageData.icon}</div>
+      <div class="stage-title">${stageData.title}</div>
+      <div class="stage-content">${stageData.html}</div>
+    `;
+    container.style.opacity = '1';
+  }, 300);
+  
+  // Update stage dots
+  const dots = document.querySelectorAll('#stageIndicator .sdot');
+  dots.forEach((d, i) => {
+    d.classList.toggle('done', i <= stageIdx);
+  });
+}
+
+// === PAYWALL ===
+function openPaywall() {
+  document.getElementById('paywallOverlay').classList.add('show');
+}
+
+function closePaywall() {
+  document.getElementById('paywallOverlay').classList.remove('show');
+}
+
+function selectRecharge(el) {
+  document.querySelectorAll('.recharge-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// Close paywall on backdrop click
+document.getElementById('paywallOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closePaywall();
+});
+
+// === FILTER PILLS (Page 6) ===
+document.querySelectorAll('.filter-pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// === SUBTITLE TOGGLES (Page 5) ===
+document.querySelectorAll('.subtitle-pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    document.querySelectorAll('.subtitle-pill').forEach(p => p.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// === INIT ===
+updateNavDots();
+</script>
+
+</body>
+</html>
