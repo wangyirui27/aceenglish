@@ -29,13 +29,15 @@ cat > index.html << 'HEADER'
 HEADER
 
 # 扫描所有 HTML 文件（排除 index.html），按修改时间倒序
+BASE_URL="https://wangyirui27.github.io/aceenglish"
 found=0
 for f in $(ls -t *.html 2>/dev/null); do
   [ "$f" = "index.html" ] && continue
-  # 提取文件名作为标题（去掉 .html）
   title="${f%.html}"
+  # URL 编码文件名
+  encoded=$(python3 -c "import urllib.parse; print(urllib.parse.quote('$f'))" 2>/dev/null || echo "$f")
   cat >> index.html << CARD
-  <a class="card" href="$f">
+  <a class="card" href="${BASE_URL}/${encoded}">
     <div class="card-name">$title</div>
     <div class="card-desc">点击查看 →</div>
   </a>
