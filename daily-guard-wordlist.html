@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>今日词单</title>
+  <style>
+    :root {
+      --accent: #FF600F;
+      --accent-hover: #E85500;
+      --accent-light: #FF7A33;
+      --accent-dark: #CC4D0C;
+      --accent-glow: rgba(255, 96, 15, 0.3);
+      --accent-subtle: rgba(255, 96, 15, 0.1);
+      --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+      --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+      --bg-0: #000000;
+      --bg-1: #111111;
+      --bg-2: #1A1A1A;
+      --bg-3: #222222;
+      --bg-accent: #2A1508;
+      --secondary: #FFB800;
+      --success: #00C853;
+      --info: #448AFF;
+      --error: #FF3B30;
+      --text-1: #FFFFFF;
+      --text-2: #AAAAAA;
+      --text-3: #666666;
+      --text-accent: #FF600F;
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 999px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-0);
+      color: var(--text-1);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                   "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 402px;
+      min-height: 100vh;
+      background: var(--bg-0);
+      padding-top: calc(env(safe-area-inset-top) + 12px);
+      padding-left: var(--space-md);
+      padding-right: var(--space-md);
+      padding-bottom: 104px;
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-lg);
+    }
+
+    .top-bar-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    .top-bar-close {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-2);
+      transition: all 0.15s ease;
+    }
+
+    .top-bar-close:active {
+      background: var(--bg-2);
+      color: var(--text-1);
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .header-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .badge-hot {
+      background: var(--bg-accent);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.2px;
+    }
+
+    .streak-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 184, 0, 0.1);
+      color: var(--secondary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-1);
+      line-height: 1.3;
+    }
+
+    .header h1 .count {
+      color: var(--accent);
+    }
+
+    .header-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+
+    /* Meta row */
+    .meta-row {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+      flex-wrap: wrap;
+    }
+
+    .meta-chip {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-full);
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--text-2);
+    }
+
+    .meta-chip svg { color: var(--accent); }
+    .meta-chip strong { color: var(--text-1); font-weight: 600; }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 0.4px;
+      margin-bottom: var(--space-md);
+    }
+
+    /* Word cards */
+    .word-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .word-card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 14px var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .word-card:hover {
+      background: var(--bg-2);
+      border-color: var(--bg-3);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+
+    .word-card:active {
+      background: var(--bg-3);
+      transform: scale(0.99);
+    }
+
+    .word-card.animate { animation: slide-up 0.35s ease forwards; }
+    .word-card:nth-child(1) { animation-delay: 0.04s; }
+    .word-card:nth-child(2) { animation-delay: 0.11s; }
+    .word-card:nth-child(3) { animation-delay: 0.18s; }
+    .word-card:nth-child(4) { animation-delay: 0.25s; }
+    .word-card:nth-child(5) { animation-delay: 0.32s; }
+
+    .word-num {
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-3);
+      flex-shrink: 0;
+    }
+
+    .word-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .word-top {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-sm);
+      margin-bottom: 2px;
+    }
+
+    .word-en {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    .word-pos {
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .word-phon {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-bottom: 4px;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .word-cn {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    .word-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .sound-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid var(--bg-3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-2);
+      transition: all 0.15s ease;
+    }
+
+    .sound-btn:hover {
+      background: var(--bg-2);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .sound-btn:active {
+      transform: scale(0.9);
+    }
+
+    .word-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+    }
+    .lv-new    { background: rgba(255, 96, 15, 0.12);  color: var(--accent); }
+    .lv-eye    { background: rgba(68, 138, 255, 0.12); color: var(--info); }
+    .lv-know   { background: rgba(0, 200, 83, 0.12);   color: var(--success); }
+    .lv-master { background: rgba(255, 184, 0, 0.12);  color: var(--secondary); }
+
+    .urgency {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .urgency.high   { color: var(--accent); }
+    .urgency.normal { color: var(--text-3); }
+
+    /* Hint card */
+    .divider {
+      height: 1px;
+      background: var(--bg-3);
+      margin: var(--space-lg) 0 var(--space-md);
+    }
+
+    .hint-card {
+      background: var(--bg-accent);
+      border: 1px solid rgba(255, 96, 15, 0.18);
+      border-radius: var(--radius-md);
+      padding: 12px var(--space-md);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      opacity: 0;
+    }
+    .hint-card.animate {
+      animation: slide-up 0.35s ease 0.44s forwards;
+    }
+    .hint-text {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .hint-text strong { color: var(--accent); }
+
+    /* Bottom Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 402px;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--bg-3);
+      padding: 12px 16px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      z-index: 100;
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 14px 32px;
+      border-radius: var(--radius-md);
+      border: none;
+      width: 100%;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse-glow 2.5s ease-in-out infinite;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(255, 96, 15, 0.45);
+      transform: translateY(-1px);
+      animation: none;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 10px var(--accent-glow);
+      animation: none;
+    }
+
+
+
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 4px 20px var(--accent-glow); }
+      50%       { box-shadow: 0 6px 32px rgba(255, 96, 15, 0.5); }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <span class="top-bar-title">今日词单</span>
+    <button class="top-bar-close" id="closeBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-eyebrow">
+      <span class="badge-hot">考前预热</span>
+      <span class="streak-pill">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2c0 6-6 8-6 14a6 6 0 0 0 12 0c0-6-6-8-6-14z"/>
+          <path d="M12 12c0 3-2 4-2 7a2 2 0 0 0 4 0c0-3-2-4-2-7z"/>
+        </svg>
+        已连续 12 天
+      </span>
+    </div>
+    <h1>先过目这 <span class="count">5</span> 个词</h1>
+    <p class="header-desc">扫一眼，考起来更顺。</p>
+  </div>
+
+  <!-- Meta chips -->
+  <div class="meta-row">
+    <div class="meta-chip">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      约 <strong>2 分钟</strong>
+    </div>
+    <div class="meta-chip">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+      </svg>
+      已掌握 <strong>47 词</strong>
+    </div>
+  </div>
+
+  <!-- Section label -->
+  <div class="section-label">即将降级的单词</div>
+
+  <!-- Word list -->
+  <div class="word-list">
+
+    <div class="word-card">
+      <div class="word-num">1</div>
+      <div class="word-body">
+        <div class="word-top">
+          <span class="word-en">eloquent</span>
+          <span class="word-pos">adj.</span>
+        </div>
+        <div class="word-phon">/ˈeləkwənt/</div>
+        <div class="word-cn">口才流利的；有说服力的</div>
+      </div>
+      <div class="word-actions">
+        <button class="sound-btn" data-word="eloquent">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 5.47a9 9 0 0 1 0 12.74"/>
+            <path d="M19.07 4.93a13 13 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+      </div>
+      <div class="word-meta">
+        <span class="badge lv-know">熟悉</span>
+        <span class="urgency high">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          7 天未复习
+        </span>
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-num">2</div>
+      <div class="word-body">
+        <div class="word-top">
+          <span class="word-en">ambiguous</span>
+          <span class="word-pos">adj.</span>
+        </div>
+        <div class="word-phon">/æmˈbɪɡjuəs/</div>
+        <div class="word-cn">模棱两可的；含糊不清的</div>
+      </div>
+      <div class="word-actions">
+        <button class="sound-btn" data-word="ambiguous">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 5.47a9 9 0 0 1 0 12.74"/>
+            <path d="M19.07 4.93a13 13 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+      </div>
+      <div class="word-meta">
+        <span class="badge lv-eye">眼熟</span>
+        <span class="urgency high">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          9 天未复习
+        </span>
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-num">3</div>
+      <div class="word-body">
+        <div class="word-top">
+          <span class="word-en">resilient</span>
+          <span class="word-pos">adj.</span>
+        </div>
+        <div class="word-phon">/rɪˈzɪliənt/</div>
+        <div class="word-cn">有韧性的；能快速恢复的</div>
+      </div>
+      <div class="word-actions">
+        <button class="sound-btn" data-word="resilient">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 5.47a9 9 0 0 1 0 12.74"/>
+            <path d="M19.07 4.93a13 13 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+      </div>
+      <div class="word-meta">
+        <span class="badge lv-know">熟悉</span>
+        <span class="urgency high">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          8 天未复习
+        </span>
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-num">4</div>
+      <div class="word-body">
+        <div class="word-top">
+          <span class="word-en">meticulous</span>
+          <span class="word-pos">adj.</span>
+        </div>
+        <div class="word-phon">/məˈtɪkjʊləs/</div>
+        <div class="word-cn">一丝不苟的；极其细心的</div>
+      </div>
+      <div class="word-actions">
+        <button class="sound-btn" data-word="meticulous">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 5.47a9 9 0 0 1 0 12.74"/>
+            <path d="M19.07 4.93a13 13 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+      </div>
+      <div class="word-meta">
+        <span class="badge lv-new">生词</span>
+        <span class="urgency high">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          14 天未复习
+        </span>
+      </div>
+    </div>
+
+    <div class="word-card">
+      <div class="word-num">5</div>
+      <div class="word-body">
+        <div class="word-top">
+          <span class="word-en">persevere</span>
+          <span class="word-pos">v.</span>
+        </div>
+        <div class="word-phon">/ˌpɜːsɪˈvɪər/</div>
+        <div class="word-cn">坚持不懈；持之以恒</div>
+      </div>
+      <div class="word-actions">
+        <button class="sound-btn" data-word="persevere">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M15.54 5.47a9 9 0 0 1 0 12.74"/>
+            <path d="M19.07 4.93a13 13 0 0 1 0 14.14"/>
+          </svg>
+        </button>
+      </div>
+      <div class="word-meta">
+        <span class="badge lv-eye">眼熟</span>
+        <span class="urgency high">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          10 天未复习
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="hint-card" id="hintCard">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+         stroke="#FF600F" stroke-width="1.5"
+         stroke-linecap="round" stroke-linejoin="round"
+         style="flex-shrink:0;margin-top:2px">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    <p class="hint-text">
+      先过目留个<strong>印象</strong>，考起来更容易想起来。
+    </p>
+  </div>
+
+</div>
+
+<!-- Bottom Bar -->
+<div class="bottom-bar">
+  <button class="btn-primary" id="startBtn">
+    开始 · 5 词 · 约 2 分钟
+  </button>
+</div>
+
+<script>
+  // 入场动画
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.word-card').forEach(c => c.classList.add('animate'));
+    document.getElementById('hintCard').classList.add('animate');
+  });
+
+  document.getElementById('startBtn').addEventListener('click', () => {
+    // TODO: 进入答题流程
+  });
+
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    // TODO: 返回上一页
+  });
+
+  document.querySelectorAll('.sound-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      // TODO: 播放发音 btn.dataset.word
+    });
+  });
+
+  document.querySelectorAll('.word-card').forEach(card => {
+    card.addEventListener('click', () => {
+      // TODO: 展开单词详情 / 考一下
+    });
+  });
+</script>
+</body>
+</html>
