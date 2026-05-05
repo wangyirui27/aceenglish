@@ -60,7 +60,7 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
 | Caption | 12px | 400 | 1.5 | 辅助文字 |
 | Overline | 11px | 600 | 1.4 | 标签和 badge 文字 |
 
-Special: Gold coin numbers use Saira font (`font-family: 'Saira', sans-serif`) at weight 700-800.
+Special: Gold coin numbers use system font (`font-family: 'SF Pro Display', sans-serif`) at weight 700-800.
 
 ## 4. Spacing Rhythm
 

@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>头号听力 v0.7 · 功能报告</title>
+  <style>
+    :root {
+      --accent: #FF600F;
+      --accent-hover: #E85500;
+      --accent-light: #FF7A33;
+      --accent-dark: #CC4D0C;
+      --accent-glow: rgba(255, 96, 15, 0.3);
+      --accent-subtle: rgba(255, 96, 15, 0.1);
+      --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+      --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+
+      --bg-0: #000000;
+      --bg-1: #111111;
+      --bg-2: #1A1A1A;
+      --bg-3: #222222;
+      --bg-accent: #2A1508;
+
+      --secondary: #FFB800;
+      --success: #00C853;
+      --info: #448AFF;
+
+      --text-1: #FFFFFF;
+      --text-2: #AAAAAA;
+      --text-3: #666666;
+      --text-accent: #FF600F;
+
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 999px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+      background: var(--bg-0);
+      color: var(--text-1);
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .page {
+      max-width: 402px;
+      margin: 0 auto;
+      padding: 0 16px 120px;
+      min-height: 100vh;
+    }
+
+    /* ============ Hero ============ */
+    .hero {
+      padding: var(--space-xl) 0 var(--space-lg);
+      animation: slide-up 0.35s ease-out both;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-accent);
+      border: 1px solid rgba(255, 96, 15, 0.25);
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: var(--space-md);
+      letter-spacing: 0.5px;
+    }
+
+    .hero-badge svg {
+      width: 12px;
+      height: 12px;
+      stroke-width: 2;
+      stroke: currentColor;
+      fill: none;
+    }
+
+    .hero-title {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: var(--space-sm);
+    }
+
+    .hero-sub {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+      margin-bottom: var(--space-lg);
+    }
+
+    /* 两个功能入口卡 */
+    .hero-cards {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .hero-card {
+      flex: 1;
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 16px 14px;
+      transition: all 0.2s ease;
+    }
+
+    .hero-card.accent {
+      border-color: rgba(255, 96, 15, 0.3);
+      box-shadow: 0 0 20px var(--accent-subtle);
+    }
+
+    .hero-card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-sm);
+    }
+
+    .hero-card-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke-width: 1.5;
+      stroke: var(--accent);
+      fill: none;
+    }
+
+    .hero-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .hero-card-desc {
+      font-size: 11px;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    /* ============ 章节标题 ============ */
+    .section {
+      margin-bottom: var(--space-xl);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .section-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 1.5;
+      stroke: var(--accent);
+      fill: none;
+    }
+
+    .section-num {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 1px;
+      margin-bottom: 2px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    /* ============ 信息卡片 ============ */
+    .info-card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: var(--space-md);
+    }
+
+    .info-card.highlight {
+      border-color: rgba(255, 96, 15, 0.3);
+      box-shadow: 0 0 24px var(--accent-subtle);
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-accent));
+    }
+
+    .info-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: var(--space-sm);
+    }
+
+    .info-card-title .accent {
+      color: var(--accent);
+    }
+
+    .info-card-body {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    /* ============ 数据大数字 ============ */
+    .big-number {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+
+    .big-number-unit {
+      font-size: 14px;
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    .big-number-label {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: var(--space-xs);
+    }
+
+    /* ============ 对比表格 ============ */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .compare-table th {
+      text-align: left;
+      padding: 10px 0 6px;
+      font-weight: 600;
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--bg-3);
+    }
+
+    .compare-table td {
+      padding: 10px 0;
+      color: var(--text-2);
+      border-bottom: 1px solid var(--bg-3);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .compare-table td:first-child {
+      color: var(--text-1);
+      font-weight: 500;
+      white-space: nowrap;
+      padding-right: 12px;
+    }
+
+    .compare-table td .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .tag-green {
+      background: rgba(0, 200, 83, 0.12);
+      color: var(--success);
+    }
+
+    .tag-blue {
+      background: rgba(68, 138, 255, 0.12);
+      color: var(--info);
+    }
+
+    .tag-orange {
+      background: var(--bg-accent);
+      color: var(--accent);
+    }
+
+    .tag-gold {
+      background: rgba(255, 184, 0, 0.12);
+      color: var(--secondary);
+    }
+
+    /* ============ 步骤列表 ============ */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .step-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-accent);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 3px;
+    }
+
+    .step-desc {
+      font-size: 11px;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    /* ============ 10个动作网格 ============ */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-sm);
+    }
+
+    .action-item {
+      text-align: center;
+      padding: var(--space-sm) 4px;
+      background: var(--bg-2);
+      border-radius: var(--radius-md);
+      font-size: 10px;
+      color: var(--text-2);
+      line-height: 1.5;
+    }
+
+    .action-num {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* ============ 定价卡 ============ */
+    .pricing-row {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .pricing-card {
+      flex: 1;
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 14px 12px;
+      text-align: center;
+    }
+
+    .pricing-card.best {
+      border-color: rgba(255, 96, 15, 0.3);
+      box-shadow: 0 0 20px var(--accent-subtle);
+      background: linear-gradient(180deg, var(--bg-accent), var(--bg-1));
+    }
+
+    .pricing-label {
+      font-size: 10px;
+      color: var(--text-3);
+      margin-bottom: 6px;
+    }
+
+    .pricing-price {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .pricing-unit {
+      font-size: 12px;
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    .pricing-desc {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    /* ============ 段位体系 ============ */
+    .tier-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tier-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg-2);
+      border-radius: var(--radius-md);
+    }
+
+    .tier-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .tier-icon.diamond { background: rgba(180, 220, 255, 0.2); color: #B4DCFF; }
+    .tier-icon.platinum { background: rgba(200, 220, 240, 0.2); color: #C8DCF0; }
+    .tier-icon.gold { background: rgba(255, 184, 0, 0.2); color: var(--secondary); }
+    .tier-icon.silver { background: rgba(192, 192, 192, 0.2); color: #C0C0C0; }
+    .tier-icon.bronze { background: rgba(205, 127, 50, 0.2); color: #CD7F32; }
+
+    .tier-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tier-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    .tier-detail {
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .tier-count {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      text-align: right;
+    }
+
+    /* ============ 进展对比条 ============ */
+    .compare-bar-section {
+      margin: var(--space-md) 0;
+    }
+
+    .compare-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .compare-bar-label {
+      width: 70px;
+      font-size: 12px;
+      color: var(--text-2);
+      flex-shrink: 0;
+    }
+
+    .compare-bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--bg-3);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .compare-bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 0.8s ease;
+    }
+
+    .compare-bar-fill.accent {
+      background: var(--accent-gradient-h);
+    }
+
+    .compare-bar-fill.gray {
+      background: var(--bg-3);
+    }
+
+    .compare-bar-value {
+      width: 50px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .compare-bar-value.accent {
+      color: var(--accent);
+    }
+
+    .compare-bar-value.gray {
+      color: var(--text-3);
+    }
+
+    /* ============ 进度条 ============ */
+    .progress-track {
+      background: var(--bg-3);
+      border-radius: var(--radius-full);
+      height: 6px;
+      overflow: hidden;
+      margin: 6px 0;
+    }
+
+    .progress-fill {
+      background: var(--accent-gradient-h);
+      border-radius: var(--radius-full);
+      height: 100%;
+      transition: width 0.6s ease;
+    }
+
+    /* ============ 底部固定栏 ============ */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 402px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--bg-3);
+      padding: 10px 16px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      z-index: 100;
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 12px 24px;
+      border-radius: var(--radius-md);
+      border: none;
+      flex: 1;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      color: var(--text-1);
+      font-weight: 600;
+      font-size: 14px;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:active {
+      background: var(--bg-2);
+    }
+
+    /* ============ 动画 ============ */
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .anim-1 { animation: slide-up 0.35s ease-out 0.05s both; }
+    .anim-2 { animation: slide-up 0.35s ease-out 0.1s both; }
+    .anim-3 { animation: slide-up 0.35s ease-out 0.15s both; }
+    .anim-4 { animation: slide-up 0.35s ease-out 0.2s both; }
+    .anim-5 { animation: slide-up 0.35s ease-out 0.25s both; }
+    .anim-6 { animation: slide-up 0.35s ease-out 0.3s both; }
+    .anim-7 { animation: slide-up 0.35s ease-out 0.35s both; }
+
+    /* ============ 分割线 ============ */
+    .divider {
+      height: 1px;
+      background: var(--bg-3);
+      margin: var(--space-lg) 0;
+    }
+
+    .divider-accent {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 96, 15, 0.3), transparent);
+      margin: var(--space-lg) 0;
+    }
+
+    /* ============ flex 小工具 ============ */
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .flex-center {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .gap-md { gap: var(--space-md); }
+    .gap-sm { gap: var(--space-sm); }
+    .mt-sm { margin-top: var(--space-sm); }
+    .mt-md { margin-top: var(--space-md); }
+    .mt-lg { margin-top: var(--space-lg); }
+    .mb-sm { margin-bottom: var(--space-sm); }
+    .mb-md { margin-bottom: var(--space-md); }
+    .mb-lg { margin-bottom: var(--space-lg); }
+
+    .text-accent { color: var(--accent); }
+    .text-2 { color: var(--text-2); }
+    .text-3 { color: var(--text-3); }
+    .text-sm { font-size: 12px; }
+    .text-xs { font-size: 11px; }
+    .fw-600 { font-weight: 600; }
+    .fw-700 { font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ==================== HERO ==================== -->
+  <div class="hero">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      2026.05 报告
+    </div>
+    <div class="hero-title">头号听力 v0.7<br>两大核心新功能</div>
+    <div class="hero-sub">从"刷剧学英语"到"导剧学英语"——消费者变创作者</div>
+
+    <div class="hero-cards">
+      <div class="hero-card accent anim-1">
+        <div class="hero-card-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>
+        </div>
+        <div class="hero-card-title">🎬 造剧场</div>
+        <div class="hero-card-desc">选5个单词，AI拍成15秒短片。5倍学习法 · 一镜十练</div>
+      </div>
+      <div class="hero-card anim-1">
+        <div class="hero-card-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        </div>
+        <div class="hero-card-title">⚡ 60秒排位赛</div>
+        <div class="hero-card-desc">词汇竞速，10段位升降。赛季制全民排位</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider-accent"></div>
+
+  <!-- ==================== 一、造剧场 ==================== -->
+  <div class="section">
+    <div class="section-header anim-2">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>
+      </div>
+      <div>
+        <div class="section-num">PART 1</div>
+        <div class="section-title">造剧场</div>
+      </div>
+    </div>
+
+    <!-- 一句话定位 -->
+    <div class="info-card highlight anim-2">
+      <div class="info-card-body">
+        记忆链路的最后一块拼图——从被动输入到<strong style="color: var(--accent);">创造性使用</strong>。自创内容的记忆留存率是被动学习的 <span class="text-accent fw-700">3-5 倍</span>。
+      </div>
+    </div>
+
+    <!-- 定价锚 -->
+    <div class="info-card anim-3">
+      <div class="info-card-title">💰 <span class="accent">5 倍学习法 · 一镜十练</span></div>
+      <div class="flex-between mb-sm">
+        <span class="text-2" style="font-size: 13px;">5 个单词 × 10 个学习动作</span>
+        <span class="text-accent fw-700" style="font-size: 14px;">= ¥0.99 / 动作</span>
+      </div>
+
+      <div class="action-grid mt-sm">
+        <div class="action-item"><span class="action-num">①</span>主动选词</div>
+        <div class="action-item"><span class="action-num">②</span>想象场景</div>
+        <div class="action-item"><span class="action-num">③</span>看脚本</div>
+        <div class="action-item"><span class="action-num">④</span>看成片</div>
+        <div class="action-item"><span class="action-num">⑤</span>听台词</div>
+        <div class="action-item"><span class="action-num">⑥</span>跟读评分</div>
+        <div class="action-item"><span class="action-num">⑦</span>微练习×6</div>
+        <div class="action-item"><span class="action-num">⑧</span>重遇弹幕</div>
+        <div class="action-item"><span class="action-num">⑨</span>月度复盘</div>
+        <div class="action-item"><span class="action-num">⑩</span>作品广场</div>
+      </div>
+    </div>
+
+    <!-- 核心流程 -->
+    <div class="info-card anim-4">
+      <div class="info-card-title">🎬 从选词到杀青 · 5 步流程</div>
+      <div class="step-list mt-sm">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-label">导演候选名单</div>
+            <div class="step-desc">AI 每日推荐 5 套智能词组合，一键开拍 ¥9.9。决策成本压到零</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-label">选词 1-5 个</div>
+            <div class="step-desc">从收藏夹 + 学习列表，顶部"演员卡"排列，可拖动排序</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-label">选形式 · 风格</div>
+            <div class="step-desc">剧照 ¥1.5 / 剧目视频 ¥9.9，7 种风格可选，全部可跳过 AI 自动选</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-label">预览脚本 · 微调</div>
+            <div class="step-desc">核心质量保障——台词高亮目标词，可单句编辑或整版重写（修改免费）</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <div class="step-label">开拍即走</div>
+            <div class="step-desc">3 秒确认 → 跳回刷视频 → 全局横条跟踪进度 → 杀青三重通知</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 定价 -->
+    <div class="info-card anim-5">
+      <div class="info-card-title">💳 定价 · 直接人民币</div>
+      <div class="pricing-row mt-sm">
+        <div class="pricing-card">
+          <div class="pricing-label">剧照</div>
+          <div class="pricing-price">¥1.5</div>
+          <div class="pricing-desc">/ 张 · 10 张 ¥12</div>
+        </div>
+        <div class="pricing-card best">
+          <div class="pricing-label">剧目视频 15s</div>
+          <div class="pricing-price">¥9.9</div>
+          <div class="pricing-desc">/ 段 · 5 段 ¥39</div>
+        </div>
+      </div>
+      <div class="mt-sm text-xs text-3">
+        充值档位：体验 ¥6 / 入门 ¥30 赠 ¥3 / 标准 ¥98 赠 ¥15 / 进阶 ¥298 赠 ¥60 / 旗舰 ¥598 赠 ¥150
+      </div>
+      <div class="mt-sm text-xs">
+        <span class="tag tag-orange">🔥 首充翻倍</span>
+        <span class="text-2" style="margin-left: 6px;">首次充值任意档位赠等额余额</span>
+      </div>
+    </div>
+
+    <!-- 学习效果 -->
+    <div class="info-card highlight anim-6">
+      <div class="info-card-title">📊 学习回流 · 月度验证</div>
+      <div class="compare-bar-section mt-sm">
+        <div class="compare-bar-row">
+          <div class="compare-bar-label">造剧场词汇</div>
+          <div class="compare-bar-track">
+            <div class="compare-bar-fill accent" style="width: 87%;"></div>
+          </div>
+          <div class="compare-bar-value accent">87%</div>
+        </div>
+        <div class="compare-bar-row">
+          <div class="compare-bar-label">普通收藏词</div>
+          <div class="compare-bar-track">
+            <div class="compare-bar-fill gray" style="width: 32%;"></div>
+          </div>
+          <div class="compare-bar-value gray">32%</div>
+        </div>
+      </div>
+      <div class="text-center text-sm text-2 mt-sm">
+        造剧场效果 <span class="text-accent fw-700">2.7×</span> + 跟读 + 微练习 + 重遇叠加 = 综合学习密度 <span class="text-accent fw-700">5.1×</span>
+      </div>
+    </div>
+
+    <!-- 头号剧场广场 -->
+    <div class="info-card anim-7">
+      <div class="info-card-title">🏛️ 头号剧场广场</div>
+      <div class="info-card-body">
+        全用户作品瀑布流（双列小红书式），底部 Tab 第 3 位。<br>
+        热门 / 最新双 Tab，点赞 + 收藏 + 关注。<br>
+        <span class="text-xs text-3">🔥 奖章：50 赞热门 / 精选 ⭐ +¥10 / 累计 500 赞金牌导演</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider-accent"></div>
+
+  <!-- ==================== 二、60秒排位赛 ==================== -->
+  <div class="section">
+    <div class="section-header anim-2">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+      </div>
+      <div>
+        <div class="section-num">PART 2</div>
+        <div class="section-title">60 秒排位赛</div>
+      </div>
+    </div>
+
+    <!-- 一句话定位 -->
+    <div class="info-card highlight anim-2">
+      <div class="info-card-body">
+        词汇竞技场——<strong style="color: var(--accent);">60 秒限时</strong>内比拼词汇反应速度与准确度。赛季制段位升降，全民参与排位。
+      </div>
+    </div>
+
+    <!-- 核心规则 -->
+    <div class="info-card anim-3">
+      <div class="info-card-title">⚙️ 核心规则</div>
+      <div class="compare-table mt-sm">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-1); font-weight: 600;">每局时长</td>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-2);">60 秒</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-1); font-weight: 600;">题型</td>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-2);">英译中 / 中译英 / 听音辨义 / 拼写 / 选同义</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-1); font-weight: 600;">得分</td>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-2);">正答 +15 分，连击加成 ×1.2~2.0，错答 -5 分</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-1); font-weight: 600;">赛季</td>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-2);">S1 初始赛季：2026.05.01 - 2026.07.31（3 个月）</td>
+          </tr>
+          <tr>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-1); font-weight: 600;">结算</td>
+            <td style="padding: 8px 0; font-size: 13px; color: var(--text-2);">赛季末按最终积分锁定段位，下赛季积分清空但段位保留</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- 段位体系 -->
+    <div class="info-card anim-4">
+      <div class="info-card-title">🏆 10 段位体系</div>
+      <div class="tier-list mt-sm">
+        <div class="tier-row">
+          <div class="tier-icon diamond">💎</div>
+          <div class="tier-info">
+            <div class="tier-name">钻石</div>
+            <div class="tier-detail">≥ 12,000 分</div>
+          </div>
+          <div class="tier-count">12 人</div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-icon platinum">⚪</div>
+          <div class="tier-info">
+            <div class="tier-name">铂金</div>
+            <div class="tier-detail">10,500 - 11,999 分</div>
+          </div>
+          <div class="tier-count">28 人</div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-icon gold">🥇</div>
+          <div class="tier-info">
+            <div class="tier-name">黄金 I · II · III</div>
+            <div class="tier-detail">8,200 - 10,499 分</div>
+          </div>
+          <div class="tier-count">448 人</div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-icon silver">🥈</div>
+          <div class="tier-info">
+            <div class="tier-name">白银 I · II · III</div>
+            <div class="tier-detail">5,500 - 8,199 分</div>
+          </div>
+          <div class="tier-count">1,967 人</div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-icon bronze">🥉</div>
+          <div class="tier-info">
+            <div class="tier-name">青铜 I · II</div>
+            <div class="tier-detail">0 - 5,499 分</div>
+          </div>
+          <div class="tier-count">2,440 人</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 排名榜 -->
+    <div class="info-card anim-5">
+      <div class="info-card-title flex-between">
+        <span>📋 赛季排行榜 <span class="text-3 text-xs">· 青铜 I</span></span>
+        <span class="text-xs text-3">1,284 人参赛</span>
+      </div>
+      <div class="mt-sm" style="background: var(--bg-2); border-radius: var(--radius-md); overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 30px 1fr 70px; gap: 10px; padding: 9px 14px; background: var(--bg-3); font-size: 10px; font-weight: 600; color: var(--text-3); letter-spacing: 0.5px;">
+          <div>#</div><div>玩家</div><div style="text-align: right;">分数</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 30px 1fr 70px; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--bg-3); font-size: 13px;">
+          <div style="color: var(--secondary); font-weight: 700;">1</div>
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-3); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">L</span>Luna</div>
+          <div style="text-align: right; font-weight: 700; color: var(--accent);">9,240</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 30px 1fr 70px; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--bg-3); font-size: 13px;">
+          <div style="color: #C0C0C0; font-weight: 700;">2</div>
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-3); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">M</span>Mike</div>
+          <div style="text-align: right; font-weight: 700; color: var(--accent);">8,710</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 30px 1fr 70px; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--bg-3); font-size: 13px;">
+          <div style="color: #CD7F32; font-weight: 700;">3</div>
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-3); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">S</span>Sarah</div>
+          <div style="text-align: right; font-weight: 700; color: var(--accent);">8,320</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 30px 1fr 70px; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--bg-3); font-size: 13px; color: var(--text-3);">
+          <div>4</div><div style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-3); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">J</span>Jack</div><div style="text-align: right; color: var(--text-2);">7,950</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 30px 1fr 70px; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--bg-3); font-size: 13px; color: var(--text-3);">
+          <div>5</div><div style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-3); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">E</span>Emma</div><div style="text-align: right; color: var(--text-2);">7,680</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 30px 1fr 70px; gap: 10px; padding: 11px 14px; background: var(--bg-accent); border-bottom: 1px solid rgba(255, 96, 15, 0.2); font-size: 13px;">
+          <div style="color: var(--text-3);">184</div>
+          <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 26px; height: 26px; border-radius: 50%; background: var(--accent-subtle); border: 1px solid rgba(255, 96, 15, 0.4); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--accent);">Y</span><span style="color: var(--accent); font-weight: 600;">你</span></div>
+          <div style="text-align: right; font-weight: 700; color: var(--accent);">4,280</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 排位赛与造剧场的联动 -->
+    <div class="info-card highlight anim-6">
+      <div class="info-card-title">🔗 与造剧场的联动</div>
+      <div class="info-card-body">
+        排位赛的词库来自<strong style="color: var(--accent);">用户收藏夹 + 学习列表</strong>，成绩实时反馈到造剧场导演候选名单的学习紧迫度维度。排位赛季榜 Top 10 的作品将自动推送到<span class="text-accent">头号剧场精选</span>。
+      </div>
+    </div>
+  </div>
+
+  <div class="divider-accent"></div>
+
+  <!-- ==================== 三、总结 ==================== -->
+  <div class="section">
+    <div class="section-header anim-2">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <div>
+        <div class="section-num">SUMMARY</div>
+        <div class="section-title">北极星指标</div>
+      </div>
+    </div>
+
+    <div class="info-card anim-3">
+      <div class="info-card-body" style="font-size: 13px; line-height: 2;">
+        <div class="flex-between">
+          <span>造剧场月活渗透率</span>
+          <span class="text-accent fw-700">≥ 25%</span>
+        </div>
+        <div class="flex-between">
+          <span>首次进入 → 完成生成转化率</span>
+          <span class="text-accent fw-700">≥ 60%</span>
+        </div>
+        <div class="flex-between">
+          <span>免费→付费转化（30 日内）</span>
+          <span class="text-accent fw-700">≥ 8%</span>
+        </div>
+        <div class="flex-between">
+          <span>学习回流（生成→做练习）</span>
+          <span class="text-accent fw-700">≥ 40%</span>
+        </div>
+        <div class="flex-between">
+          <span>排位赛 DAU 渗透率</span>
+          <span class="text-accent fw-700">≥ 20%</span>
+        </div>
+        <div class="flex-between">
+          <span>广场 → 造剧 7 日转化</span>
+          <span class="text-accent fw-700">≥ 10%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card highlight anim-4">
+      <div class="info-card-body" style="text-align: center; font-size: 14px; line-height: 1.8;">
+        <div class="text-2">v0.7.0 上线时间</div>
+        <div class="big-number" style="font-size: 40px;">2026.05</div>
+        <div class="text-sm text-3 mt-sm">MVP 首发 · 4-6 周后 v0.7.1 迭代</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 底部导航 -->
+<div class="bottom-bar">
+  <button class="btn-secondary" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <svg viewBox="0 0 24 24" style="width: 16px; height: 16px; stroke-width: 1.5; fill: none; stroke: currentColor; vertical-align: -3px; margin-right: 4px;"><polyline points="18 15 12 9 6 15"/></svg>
+    回顶部
+  </button>
+  <button class="btn-primary">
+    开始造一场 🎬
+  </button>
+</div>
+
+</body>
+</html>

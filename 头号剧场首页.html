@@ -1,0 +1,2391 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>造剧场 · 头号听力</title>
+<style>
+:root {
+  --accent: #FF600F; --accent-hover: #E85500; --accent-light: #FF7A33;
+  --accent-glow: rgba(255, 96, 15, 0.35); --accent-subtle: rgba(255, 96, 15, 0.1);
+  --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+  --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+  --bg-0: #000; --bg-1: #111; --bg-2: #1A1A1A; --bg-3: #222; --bg-accent: #2A1508;
+  --secondary: #FFB800; --success: #00C853; --info: #448AFF;
+  --text-1: #fff; --text-2: #AAA; --text-3: #666;
+  --radius-sm: 6px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
+  --radius-full: 999px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+*::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; -webkit-tap-highlight-color: transparent; }
+html, body {
+  background: var(--bg-0); color: var(--text-1);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", Arial, sans-serif;
+  font-size: 14px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; font-size: inherit; transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease; }
+button:active { transform: scale(0.97); }
+
+/* ─── App 容器 ─── */
+.app {
+  max-width: 402px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: var(--bg-0);
+  position: relative;
+  overflow: hidden;
+}
+.app::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(255,96,15,0.08), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(255,184,0,0.04), transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── 屏幕系统 ─── */
+.screen {
+  display: none;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  padding-bottom: 28px;
+}
+.screen.active { display: block; animation: screenIn 0.35s ease; }
+@keyframes screenIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── 状态栏 ─── */
+.status-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px 8px;
+  font-size: 13px; font-weight: 600;
+}
+.status-bar .signal { display: flex; align-items: center; gap: 6px; }
+.status-bar .signal .bars { display: flex; gap: 2px; align-items: flex-end; }
+.status-bar .signal .bars span { width: 3px; background: var(--text-1); border-radius: 1px; }
+.status-bar .signal .bars span:nth-child(1) { height: 4px; }
+.status-bar .signal .bars span:nth-child(2) { height: 6px; }
+.status-bar .signal .bars span:nth-child(3) { height: 8px; }
+.status-bar .signal .bars span:nth-child(4) { height: 10px; }
+.status-bar .battery {
+  width: 22px; height: 11px;
+  border: 1px solid var(--text-1);
+  border-radius: 3px;
+  position: relative;
+  padding: 1px;
+}
+.status-bar .battery::after {
+  content: ''; position: absolute;
+  right: -3px; top: 3px; width: 1.5px; height: 5px;
+  background: var(--text-1);
+  border-radius: 0 1px 1px 0;
+}
+.status-bar .battery span {
+  display: block; height: 100%; width: 80%;
+  background: var(--text-1); border-radius: 1px;
+}
+
+/* ─── 顶部页面 Header ─── */
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 20px 16px;
+}
+.page-header .title { font-size: 22px; font-weight: 800; letter-spacing: -0.4px; }
+.page-header .meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.page-header .actions { display: flex; gap: 8px; }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--bg-1); color: var(--text-2);
+  display: grid; place-items: center;
+}
+.icon-btn:hover { background: var(--bg-2); color: var(--text-1); }
+
+/* ─── 二级页面 Header ─── */
+.sub-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 16px 16px;
+}
+.back-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--bg-1); color: var(--text-1);
+  display: grid; place-items: center;
+}
+.sub-header .title { flex: 1; font-size: 16px; font-weight: 700; }
+.sub-header .step { font-size: 11px; color: var(--text-3); }
+
+/* ═══════════════════════════════════════
+   ★ 右侧悬浮 Dock 导航 ★
+   ═══════════════════════════════════════ */
+.side-dock {
+  position: fixed;
+  top: 55%;
+  right: max(10px, calc(50vw - 191px));
+  transform: translateY(-50%);
+  z-index: 90;
+  background: rgba(18,18,18,0.78);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 28px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5),
+              0 0 0 1px rgba(255,255,255,0.03) inset;
+  animation: dockIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.side-dock.hidden {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-50%) translateX(20px) scale(0.9);
+  transition: all 0.3s ease;
+}
+@keyframes dockIn {
+  from { opacity: 0; transform: translateY(-50%) translateX(30px) scale(0.85); }
+  to { opacity: 1; transform: translateY(-50%) translateX(0) scale(1); }
+}
+.dock-item {
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 7px 4px;
+  border-radius: 18px;
+  color: var(--text-3);
+  position: relative;
+}
+.dock-item .icon-wrap {
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  transition: transform 0.2s ease;
+}
+.dock-item .label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+}
+.dock-item.active {
+  background: rgba(255,96,15,0.12);
+  color: var(--accent);
+}
+.dock-item.active .icon-wrap { transform: scale(1.05); }
+.dock-item:not(.active):hover {
+  background: rgba(255,255,255,0.04);
+  color: var(--text-2);
+}
+
+/* 中间「开拍」按钮 —— 主操作 */
+.dock-item.create {
+  padding: 4px 4px 6px;
+  background: transparent !important;
+  color: var(--accent);
+}
+.dock-item.create .icon-wrap {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  color: white;
+  box-shadow: 0 6px 20px var(--accent-glow), 0 0 0 1px rgba(255,96,15,0.15);
+  position: relative;
+}
+.dock-item.create .icon-wrap::after {
+  content: '';
+  position: absolute; inset: -3px;
+  border-radius: 50%;
+  background: var(--accent-gradient);
+  opacity: 0;
+  z-index: -1;
+  filter: blur(6px);
+  animation: createGlow 2.4s ease-in-out infinite;
+}
+@keyframes createGlow {
+  0%, 100% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+.dock-item.create .label {
+  margin-top: 4px;
+  font-weight: 800;
+}
+
+/* dock 分隔线（视觉上把 create 跟两侧分开） */
+.dock-divider {
+  height: 1px;
+  margin: 2px 8px;
+  background: rgba(255,255,255,0.06);
+}
+
+/* ───────────────────────────────────────
+   屏 1: 我的剧场首页
+   ─────────────────────────────────────── */
+.shooting-bar {
+  margin: 0 16px 16px;
+  background: linear-gradient(135deg, rgba(255,96,15,0.14), rgba(255,96,15,0.03));
+  border: 1px solid rgba(255,96,15,0.3);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+}
+.shooting-bar::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,96,15,0.06), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+  pointer-events: none;
+}
+.shooting-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--bg-accent); color: var(--accent);
+  display: grid; place-items: center; position: relative;
+}
+.shooting-icon .pulse-dot {
+  position: absolute; top: 5px; right: 5px;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 rgba(255,96,15,0.7);
+  animation: pulse-dot 1.5s infinite;
+}
+.shooting-info { flex: 1; min-width: 0; }
+.shooting-info .row1 {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700;
+}
+.shooting-info .row1 .eta {
+  font-weight: 500; color: var(--text-3); font-size: 11px; margin-left: auto;
+}
+.shooting-info .row2 { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.progress-track {
+  flex: 1; height: 4px; background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-full); overflow: hidden;
+}
+.progress-fill {
+  height: 100%; background: var(--accent-gradient-h);
+  border-radius: var(--radius-full);
+  transition: width 0.6s ease;
+}
+.shooting-info .pct {
+  font-family: "Saira", monospace;
+  font-size: 11px; font-weight: 700; color: var(--accent);
+}
+
+.section-title {
+  padding: 4px 20px 12px;
+  font-size: 13px; font-weight: 700; color: var(--text-1);
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+.section-title .hint { color: var(--text-3); font-weight: 500; font-size: 11px; margin-left: auto; }
+
+.hero-block { padding: 0 20px 14px; padding-right: 76px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: var(--radius-full);
+  background: var(--bg-accent); color: var(--accent);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.hero-title {
+  font-size: 22px; font-weight: 800; line-height: 1.25;
+  margin-top: 10px; letter-spacing: -0.4px;
+}
+.hero-subtitle {
+  font-size: 12px; color: var(--text-2); margin-top: 4px;
+}
+.hero-subtitle strong { color: var(--secondary); }
+
+.candidate-list { display: flex; flex-direction: column; gap: 12px; padding: 0 16px; padding-right: 72px; }
+.candidate-card {
+  background: var(--bg-2);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  position: relative; overflow: hidden;
+}
+.candidate-card.featured {
+  background: linear-gradient(135deg, rgba(255,96,15,0.10), var(--bg-2) 60%);
+  border: 1px solid rgba(255,96,15,0.35);
+  box-shadow: 0 0 24px rgba(255,96,15,0.08);
+}
+.candidate-card.featured::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,96,15,0.06) 40%, rgba(255,96,15,0.06) 60%, transparent);
+  background-size: 200% 100%;
+  animation: shimmer 4s infinite;
+  pointer-events: none;
+}
+.cc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.cc-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; color: var(--text-2);
+  padding: 4px 8px; border-radius: var(--radius-sm);
+  background: var(--bg-3);
+}
+.cc-tag.hot { background: var(--bg-accent); color: var(--accent); }
+.cc-fresh {
+  font-size: 10px; color: var(--text-3);
+  display: flex; align-items: center; gap: 4px;
+}
+.cc-title {
+  font-size: 18px; font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+.cc-words {
+  font-family: "Saira", -apple-system, monospace;
+  font-size: 13px; color: var(--text-1);
+  margin-bottom: 8px; letter-spacing: 0.2px;
+}
+.cc-words .dot { color: var(--accent); margin: 0 6px; }
+.cc-tagline {
+  font-size: 12px; color: var(--text-3);
+  font-style: italic; margin-bottom: 14px;
+  padding-left: 10px; border-left: 2px solid var(--bg-3);
+}
+.cc-actions { display: flex; gap: 8px; }
+.cc-btn-primary {
+  flex: 1;
+  background: var(--accent-gradient);
+  color: white; font-weight: 700; font-size: 14px;
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px var(--accent-glow);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.cc-btn-primary .price { font-family: "Saira", monospace; font-weight: 800; }
+.btn-ghost {
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-3);
+  color: var(--text-2);
+  font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* 已完成作品 */
+.zone-title {
+  padding: 16px 20px 10px;
+  font-size: 12px; font-weight: 700; color: var(--text-2);
+  display: flex; align-items: center; gap: 8px;
+}
+.zone-title .count {
+  padding: 1px 8px; border-radius: var(--radius-full);
+  background: var(--bg-3); color: var(--text-2);
+  font-size: 10px;
+}
+.completed-list { padding: 0 16px; padding-right: 72px; display: flex; flex-direction: column; gap: 8px; }
+.work-card {
+  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex; align-items: center; gap: 12px;
+}
+.work-thumb {
+  width: 56px; height: 76px;
+  border-radius: var(--radius-sm);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+.work-thumb.g1 { background: linear-gradient(135deg, #2A1508, #4a1a05); }
+.work-thumb.g2 { background: linear-gradient(135deg, #1A2540, #0F1530); }
+.work-thumb.g3 { background: linear-gradient(135deg, #1F1A2E, #15101F); }
+.work-thumb.g4 { background: linear-gradient(135deg, #1A3024, #0A1F15); }
+.work-thumb .play-mini {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  background: rgba(0,0,0,0.25); color: white;
+}
+.work-info { flex: 1; min-width: 0; }
+.work-title {
+  font-size: 14px; font-weight: 700;
+  margin-bottom: 4px;
+}
+.work-words {
+  font-family: "Saira", monospace;
+  font-size: 11px; color: var(--text-2);
+}
+.work-words .dot { color: var(--text-3); margin: 0 3px; }
+.work-meta {
+  font-size: 10px; color: var(--text-3); margin-top: 4px;
+}
+
+/* ───────────────────────────────────────
+   屏 2: 选词
+   ─────────────────────────────────────── */
+.selected-bar {
+  margin: 0 16px 14px;
+  background: var(--bg-2);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+}
+.sb-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.sb-label { font-size: 12px; color: var(--text-2); font-weight: 600; }
+.sb-counter {
+  font-family: "Saira", monospace;
+  font-size: 13px; font-weight: 700;
+}
+.sb-counter .cur { color: var(--accent); }
+.sb-counter .total { color: var(--text-3); }
+.actor-cards { display: flex; gap: 8px; flex-wrap: wrap; min-height: 32px; }
+.actor-card {
+  padding: 6px 10px;
+  background: var(--bg-accent);
+  border: 1px solid rgba(255,96,15,0.3);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  font-family: "Saira", -apple-system, monospace;
+  animation: chipIn 0.3s ease;
+}
+@keyframes chipIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+.actor-card .num {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--accent); color: white;
+  display: grid; place-items: center;
+  font-size: 9px; font-weight: 800;
+}
+.actor-card .x { color: var(--text-3); display: grid; place-items: center; cursor: pointer; }
+.actor-empty-hint {
+  padding: 6px 10px;
+  color: var(--text-3); font-size: 12px;
+}
+
+.word-pool { padding: 0 16px 14px; }
+.word-pool-title {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; font-weight: 600; color: var(--text-2);
+  margin-bottom: 10px;
+}
+.word-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.word-chip {
+  background: var(--bg-2);
+  padding: 11px 12px;
+  border-radius: var(--radius-md);
+  display: flex; flex-direction: column; gap: 2px;
+  text-align: left;
+  border: 1px solid transparent;
+}
+.word-chip.selected {
+  background: var(--bg-accent);
+  border-color: rgba(255,96,15,0.4);
+}
+.word-chip .w {
+  font-family: "Saira", monospace;
+  font-size: 13px; font-weight: 700;
+  color: var(--text-1);
+}
+.word-chip.selected .w { color: var(--accent); }
+.word-chip .meaning { font-size: 11px; color: var(--text-3); }
+
+.pricing-anchor {
+  margin: 0 16px 14px;
+  background: linear-gradient(180deg, rgba(255,96,15,0.08), transparent);
+  border: 1px solid rgba(255,96,15,0.2);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.pa-head { padding: 14px; display: flex; align-items: center; gap: 12px; }
+.pa-icon {
+  width: 42px; height: 42px;
+  border-radius: 11px;
+  background: var(--bg-accent); color: var(--accent);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.pa-info { flex: 1; min-width: 0; }
+.pa-title { font-size: 13px; font-weight: 700; }
+.pa-formula {
+  font-size: 11px; color: var(--text-2);
+  margin-top: 4px; display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap;
+}
+.pa-formula .price { font-family: "Saira", monospace; color: var(--accent); font-weight: 800; }
+.pa-formula .equals { color: var(--text-3); }
+.pa-formula .per {
+  background: var(--bg-accent); color: var(--accent);
+  padding: 2px 6px; border-radius: var(--radius-sm); font-weight: 700;
+}
+.pa-toggle {
+  width: 100%;
+  background: rgba(255,96,15,0.06);
+  padding: 9px 14px;
+  font-size: 11px; font-weight: 600;
+  color: var(--accent);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  border-top: 1px solid rgba(255,96,15,0.15);
+}
+.pa-toggle .chev { transition: transform 0.3s ease; display: inline-flex; }
+.pa-toggle.open .chev { transform: rotate(180deg); }
+.pa-list {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  padding: 0 14px;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.4s ease;
+}
+.pa-list.open { max-height: 600px; padding: 12px 14px 14px; }
+.pa-item {
+  display: flex; align-items: flex-start; gap: 6px;
+  padding: 7px;
+  background: var(--bg-2);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+}
+.pa-item .num {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--bg-accent); color: var(--accent);
+  display: grid; place-items: center;
+  font-size: 9px; font-weight: 800;
+  font-family: "Saira", monospace;
+  flex-shrink: 0;
+}
+.pa-item .text { color: var(--text-2); line-height: 1.4; }
+.pa-item .text strong { color: var(--text-1); font-weight: 700; }
+.pa-item.done .num { background: rgba(0,200,83,0.15); color: var(--success); }
+
+/* 底部固定操作栏 */
+.bottom-cta {
+  position: fixed;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 402px;
+  background: rgba(10,10,10,0.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 14px 16px 24px;
+  z-index: 100;
+}
+.bottom-cta .row {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.bottom-cta .price-area { display: flex; align-items: baseline; gap: 4px; }
+.bottom-cta .price-symbol {
+  font-family: "Saira", monospace;
+  font-size: 16px; font-weight: 700; color: var(--accent);
+}
+.bottom-cta .price-num {
+  font-family: "Saira", monospace;
+  font-size: 28px; font-weight: 800; color: var(--accent);
+  letter-spacing: -1px;
+}
+.bottom-cta .price-unit { font-size: 12px; color: var(--text-2); margin-left: 4px; }
+.bottom-cta .anchor-mini {
+  font-size: 10px; color: var(--text-3); text-align: right;
+}
+.bottom-cta .anchor-mini strong { color: var(--text-2); }
+.bottom-cta .cta {
+  width: 100%;
+  background: var(--accent-gradient);
+  color: white; font-weight: 800; font-size: 15px;
+  padding: 13px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 20px var(--accent-glow);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.bottom-cta .cta:disabled {
+  background: var(--bg-3);
+  color: var(--text-3);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.bottom-cta .cta.pulse { animation: pulse-glow 2.5s infinite; }
+
+.screen.has-bottom-cta { padding-bottom: 130px; }
+
+/* ───────────────────────────────────────
+   屏 3: 选形式
+   ─────────────────────────────────────── */
+.form-options {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  padding: 0 16px;
+}
+.form-card {
+  background: var(--bg-2);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  position: relative; overflow: hidden;
+  text-align: left;
+  border: 1px solid transparent;
+}
+.form-card.selected {
+  background: linear-gradient(135deg, rgba(255,96,15,0.12), var(--bg-2));
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(255,96,15,0.15);
+}
+.form-card .icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--bg-accent); color: var(--accent);
+  display: grid; place-items: center;
+  margin-bottom: 10px;
+}
+.form-card .name { font-size: 14px; font-weight: 700; }
+.form-card .meta { font-size: 11px; color: var(--text-3); margin-top: 4px; line-height: 1.4; }
+.form-card .badge {
+  position: absolute; top: 12px; right: 12px;
+  padding: 3px 7px; border-radius: var(--radius-sm);
+  font-size: 9px; font-weight: 700;
+  background: rgba(0,200,83,0.15); color: var(--success);
+}
+.form-card .badge.locked { background: rgba(255,184,0,0.15); color: var(--secondary); }
+
+.style-grid {
+  padding: 0 16px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.style-card {
+  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  padding: 12px 10px;
+  text-align: center;
+  border: 1px solid transparent;
+}
+.style-card.selected {
+  background: var(--bg-accent);
+  border-color: rgba(255,96,15,0.4);
+}
+.style-card .si {
+  width: 32px; height: 32px; margin: 0 auto 8px;
+  border-radius: 8px;
+  background: var(--bg-3);
+  display: grid; place-items: center;
+  color: var(--text-2);
+}
+.style-card.selected .si { background: rgba(255,96,15,0.2); color: var(--accent); }
+.style-card .sn { font-size: 12px; font-weight: 600; color: var(--text-1); }
+.style-card .sd { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+.style-card.selected .sn { color: var(--accent); }
+
+/* ───────────────────────────────────────
+   屏 4: 脚本预览
+   ─────────────────────────────────────── */
+.script-meta {
+  margin: 0 16px 12px;
+  padding: 12px 14px;
+  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; gap: 12px;
+  font-size: 12px;
+}
+.script-meta .label { color: var(--text-3); font-size: 11px; }
+.script-meta .v { color: var(--text-1); font-weight: 600; }
+.script-meta .divider { width: 1px; height: 14px; background: var(--bg-3); }
+.script-meta .ready {
+  margin-left: auto;
+  padding: 3px 8px; border-radius: var(--radius-sm);
+  background: rgba(0,200,83,0.15); color: var(--success);
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; gap: 4px;
+}
+.script-card {
+  margin: 0 16px;
+  background: var(--bg-2);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+.scene-line {
+  font-size: 11px; color: var(--text-3);
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--bg-3);
+  display: flex; align-items: center; gap: 6px;
+}
+.dialogue { margin-bottom: 14px; }
+.dialogue:last-child { margin-bottom: 0; }
+.character {
+  font-size: 11px; font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.character.male { color: var(--info); }
+.character .ch-icon {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(255,184,0,0.15);
+  display: grid; place-items: center;
+  font-size: 10px;
+}
+.character.male .ch-icon { background: rgba(68,138,255,0.15); }
+.line-en { font-size: 14px; color: var(--text-1); line-height: 1.55; font-weight: 500; }
+.line-en .target {
+  background: rgba(255,96,15,0.15);
+  color: var(--accent);
+  padding: 1px 4px; border-radius: 3px;
+  font-weight: 700;
+}
+.line-zh { font-size: 12px; color: var(--text-3); line-height: 1.5; margin-top: 4px; }
+.target-words {
+  margin: 14px 16px 0;
+  padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(255,96,15,0.06), transparent);
+  border: 1px solid rgba(255,96,15,0.2);
+  border-radius: var(--radius-md);
+}
+.tw-label {
+  font-size: 11px; color: var(--text-2); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.tw-list { display: flex; gap: 6px; flex-wrap: wrap; }
+.tw-pill {
+  padding: 4px 10px; border-radius: var(--radius-full);
+  background: var(--bg-accent); color: var(--accent);
+  font-size: 12px; font-weight: 700;
+  font-family: "Saira", monospace;
+}
+.script-actions {
+  display: flex; gap: 10px;
+  padding: 16px 16px 12px;
+}
+.script-actions button { flex: 1; }
+.btn-action {
+  padding: 11px;
+  border-radius: var(--radius-md);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-action.free { background: rgba(0,200,83,0.08); color: var(--success); }
+.btn-action.regenerating { pointer-events: none; opacity: 0.7; }
+.btn-action .spinner {
+  width: 12px; height: 12px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ───────────────────────────────────────
+   屏 5: 等待
+   ─────────────────────────────────────── */
+.wait-hero { text-align: center; padding: 24px 16px 8px; }
+.wait-icon {
+  width: 72px; height: 72px;
+  margin: 0 auto 14px;
+  border-radius: 20px;
+  background: var(--accent-gradient);
+  display: grid; place-items: center;
+  box-shadow: 0 8px 32px var(--accent-glow);
+  animation: pulse-glow 2s infinite;
+}
+.wait-stage-name { font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+.wait-stage-name .dot-anim { display: inline-block; animation: dots 1.4s infinite; }
+.wait-desc { font-size: 12px; color: var(--text-2); margin-top: 6px; }
+.wait-stages {
+  margin: 20px 16px 0;
+  display: flex; flex-direction: column;
+  position: relative;
+}
+.wait-stages::before {
+  content: '';
+  position: absolute;
+  left: 17px; top: 24px; bottom: 24px;
+  width: 2px;
+  background: var(--bg-3);
+}
+.wait-stages-progress {
+  position: absolute;
+  left: 17px; top: 24px;
+  width: 2px;
+  background: var(--accent);
+  transition: height 0.6s ease;
+  z-index: 0;
+}
+.stage {
+  display: flex; gap: 14px;
+  padding: 10px 0;
+  position: relative; z-index: 1;
+}
+.stage-marker {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+  border: 2px solid var(--bg-3);
+  color: var(--text-3);
+  transition: all 0.4s ease;
+}
+.stage.done .stage-marker {
+  background: rgba(0,200,83,0.15);
+  border-color: var(--success);
+  color: var(--success);
+}
+.stage.active .stage-marker {
+  background: var(--accent-gradient);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 0 16px var(--accent-glow);
+  animation: pulse-glow 1.5s infinite;
+}
+.stage-content { flex: 1; padding: 4px 0; }
+.stage-title { font-size: 14px; font-weight: 700; }
+.stage.done .stage-title { color: var(--text-2); }
+.stage-meta { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+.stage.done .stage-meta { color: var(--success); }
+.stage.active .stage-meta { color: var(--accent); }
+
+.wait-progress {
+  margin: 20px 16px;
+  padding: 14px;
+  background: var(--bg-2);
+  border-radius: var(--radius-lg);
+}
+.wp-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; margin-bottom: 8px;
+}
+.wp-row .label { color: var(--text-2); }
+.wp-row .num {
+  font-family: "Saira", monospace;
+  color: var(--accent); font-weight: 800; font-size: 16px;
+}
+.wp-eta { font-size: 11px; color: var(--text-3); margin-top: 8px; display: flex; align-items: center; gap: 6px; }
+
+.wait-actions { margin: 16px; display: flex; gap: 10px; }
+.wait-actions button {
+  flex: 1; padding: 12px; border-radius: var(--radius-md);
+  font-weight: 600; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.wait-actions .leave {
+  background: var(--accent-gradient); color: white;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+.wait-actions .notify { background: var(--bg-2); color: var(--text-2); }
+
+/* ───────────────────────────────────────
+   屏 6: 杀青
+   ─────────────────────────────────────── */
+.victory {
+  margin: 0 16px;
+  background: linear-gradient(180deg, rgba(255,96,15,0.18), var(--bg-2));
+  border-radius: var(--radius-lg);
+  padding: 28px 16px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.victory::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,96,15,0.12) 0%, transparent 30%),
+    radial-gradient(circle at 80% 70%, rgba(255,184,0,0.08) 0%, transparent 30%);
+  pointer-events: none;
+}
+.victory-stamp {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: var(--radius-full);
+  background: var(--accent); color: white;
+  font-size: 12px; font-weight: 800; letter-spacing: 1px;
+  box-shadow: 0 4px 16px var(--accent-glow);
+  margin-bottom: 14px;
+  animation: stampIn 0.5s ease 0.2s backwards;
+}
+@keyframes stampIn {
+  from { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+.victory-title { font-size: 24px; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 6px; }
+.victory-words {
+  font-family: "Saira", monospace;
+  font-size: 13px; color: var(--text-2);
+  margin-bottom: 18px;
+}
+.victory-words .dot { color: var(--accent); margin: 0 4px; }
+.victory-actions { display: flex; gap: 8px; }
+.victory-actions button {
+  flex: 1; padding: 11px;
+  border-radius: var(--radius-md);
+  font-weight: 700; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.victory-actions .play {
+  background: var(--accent-gradient); color: white;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+.victory-actions .share, .victory-actions .study { background: var(--bg-3); color: var(--text-1); }
+
+.save-row {
+  margin: 12px 16px 16px;
+  padding: 12px 14px;
+  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px;
+}
+.save-row .icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--bg-accent); color: var(--accent);
+  display: grid; place-items: center;
+}
+.save-row .info { flex: 1; }
+.save-row .info .t { color: var(--text-1); font-weight: 600; }
+.save-row .info .s { color: var(--text-3); font-size: 11px; margin-top: 2px; }
+.save-row .arrow { color: var(--text-3); }
+
+/* ───────────────────────────────────────
+   屏 7: 头号剧场（广场）
+   ─────────────────────────────────────── */
+.square-tabs { display: flex; gap: 6px; padding: 4px 16px 14px; padding-right: 76px; }
+.square-tab {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; gap: 5px;
+}
+.square-tab.active { background: var(--text-1); color: var(--bg-0); }
+
+.waterfall { padding: 0 16px; padding-right: 72px; column-count: 2; column-gap: 8px; }
+.wf-card {
+  break-inside: avoid;
+  margin-bottom: 8px;
+  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+  cursor: pointer;
+}
+.wf-cover { width: 100%; position: relative; }
+.wf-cover.h1 { aspect-ratio: 9/16; background: linear-gradient(135deg, #2A1508, #4a1a05); }
+.wf-cover.h2 { aspect-ratio: 9/12; background: linear-gradient(135deg, #1A2540, #0F1530); }
+.wf-cover.h3 { aspect-ratio: 9/14; background: linear-gradient(135deg, #1F1A2E, #15101F); }
+.wf-cover.h4 { aspect-ratio: 9/11; background: linear-gradient(135deg, #1A3024, #0A1F15); }
+.wf-cover.h5 { aspect-ratio: 9/13; background: linear-gradient(135deg, #401A1A, #2A0A0A); }
+.wf-cover .play-overlay {
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  color: rgba(255,255,255,0.85);
+  background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.4));
+}
+.wf-cover .duration {
+  position: absolute; top: 6px; right: 6px;
+  padding: 2px 6px; border-radius: var(--radius-sm);
+  background: rgba(0,0,0,0.6);
+  color: white; font-size: 10px; font-weight: 600;
+  font-family: "Saira", monospace;
+}
+.wf-info { padding: 8px 10px 10px; }
+.wf-title {
+  font-size: 12px; font-weight: 600;
+  line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+.wf-author {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 10px; color: var(--text-3);
+  margin-bottom: 6px;
+}
+.wf-avatar {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: linear-gradient(135deg, #444, #222);
+  flex-shrink: 0;
+}
+.wf-stats { display: flex; align-items: center; gap: 8px; font-size: 10px; color: var(--text-3); }
+.wf-stats .stat { display: flex; align-items: center; gap: 3px; }
+.wf-stats .liked { color: var(--accent); }
+
+/* ───────────────────────────────────────
+   屏 8: 剧目详情
+   ─────────────────────────────────────── */
+.video-stage {
+  margin: 0 16px;
+  aspect-ratio: 9/12;
+  background: linear-gradient(135deg, #2A1508, #4a1a05 50%, #1a0a02);
+  border-radius: var(--radius-lg);
+  position: relative; overflow: hidden;
+  display: grid; place-items: center;
+}
+.video-stage::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,96,15,0.15), transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(255,184,0,0.08), transparent 40%);
+}
+.play-circle {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px);
+  display: grid; place-items: center;
+  color: white;
+  border: 2px solid rgba(255,255,255,0.2);
+  z-index: 1;
+}
+.play-circle:hover { background: rgba(255,255,255,0.2); }
+.video-meta-overlay { position: absolute; bottom: 16px; left: 16px; right: 16px; z-index: 2; }
+.vmo-title {
+  font-size: 20px; font-weight: 800; margin-bottom: 4px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.vmo-meta { font-size: 11px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 8px; }
+
+.subtitle-modes { display: flex; gap: 6px; padding: 14px 16px 12px; overflow-x: auto; }
+.sm-chip {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  background: var(--bg-2);
+  color: var(--text-2);
+  font-size: 12px; font-weight: 600;
+  white-space: nowrap;
+}
+.sm-chip.active {
+  background: var(--accent-gradient); color: white;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.target-words-row { padding: 0 16px 16px; display: flex; gap: 6px; flex-wrap: wrap; }
+.tw-chip {
+  padding: 6px 12px; border-radius: var(--radius-full);
+  background: var(--bg-accent); color: var(--accent);
+  font-size: 12px; font-weight: 700;
+  font-family: "Saira", monospace;
+  display: flex; align-items: center; gap: 6px;
+}
+
+.detail-section {
+  margin: 0 16px 12px;
+  background: var(--bg-2);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+}
+.ds-title {
+  font-size: 13px; font-weight: 700;
+  margin-bottom: 12px;
+  display: flex; align-items: center; gap: 6px;
+}
+.ds-title .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+.ds-title .meta { margin-left: auto; font-size: 10px; color: var(--secondary); font-weight: 600; }
+
+.learn-actions { display: flex; flex-direction: column; gap: 8px; }
+.learn-action {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px;
+  background: var(--bg-1);
+  border-radius: var(--radius-md);
+  text-align: left;
+  width: 100%;
+}
+.learn-action.primary {
+  background: linear-gradient(135deg, rgba(255,96,15,0.12), var(--bg-1));
+  border: 1px solid rgba(255,96,15,0.25);
+}
+.la-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--bg-3); color: var(--text-2);
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.learn-action.primary .la-icon { background: var(--bg-accent); color: var(--accent); }
+.la-info { flex: 1; }
+.la-info .t { font-size: 13px; font-weight: 700; }
+.la-info .s { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+.info-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+.info-row .label { font-size: 11px; color: var(--text-3); margin-bottom: 2px; }
+.info-row .value { font-size: 13px; font-weight: 600; color: var(--text-1); }
+
+/* ─── Toast ─── */
+.toast {
+  position: fixed;
+  top: 60px; left: 50%; transform: translateX(-50%) translateY(-200%);
+  background: rgba(20,20,20,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { color: var(--success); }
+.toast.success svg { color: var(--success); }
+.toast.info svg { color: var(--accent); }
+
+/* ─── Modal ─── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  animation: overlayIn 0.25s ease;
+}
+.modal-overlay.show { display: flex; }
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  width: 100%; max-width: 402px;
+  background: linear-gradient(180deg, rgba(255,96,15,0.12), var(--bg-1) 30%);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 28px 20px 28px;
+  text-align: center;
+  position: relative; overflow: hidden;
+  border: 1px solid rgba(255,96,15,0.2);
+  border-bottom: none;
+  animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes modalIn { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255,96,15,0.18), transparent 50%);
+  pointer-events: none;
+}
+.sm-icon-big {
+  width: 64px; height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 18px;
+  background: var(--accent-gradient);
+  display: grid; place-items: center;
+  box-shadow: 0 8px 32px var(--accent-glow);
+}
+.sm-title { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 6px; }
+.sm-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 14px; }
+.sm-eta-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: var(--radius-md);
+  background: var(--bg-2);
+  font-size: 12px; color: var(--text-2);
+  margin-bottom: 16px;
+}
+.sm-eta-pill svg { color: var(--secondary); }
+.sm-actions { display: flex; gap: 10px; }
+.sm-actions button { flex: 1; padding: 13px; border-radius: var(--radius-md); font-size: 14px; font-weight: 700; }
+.sm-actions .browse {
+  background: var(--accent-gradient); color: white;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+.sm-actions .check { background: var(--bg-2); color: var(--text-1); }
+
+/* ─── 通用动画 ─── */
+@keyframes shimmer { 0% { background-position: -100% 0; } 100% { background-position: 200% 0; } }
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,96,15,0.7); }
+  50% { box-shadow: 0 0 0 8px rgba(255,96,15,0); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 4px 20px var(--accent-glow); }
+  50% { box-shadow: 0 4px 32px rgba(255,96,15,0.5); }
+}
+@keyframes dots {
+  0%, 20% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ═══ 屏 1: 我的剧场首页 ═══ -->
+  <section class="screen active" data-screen="home">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="signal">
+        <div class="bars"><span></span><span></span><span></span><span></span></div>
+        <div class="battery"><span></span></div>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <div class="title">造剧场</div>
+        <div class="meta">头号听力 · 你的英语剧场</div>
+      </div>
+      <div class="actions">
+        <button class="icon-btn" data-toast="搜索（演示）">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+        <button class="icon-btn" data-toast="通知（演示）">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="shootingBar" class="shooting-bar" style="display:none;" onclick="goToWaiting()">
+      <div class="shooting-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="14" height="12" rx="2"></rect><path d="M22 8l-6 4 6 4z"></path></svg>
+        <span class="pulse-dot"></span>
+      </div>
+      <div class="shooting-info">
+        <div class="row1">
+          <span id="shootingTitle">「办公室对决」拍摄中</span>
+          <span class="eta" id="shootingEta">预计 5 分</span>
+        </div>
+        <div class="row2">
+          <div class="progress-track"><div class="progress-fill" id="shootingProgress" style="width: 0%"></div></div>
+          <span class="pct" id="shootingPct">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-block">
+      <span class="hero-eyebrow">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5L8 14l-6-4.5h7.5z"></path></svg>
+        AI 智能编排
+      </span>
+      <div class="hero-title">今日候选剧本</div>
+      <div class="hero-subtitle">AI 为你打包了 3 组词汇 · 今日剩余 <strong>5</strong> 次</div>
+    </div>
+
+    <div class="candidate-list">
+      <div class="candidate-card featured">
+        <div class="cc-head">
+          <span class="cc-tag hot">🔥 职场对峙 · 推荐</span>
+          <span class="cc-fresh">今日新鲜</span>
+        </div>
+        <div class="cc-title">办公室对决</div>
+        <div class="cc-words">reluctantly<span class="dot">·</span>commit<span class="dot">·</span>showdown</div>
+        <div class="cc-tagline">"一场办公室里的终极摊牌"</div>
+        <div class="cc-actions">
+          <button class="cc-btn-primary" onclick="quickShoot('办公室对决', ['reluctantly','commit','showdown'])">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="6" width="14" height="12" rx="2"></rect><path d="M22 8l-6 4 6 4z"></path></svg>
+            <span class="price">¥9.9</span> 一键开拍
+          </button>
+          <button class="btn-ghost" onclick="navigate('select-words')">
+            自选
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="candidate-card">
+        <div class="cc-head">
+          <span class="cc-tag">情感悬疑</span>
+        </div>
+        <div class="cc-title">街角告白</div>
+        <div class="cc-words">whisper<span class="dot">·</span>confess<span class="dot">·</span>betray</div>
+        <div class="cc-tagline">"深夜路灯下的低声坦白"</div>
+        <div class="cc-actions">
+          <button class="cc-btn-primary" onclick="quickShoot('街角告白', ['whisper','confess','betray'])">
+            <span class="price">¥9.9</span> 一键开拍
+          </button>
+          <button class="btn-ghost" onclick="navigate('select-words')">自选</button>
+        </div>
+      </div>
+
+      <div class="candidate-card">
+        <div class="cc-head">
+          <span class="cc-tag">校园日常</span>
+        </div>
+        <div class="cc-title">图书馆的秘密</div>
+        <div class="cc-words">profound<span class="dot">·</span>manuscript<span class="dot">·</span>revelation</div>
+        <div class="cc-tagline">"古籍间藏着百年悬案"</div>
+        <div class="cc-actions">
+          <button class="cc-btn-primary" onclick="quickShoot('图书馆的秘密', ['profound','manuscript','revelation'])">
+            <span class="price">¥9.9</span> 一键开拍
+          </button>
+          <button class="btn-ghost" onclick="navigate('select-words')">自选</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="zone-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      最近作品 <span class="count" id="worksCount">3</span>
+    </div>
+
+    <div class="completed-list" id="myWorksList"></div>
+  </section>
+
+  <!-- ═══ 屏 2: 选词 ═══ -->
+  <section class="screen has-bottom-cta" data-screen="select-words">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="signal"><div class="bars"><span></span><span></span><span></span><span></span></div><div class="battery"><span></span></div></div>
+    </div>
+
+    <div class="sub-header">
+      <button class="back-btn" onclick="navigate('home')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="title">今天让谁主演？</div>
+      <div class="step">第 1 步 / 共 4 步</div>
+    </div>
+
+    <div class="selected-bar">
+      <div class="sb-row">
+        <span class="sb-label">已选演员</span>
+        <span class="sb-counter"><span class="cur" id="selCount">0</span><span class="total"> / 5</span></span>
+      </div>
+      <div class="actor-cards" id="actorCards">
+        <span class="actor-empty-hint">点击下方词汇加入剧组</span>
+      </div>
+    </div>
+
+    <div class="word-pool">
+      <div class="word-pool-title">
+        <span>从你的收藏夹挑选</span>
+        <span style="color: var(--text-3); font-weight: 500;">12 个可选</span>
+      </div>
+      <div class="word-grid" id="wordGrid"></div>
+    </div>
+
+    <div class="pricing-anchor">
+      <div class="pa-head">
+        <div class="pa-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+        </div>
+        <div class="pa-info">
+          <div class="pa-title"><span id="paWordCount">0</span> 个单词 · 一镜十练</div>
+          <div class="pa-formula">
+            <span class="price">¥9.9</span>
+            <span class="equals">=</span>
+            <span>10 个学习动作</span>
+            <span class="equals">·</span>
+            <span class="per">¥0.99/动作</span>
+          </div>
+        </div>
+      </div>
+      <button class="pa-toggle" id="paToggle">
+        展开看 10 个学习动作清单
+        <span class="chev"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+      </button>
+      <div class="pa-list" id="paList">
+        <div class="pa-item done"><span class="num">1</span><span class="text"><strong>主动选词</strong><br>深加工编码</span></div>
+        <div class="pa-item"><span class="num">2</span><span class="text"><strong>想象场景</strong><br>语义编码</span></div>
+        <div class="pa-item"><span class="num">3</span><span class="text"><strong>看脚本预览</strong><br>上下文学习</span></div>
+        <div class="pa-item"><span class="num">4</span><span class="text"><strong>看成片</strong><br>视觉锚点</span></div>
+        <div class="pa-item"><span class="num">5</span><span class="text"><strong>听台词</strong><br>听力输入</span></div>
+        <div class="pa-item"><span class="num">6</span><span class="text"><strong>跟读评分</strong><br>口语输出</span></div>
+        <div class="pa-item"><span class="num">7</span><span class="text"><strong>微练习 6 题</strong><br>主动检索</span></div>
+        <div class="pa-item"><span class="num">8</span><span class="text"><strong>重遇弹幕</strong><br>间隔重复</span></div>
+        <div class="pa-item"><span class="num">9</span><span class="text"><strong>月度复盘</strong><br>元认知</span></div>
+        <div class="pa-item"><span class="num">10</span><span class="text"><strong>作品广场</strong><br>社交承诺</span></div>
+      </div>
+    </div>
+
+    <div class="bottom-cta">
+      <div class="row">
+        <div class="price-area">
+          <span class="price-symbol">¥</span>
+          <span class="price-num">9.9</span>
+          <span class="price-unit">/ 段</span>
+        </div>
+        <div class="anchor-mini">
+          普通收藏 <strong>¥0.198/词</strong><br>
+          造剧场 <strong style="color:var(--accent)">¥0.198/词/动作</strong>
+        </div>
+      </div>
+      <button class="cta pulse" id="selectWordsCta" onclick="confirmWords()" disabled="">
+        请至少选择 1 个词
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ 屏 3: 选形式 ═══ -->
+  <section class="screen has-bottom-cta" data-screen="select-form">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="signal"><div class="bars"><span></span><span></span><span></span><span></span></div><div class="battery"><span></span></div></div>
+    </div>
+
+    <div class="sub-header">
+      <button class="back-btn" onclick="navigate('select-words')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="title">选择呈现形式</div>
+      <div class="step">第 2 步 / 共 4 步</div>
+    </div>
+
+    <div class="section-title">
+      <span class="dot"></span>选择形式
+      <span class="hint">默认图片</span>
+    </div>
+
+    <div class="form-options" id="formOptions">
+      <button class="form-card selected" data-form="image">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+        </div>
+        <div class="name">剧照</div>
+        <div class="meta">单张 9:16<br>漫画/写实风</div>
+        <span class="badge">低成本</span>
+      </button>
+      <button class="form-card" data-form="video">
+        <div class="icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2"></rect></svg>
+        </div>
+        <div class="name">剧目</div>
+        <div class="meta">15 秒高清<br>双人对话视频</div>
+        <span class="badge locked">会员</span>
+      </button>
+    </div>
+
+    <div class="section-title" style="padding-top: 18px;">
+      <span class="dot"></span>选择风格
+      <span class="hint">可跳过 · AI 自动推荐</span>
+    </div>
+
+    <div class="style-grid" id="styleGrid">
+      <button class="style-card selected" data-style="office">
+        <div class="si"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
+        <div class="sn">职场办公</div>
+        <div class="sd">现实快节奏</div>
+      </button>
+      <button class="style-card" data-style="sitcom">
+        <div class="si"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"></path></svg></div>
+        <div class="sn">美剧情景</div>
+        <div class="sd">温馨幽默</div>
+      </button>
+      <button class="style-card" data-style="thriller">
+        <div class="si"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><path d="M9 9h.01M15 9h.01M9 17l3-3 3 3"></path></svg></div>
+        <div class="sn">戏剧悬疑</div>
+        <div class="sd">暗光低沉</div>
+      </button>
+      <button class="style-card" data-style="romance">
+        <div class="si"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></div>
+        <div class="sn">浪漫日常</div>
+        <div class="sd">柔光温暖</div>
+      </button>
+      <button class="style-card" data-style="campus">
+        <div class="si"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path></svg></div>
+        <div class="sn">校园青春</div>
+        <div class="sd">明亮年轻</div>
+      </button>
+      <button class="style-card" data-style="scifi">
+        <div class="si"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09zM12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg></div>
+        <div class="sn">科幻未来</div>
+        <div class="sd">蓝紫酷感</div>
+      </button>
+    </div>
+
+    <div class="bottom-cta">
+      <button class="cta pulse" onclick="confirmForm()">
+        下一步：预览脚本
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ 屏 4: 脚本预览 ═══ -->
+  <section class="screen has-bottom-cta" data-screen="script">
+    <div class="status-bar">
+      <span>9:42</span>
+      <div class="signal"><div class="bars"><span></span><span></span><span></span><span></span></div><div class="battery"><span></span></div></div>
+    </div>
+
+    <div class="sub-header">
+      <button class="back-btn" onclick="navigate('select-form')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="title">你的剧本初稿</div>
+      <div class="step">第 3 步 / 共 4 步</div>
+    </div>
+
+    <div class="script-meta">
+      <div>
+        <div class="label">脚本版本</div>
+        <div class="v" id="scriptVersion">v1 · 初稿</div>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="label">总时长</div>
+        <div class="v">15 秒</div>
+      </div>
+      <div class="ready">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        已就绪
+      </div>
+    </div>
+
+    <div class="script-card" id="scriptCard"></div>
+
+    <div class="target-words">
+      <div class="tw-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        你的目标词已全部融入
+      </div>
+      <div class="tw-list" id="scriptTwList"></div>
+    </div>
+
+    <div class="script-actions">
+      <button class="btn-action free" id="rewriteBtn" onclick="rewriteScript()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15A9 9 0 0 1 5.64 18.36L1 14"></path></svg>
+        <span>重写一版（免费）</span>
+      </button>
+      <button class="btn-action" data-toast="微调台词功能演示">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>
+        微调台词
+      </button>
+    </div>
+
+    <div class="bottom-cta">
+      <div class="row">
+        <div class="price-area">
+          <span class="price-symbol">¥</span>
+          <span class="price-num">9.9</span>
+          <span class="price-unit">/ 段</span>
+        </div>
+        <div class="anchor-mini" style="font-size:10px">
+          <span id="scriptWordCount">3</span> 词 · 一镜十练 · <strong style="color:var(--accent)">¥0.99/动作</strong>
+        </div>
+      </div>
+      <button class="cta pulse" onclick="startShooting()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="2" y="6" width="14" height="12" rx="2"></rect><path d="M22 8l-6 4 6 4z"></path></svg>
+        看起来不错，开拍！
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ 屏 5: 等待 ═══ -->
+  <section class="screen" data-screen="waiting">
+    <div class="status-bar">
+      <span>9:43</span>
+      <div class="signal"><div class="bars"><span></span><span></span><span></span><span></span></div><div class="battery"><span></span></div></div>
+    </div>
+
+    <div class="wait-hero">
+      <div class="wait-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="2" y="6" width="14" height="12" rx="2"></rect><path d="M22 8l-6 4 6 4z"></path></svg>
+      </div>
+      <div class="wait-stage-name" id="waitStageName">
+        导演构思中<span class="dot-anim">.</span><span class="dot-anim" style="animation-delay:.2s">.</span><span class="dot-anim" style="animation-delay:.4s">.</span>
+      </div>
+      <div class="wait-desc" id="waitDesc">正在为你的词汇设计语义场景</div>
+    </div>
+
+    <div class="wait-stages">
+      <div class="wait-stages-progress" id="stagesProgress" style="height: 0;"></div>
+      <div class="stage" data-stage="0">
+        <div class="stage-marker">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 11H1v3h8v3l3-3.5L9 10v1zm5 2h8v-3h-8V8l-3 3.5L14 14v-1z"></path></svg>
+        </div>
+        <div class="stage-content">
+          <div class="stage-title">导演构思</div>
+          <div class="stage-meta">深加工编码 — 选词完成</div>
+        </div>
+      </div>
+      <div class="stage" data-stage="1">
+        <div class="stage-marker">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle></svg>
+        </div>
+        <div class="stage-content">
+          <div class="stage-title">演员就位</div>
+          <div class="stage-meta">情景记忆锚点建立</div>
+        </div>
+      </div>
+      <div class="stage" data-stage="2">
+        <div class="stage-marker">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="2"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line></svg>
+        </div>
+        <div class="stage-content">
+          <div class="stage-title">剪辑中</div>
+          <div class="stage-meta">双重编码加固</div>
+        </div>
+      </div>
+      <div class="stage" data-stage="3">
+        <div class="stage-marker">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div class="stage-content">
+          <div class="stage-title">杀青</div>
+          <div class="stage-meta">5 个学习动作待解锁</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wait-progress">
+      <div class="wp-row">
+        <span class="label">完成进度</span>
+        <span class="num"><span id="waitStep">1</span>/4</span>
+      </div>
+      <div class="progress-track" style="height: 6px;">
+        <div class="progress-fill" id="waitProgressFill" style="width: 25%;"></div>
+      </div>
+      <div class="wp-eta">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        预计还需 <span id="waitEta">8</span> 秒
+      </div>
+    </div>
+
+    <div class="wait-actions">
+      <button class="leave" onclick="leaveWaiting()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        先离开（后台拍摄）
+      </button>
+      <button class="notify" data-toast="✓ 杀青时会推送通知">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        好了通知我
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ 屏 6: 杀青 ═══ -->
+  <section class="screen" data-screen="done">
+    <div class="status-bar">
+      <span>9:51</span>
+      <div class="signal"><div class="bars"><span></span><span></span><span></span><span></span></div><div class="battery"><span></span></div></div>
+    </div>
+
+    <div style="padding-top: 30px;">
+      <div class="victory">
+        <div class="victory-stamp">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          杀青完成
+        </div>
+        <div class="victory-title" id="doneTitle">办公室对决</div>
+        <div class="victory-words" id="doneWords"></div>
+        <div class="victory-actions">
+          <button class="play" onclick="navigate('detail')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            播放
+          </button>
+          <button class="share" data-toast="分享首映链接已复制">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            首映
+          </button>
+          <button class="study" onclick="navigate('detail')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            学习
+          </button>
+        </div>
+      </div>
+
+      <div class="save-row" onclick="navigate('home')">
+        <div class="icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div class="info">
+          <div class="t">已保存到我的剧场</div>
+          <div class="s" id="saveSubtitle">第 4 部作品 · 永久保存</div>
+        </div>
+        <div class="arrow">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <div style="padding: 0 16px;">
+        <button class="cc-btn-primary" style="width:100%; padding: 13px;" onclick="navigate('home')">
+          回我的剧场
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 屏 7: 头号剧场 ═══ -->
+  <section class="screen" data-screen="square">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="signal"><div class="bars"><span></span><span></span><span></span><span></span></div><div class="battery"><span></span></div></div>
+    </div>
+
+    <div class="page-header">
+      <div>
+        <div class="title">头号剧场</div>
+        <div class="meta">看看大家拍了什么</div>
+      </div>
+      <div class="actions">
+        <button class="icon-btn" data-toast="搜索">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="square-tabs" id="squareTabs">
+      <button class="square-tab active" data-tab="hot">🔥 热门</button>
+      <button class="square-tab" data-tab="new">最新</button>
+      <button class="square-tab" data-tab="featured">⭐ 精选</button>
+    </div>
+
+    <div class="waterfall">
+      <div class="wf-card" onclick="navigate('detail')">
+        <div class="wf-cover h1">
+          <span class="duration">0:15</span>
+          <div class="play-overlay">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="white" opacity="0.9"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+        </div>
+        <div class="wf-info">
+          <div class="wf-title">深夜便利店的告白</div>
+          <div class="wf-author"><div class="wf-avatar"></div><span>@Lily的剧场</span></div>
+          <div class="wf-stats">
+            <span class="stat liked">❤️ 328</span>
+            <span class="stat">💬 42</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-card" onclick="navigate('detail')">
+        <div class="wf-cover h2">
+          <span class="duration">IMG</span>
+          <div class="play-overlay">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" opacity="0.9"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </div>
+        </div>
+        <div class="wf-info">
+          <div class="wf-title">考试前夜的图书馆</div>
+          <div class="wf-author"><div class="wf-avatar"></div><span>@阿凯</span></div>
+          <div class="wf-stats">
+            <span class="stat">❤️ 156</span>
+            <span class="stat">💬 18</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-card" onclick="navigate('detail')">
+        <div class="wf-cover h3">
+          <span class="duration">0:15</span>
+          <div class="play-overlay">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="white" opacity="0.9"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+        </div>
+        <div class="wf-info">
+          <div class="wf-title">外星人来面试</div>
+          <div class="wf-author"><div class="wf-avatar"></div><span>@创始会员_07</span></div>
+          <div class="wf-stats">
+            <span class="stat liked">❤️ 892</span>
+            <span class="stat">💬 67</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-card" onclick="navigate('detail')">
+        <div class="wf-cover h4">
+          <span class="duration">0:15</span>
+          <div class="play-overlay">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="white" opacity="0.9"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+        </div>
+        <div class="wf-info">
+          <div class="wf-title">老板说我加薪了</div>
+          <div class="wf-author"><div class="wf-avatar"></div><span>@打工人小张</span></div>
+          <div class="wf-stats">
+            <span class="stat liked">❤️ 1.2k</span>
+            <span class="stat">💬 89</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-card" onclick="navigate('detail')">
+        <div class="wf-cover h2">
+          <span class="duration">IMG</span>
+          <div class="play-overlay">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" opacity="0.9"><rect x="3" y="3" width="18" height="18" rx="2"></rect></svg>
+          </div>
+        </div>
+        <div class="wf-info">
+          <div class="wf-title">咖啡馆的暗号</div>
+          <div class="wf-author"><div class="wf-avatar"></div><span>@咖啡因中毒</span></div>
+          <div class="wf-stats">
+            <span class="stat">❤️ 73</span>
+            <span class="stat">💬 5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-card" onclick="navigate('detail')">
+        <div class="wf-cover h5">
+          <span class="duration">0:15</span>
+          <div class="play-overlay">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="white" opacity="0.9"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+        </div>
+        <div class="wf-info">
+          <div class="wf-title">前任的婚礼</div>
+          <div class="wf-author"><div class="wf-avatar"></div><span>@麦麦</span></div>
+          <div class="wf-stats">
+            <span class="stat liked">❤️ 2.4k</span>
+            <span class="stat">💬 215</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 屏 8: 剧目详情 ═══ -->
+  <section class="screen" data-screen="detail">
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="signal"><div class="bars"><span></span><span></span><span></span><span></span></div><div class="battery"><span></span></div></div>
+    </div>
+
+    <div class="sub-header">
+      <button class="back-btn" onclick="back()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="title">剧目详情</div>
+      <button class="icon-btn" style="width:32px; height:32px;" data-toast="更多操作">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="5" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="12" cy="19" r="1.5"></circle></svg>
+      </button>
+    </div>
+
+    <div class="video-stage">
+      <button class="play-circle" data-toast="▶ 播放视频（演示）">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+      </button>
+      <div class="video-meta-overlay">
+        <div class="vmo-title">办公室对决</div>
+        <div class="vmo-meta">职场办公室 · 2026-05-04 18:20</div>
+      </div>
+    </div>
+
+    <div class="subtitle-modes" id="subtitleModes">
+      <button class="sm-chip" data-mode="off">减压</button>
+      <button class="sm-chip active" data-mode="bilingual">中英双语</button>
+      <button class="sm-chip" data-mode="en">纯英文</button>
+      <button class="sm-chip" data-mode="delay">延迟显示</button>
+    </div>
+
+    <div class="target-words-row">
+      <span class="tw-chip">reluctantly <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+      <span class="tw-chip">commit <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+      <span class="tw-chip">showdown <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></span>
+    </div>
+
+    <div class="detail-section">
+      <div class="ds-title">
+        <span class="dot"></span>学习这一场
+        <span class="meta">熟悉度推进 ×1.5</span>
+      </div>
+      <div class="learn-actions">
+        <button class="learn-action primary" data-toast="进入微练习">
+          <div class="la-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+          </div>
+          <div class="la-info">
+            <div class="t">基于本片做 5 道微练习</div>
+            <div class="s">主动检索 · 题型 1/4/5/6</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <button class="learn-action" data-toast="开始跟读评分">
+          <div class="la-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg>
+          </div>
+          <div class="la-info">
+            <div class="t">跟读这段台词</div>
+            <div class="s">口语输出 · AI 评分</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="ds-title"><span class="dot"></span>制片信息</div>
+      <div class="info-rows">
+        <div class="info-row"><div class="label">风格</div><div class="value">职场办公室</div></div>
+        <div class="info-row"><div class="label">角色</div><div class="value">Sarah / Mark</div></div>
+        <div class="info-row"><div class="label">脚本版本</div><div class="value">v1 · 初稿</div></div>
+        <div class="info-row"><div class="label">生成时间</div><div class="value">05-04 18:20</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 已开拍 Modal ═══ -->
+  <div class="modal-overlay" id="shootModal">
+    <div class="modal">
+      <div class="sm-icon-big">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="2" y="6" width="14" height="12" rx="2"></rect><path d="M22 8l-6 4 6 4z"></path></svg>
+      </div>
+      <div class="sm-title">已开拍！</div>
+      <div class="sm-desc">你的「<span id="modalTitle">办公室对决</span>」正在拍摄中…</div>
+      <div class="sm-eta-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        预计 8 秒后杀青（演示）
+      </div>
+      <div class="sm-actions">
+        <button class="browse" onclick="goSquareFromModal()">我先去刷视频</button>
+        <button class="check" onclick="goWaitingFromModal()">看进度</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ★ 右侧悬浮 Dock 导航 ★ ═══ -->
+  <nav class="side-dock" id="sideDock">
+    <button class="dock-item active" data-dock-screen="home">
+      <div class="icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <div class="label">我的</div>
+    </button>
+    <div class="dock-divider"></div>
+    <button class="dock-item create" onclick="navigate('select-words')">
+      <div class="icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </div>
+      <div class="label">开拍</div>
+    </button>
+    <div class="dock-divider"></div>
+    <button class="dock-item" data-dock-screen="square">
+      <div class="icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+      </div>
+      <div class="label">广场</div>
+    </button>
+  </nav>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <svg id="toastIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    <span id="toastText"></span>
+  </div>
+</div>
+
+<script>
+// ─── 状态 ───
+const state = {
+  currentScreen: 'home',
+  history: ['home'],
+  selectedWords: [],
+  selectedForm: 'image',
+  selectedStyle: 'office',
+  currentProject: null,
+  myWorks: [
+    { title: '前任的婚礼', words: ['betray','reluctantly','memory'], form: 'video', date: '2026-05-03', thumb: 'g1' },
+    { title: '咖啡馆的早晨', words: ['whisper','espresso'], form: 'image', date: '2026-05-02', thumb: 'g2' },
+    { title: '老友重逢', words: ['nostalgic','embrace','laughter'], form: 'video', date: '2026-04-30', thumb: 'g3' }
+  ],
+  shooting: null,
+  shootingTimer: null
+};
+
+const wordPool = [
+  { w: 'reluctantly', m: 'adv. 不情愿地' },
+  { w: 'commit', m: 'v. 承诺、犯下' },
+  { w: 'showdown', m: 'n. 摊牌、对决' },
+  { w: 'whisper', m: 'v. 低声说' },
+  { w: 'confess', m: 'v. 坦白' },
+  { w: 'betray', m: 'v. 背叛' },
+  { w: 'profound', m: 'adj. 深刻的' },
+  { w: 'manuscript', m: 'n. 手稿' },
+  { w: 'revelation', m: 'n. 启示' },
+  { w: 'nostalgic', m: 'adj. 怀旧的' },
+  { w: 'tremble', m: 'v. 颤抖' },
+  { w: 'destiny', m: 'n. 命运' }
+];
+
+// 可见 dock 的顶级页面
+const TOP_LEVEL_SCREENS = ['home', 'square'];
+
+// ─── 路由 ───
+function navigate(screen, pushHistory = true) {
+  if (state.currentScreen === screen) return;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector(`[data-screen="${screen}"]`);
+  if (!target) return;
+  target.classList.add('active');
+  state.currentScreen = screen;
+  if (pushHistory) state.history.push(screen);
+
+  // 控制 side dock 显隐 & 高亮
+  const dock = document.getElementById('sideDock');
+  if (TOP_LEVEL_SCREENS.includes(screen)) {
+    dock.classList.remove('hidden');
+  } else {
+    dock.classList.add('hidden');
+  }
+  document.querySelectorAll('.dock-item[data-dock-screen]').forEach(t => {
+    t.classList.toggle('active', t.dataset.dockScreen === screen);
+  });
+
+  window.scrollTo(0, 0);
+}
+
+function back() {
+  if (state.history.length > 1) {
+    state.history.pop();
+    navigate(state.history[state.history.length - 1], false);
+  } else {
+    navigate('home', false);
+  }
+}
+
+document.querySelectorAll('.dock-item[data-dock-screen]').forEach(t => {
+  t.addEventListener('click', () => navigate(t.dataset.dockScreen));
+});
+
+// ─── Toast ───
+let toastTimer = null;
+function toast(text, type = 'success') {
+  const el = document.getElementById('toast');
+  const txt = document.getElementById('toastText');
+  const icn = document.getElementById('toastIcon');
+  el.className = 'toast ' + type;
+  txt.textContent = text;
+  if (type === 'success') {
+    icn.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+  } else if (type === 'info') {
+    icn.innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>';
+  }
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+document.querySelectorAll('[data-toast]').forEach(b => {
+  b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toast(b.dataset.toast, 'info');
+  });
+});
+
+// ─── 选词页 ───
+function renderWordPool() {
+  const grid = document.getElementById('wordGrid');
+  grid.innerHTML = wordPool.map(w => `
+    <button class="word-chip ${state.selectedWords.includes(w.w) ? 'selected' : ''}" data-w="${w.w}">
+      <span class="w">${w.w}</span>
+      <span class="meaning">${w.m}</span>
+    </button>
+  `).join('');
+  grid.querySelectorAll('.word-chip').forEach(c => {
+    c.addEventListener('click', () => toggleWord(c.dataset.w));
+  });
+}
+function toggleWord(w) {
+  const idx = state.selectedWords.indexOf(w);
+  if (idx >= 0) {
+    state.selectedWords.splice(idx, 1);
+  } else {
+    if (state.selectedWords.length >= 5) {
+      toast('最多选 5 个演员', 'info');
+      return;
+    }
+    state.selectedWords.push(w);
+  }
+  renderWordPool();
+  renderSelectedActors();
+}
+function renderSelectedActors() {
+  const cards = document.getElementById('actorCards');
+  const cnt = document.getElementById('selCount');
+  const paCnt = document.getElementById('paWordCount');
+  const cta = document.getElementById('selectWordsCta');
+  cnt.textContent = state.selectedWords.length;
+  paCnt.textContent = state.selectedWords.length;
+
+  if (state.selectedWords.length === 0) {
+    cards.innerHTML = '<span class="actor-empty-hint">点击下方词汇加入剧组</span>';
+    cta.disabled = true;
+    cta.innerHTML = '请至少选择 1 个词';
+  } else {
+    cards.innerHTML = state.selectedWords.map((w, i) => `
+      <span class="actor-card">
+        <span class="num">${i+1}</span>${w}
+        <span class="x" data-rm="${w}"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+      </span>
+    `).join('');
+    cards.querySelectorAll('[data-rm]').forEach(x => {
+      x.addEventListener('click', (e) => { e.stopPropagation(); toggleWord(x.dataset.rm); });
+    });
+    cta.disabled = false;
+    cta.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg> 下一步：选择形式`;
+  }
+}
+function confirmWords() {
+  if (state.selectedWords.length === 0) return;
+  navigate('select-form');
+}
+
+document.getElementById('paToggle').addEventListener('click', () => {
+  document.getElementById('paToggle').classList.toggle('open');
+  document.getElementById('paList').classList.toggle('open');
+});
+
+// ─── 选形式页 ───
+document.querySelectorAll('#formOptions .form-card').forEach(c => {
+  c.addEventListener('click', () => {
+    if (c.dataset.form === 'video') {
+      toast('剧目需会员开通', 'info');
+      return;
+    }
+    document.querySelectorAll('#formOptions .form-card').forEach(x => x.classList.remove('selected'));
+    c.classList.add('selected');
+    state.selectedForm = c.dataset.form;
+  });
+});
+document.querySelectorAll('#styleGrid .style-card').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#styleGrid .style-card').forEach(x => x.classList.remove('selected'));
+    c.classList.add('selected');
+    state.selectedStyle = c.dataset.style;
+  });
+});
+function confirmForm() {
+  generateScript();
+  navigate('script');
+}
+
+// ─── 脚本预览 ───
+const scriptTemplates = {
+  office: (words) => ({
+    scene: '办公室会议室，下午 3 点',
+    lines: [
+      { char: 'Sarah', gender: 'f', en: `I'm <t>${words[0]||'reluctantly'}</t> <t>${words[1]||'committing'}</t> to this <t>${words[2]||'showdown'}</t>, but you'd better be ready.`, zh: '我极不情愿地接下这场对决，但你最好做好准备。' },
+      { char: 'Mark', gender: 'm', en: `Then let's not waste another minute.`, zh: '那就别再浪费时间了。' }
+    ]
+  }),
+  romance: (words) => ({
+    scene: '街角咖啡店，深夜',
+    lines: [
+      { char: 'Anna', gender: 'f', en: `I have to <t>${words[0]||'confess'}</t> something — I never meant to <t>${words[1]||'whisper'}</t> it like a <t>${words[2]||'betrayal'}</t>.`, zh: '我必须坦白一件事 —— 我从没想过把它说得像背叛。' },
+      { char: 'Leo', gender: 'm', en: `Then say it again. Loud this time.`, zh: '那就再说一次，这次大声点。' }
+    ]
+  }),
+  campus: (words) => ({
+    scene: '大学图书馆，闭馆前',
+    lines: [
+      { char: 'Emma', gender: 'f', en: `This <t>${words[0]||'manuscript'}</t> hides a <t>${words[1]||'profound'}</t> <t>${words[2]||'revelation'}</t>.`, zh: '这份手稿藏着一个深刻的启示。' },
+      { char: 'Jake', gender: 'm', en: `Then we have until midnight.`, zh: '那我们只剩到午夜的时间了。' }
+    ]
+  })
+};
+function generateScript(version = 1) {
+  const tmpl = scriptTemplates[state.selectedStyle] || scriptTemplates.office;
+  const data = tmpl(state.selectedWords);
+  document.getElementById('scriptVersion').textContent = `v${version} · ${version === 1 ? '初稿' : '已重写'}`;
+  document.getElementById('scriptWordCount').textContent = state.selectedWords.length;
+
+  document.getElementById('scriptCard').innerHTML = `
+    <div class="scene-line">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+      场景：${data.scene}
+    </div>
+    ${data.lines.map(l => `
+      <div class="dialogue">
+        <div class="character ${l.gender === 'm' ? 'male' : ''}">
+          <span class="ch-icon">${l.char[0]}</span>
+          ${l.char}（${l.gender === 'm' ? '男' : '女'}）
+        </div>
+        <div class="line-en">${l.en.replace(/<t>/g, '<span class="target">').replace(/<\/t>/g, '</span>')}</div>
+        <div class="line-zh">${l.zh}</div>
+      </div>
+    `).join('')}
+  `;
+
+  document.getElementById('scriptTwList').innerHTML =
+    state.selectedWords.map(w => `<span class="tw-pill">${w}</span>`).join('');
+}
+let scriptVersion = 1;
+function rewriteScript() {
+  const btn = document.getElementById('rewriteBtn');
+  btn.classList.add('regenerating');
+  btn.innerHTML = '<span class="spinner"></span><span>重写中…</span>';
+  setTimeout(() => {
+    scriptVersion++;
+    generateScript(scriptVersion);
+    btn.classList.remove('regenerating');
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15A9 9 0 0 1 5.64 18.36L1 14"/></svg><span>再重写一版</span>';
+    toast('已生成新版本', 'success');
+  }, 1200);
+}
+
+// ─── 开拍流程 ───
+function quickShoot(title, words) {
+  state.selectedWords = words.slice();
+  state.selectedForm = 'image';
+  state.selectedStyle = 'office';
+  state.currentProject = { title, words };
+  showShootModal(title);
+}
+function startShooting() {
+  const title = state.currentProject?.title || '我的剧本';
+  state.currentProject = { title, words: state.selectedWords.slice() };
+  showShootModal(title);
+}
+function showShootModal(title) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('shootModal').classList.add('show');
+}
+function goSquareFromModal() {
+  document.getElementById('shootModal').classList.remove('show');
+  startBackgroundShooting();
+  navigate('square');
+}
+function goWaitingFromModal() {
+  document.getElementById('shootModal').classList.remove('show');
+  startBackgroundShooting();
+  navigate('waiting');
+}
+
+function startBackgroundShooting() {
+  if (state.shootingTimer) clearInterval(state.shootingTimer);
+  state.shooting = {
+    title: state.currentProject.title,
+    words: state.currentProject.words,
+    progress: 0,
+    stage: 0
+  };
+  updateShootingBar();
+  document.getElementById('shootingBar').style.display = 'flex';
+
+  state.shootingTimer = setInterval(() => {
+    state.shooting.progress += 5;
+    state.shooting.stage = Math.min(3, Math.floor(state.shooting.progress / 25));
+    updateShootingBar();
+    updateWaitingScreen();
+    if (state.shooting.progress >= 100) {
+      clearInterval(state.shootingTimer);
+      onShootingDone();
+    }
+  }, 400);
+}
+
+function updateShootingBar() {
+  if (!state.shooting) return;
+  const p = Math.min(100, state.shooting.progress);
+  const remaining = Math.max(1, Math.ceil((100 - p) / 12));
+  document.getElementById('shootingTitle').textContent = `「${state.shooting.title}」拍摄中`;
+  document.getElementById('shootingEta').textContent = p >= 100 ? '已杀青' : `约 ${remaining}s`;
+  document.getElementById('shootingProgress').style.width = p + '%';
+  document.getElementById('shootingPct').textContent = p + '%';
+}
+
+function goToWaiting() {
+  if (state.shooting && state.shooting.progress < 100) {
+    navigate('waiting');
+  } else if (state.shooting && state.shooting.progress >= 100) {
+    showVictory();
+    navigate('done');
+  }
+}
+
+function updateWaitingScreen() {
+  if (!state.shooting) return;
+  const p = state.shooting.progress;
+  const stageIdx = state.shooting.stage;
+  const stageNames = ['导演构思中', '演员就位中', '剪辑制作中', '即将杀青'];
+  const stageDescs = [
+    '正在为你的词汇设计语义场景',
+    '建立情景记忆锚点',
+    '双重编码加固（视觉+听觉）',
+    '最终输出准备完成'
+  ];
+  document.getElementById('waitStageName').innerHTML = stageNames[stageIdx] +
+    '<span class="dot-anim">.</span><span class="dot-anim" style="animation-delay:.2s">.</span><span class="dot-anim" style="animation-delay:.4s">.</span>';
+  document.getElementById('waitDesc').textContent = stageDescs[stageIdx];
+
+  document.querySelectorAll('.wait-stages .stage').forEach((el, i) => {
+    el.classList.remove('done', 'active');
+    if (i < stageIdx) el.classList.add('done');
+    else if (i === stageIdx) el.classList.add('active');
+  });
+
+  const lineHeight = (stageIdx / 3) * 100;
+  document.getElementById('stagesProgress').style.height = `calc(${lineHeight}% - 24px + ${stageIdx > 0 ? '24px' : '0px'})`;
+
+  document.getElementById('waitStep').textContent = Math.min(4, stageIdx + 1);
+  document.getElementById('waitProgressFill').style.width = p + '%';
+  document.getElementById('waitEta').textContent = Math.max(1, Math.ceil((100 - p) / 12));
+}
+
+function leaveWaiting() {
+  toast('继续后台拍摄中', 'info');
+  navigate('home');
+}
+
+function onShootingDone() {
+  const work = {
+    title: state.shooting.title,
+    words: state.shooting.words,
+    form: state.selectedForm,
+    date: '2026-05-04',
+    thumb: ['g1','g2','g3','g4'][state.myWorks.length % 4]
+  };
+  state.myWorks.unshift(work);
+  renderMyWorks();
+  document.getElementById('worksCount').textContent = state.myWorks.length;
+
+  setTimeout(() => {
+    document.getElementById('shootingBar').style.display = 'none';
+  }, 1000);
+
+  toast(`✓ 「${state.shooting.title}」杀青！`, 'success');
+
+  if (state.currentScreen === 'waiting') {
+    setTimeout(() => {
+      showVictory();
+      navigate('done');
+    }, 600);
+  }
+}
+
+function showVictory() {
+  if (!state.shooting) return;
+  document.getElementById('doneTitle').textContent = state.shooting.title;
+  document.getElementById('doneWords').innerHTML =
+    state.shooting.words.map(w => `<span>${w}</span>`).join('<span class="dot">·</span>');
+  document.getElementById('saveSubtitle').textContent = `第 ${state.myWorks.length} 部作品 · 永久保存`;
+}
+
+function renderMyWorks() {
+  const list = document.getElementById('myWorksList');
+  list.innerHTML = state.myWorks.map(w => `
+    <div class="work-card" onclick="navigate('detail')">
+      <div class="work-thumb ${w.thumb}">
+        <div class="play-mini">
+          ${w.form === 'video'
+            ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>'
+            : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'
+          }
+        </div>
+      </div>
+      <div class="work-info">
+        <div class="work-title">${w.title}</div>
+        <div class="work-words">${w.words.map(x => `<span>${x}</span>`).join('<span class="dot">·</span>')}</div>
+        <div class="work-meta">${w.form === 'video' ? '视频' : '图片'} · ${w.date}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('#subtitleModes .sm-chip').forEach(c => {
+  c.addEventListener('click', () => {
+    document.querySelectorAll('#subtitleModes .sm-chip').forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    toast(`字幕：${c.textContent}`, 'info');
+  });
+});
+
+document.querySelectorAll('#squareTabs .square-tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#squareTabs .square-tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  });
+});
+
+renderMyWorks();
+renderSelectedActors();
+renderWordPool();
+</script>
+
+
+
+</body></html>

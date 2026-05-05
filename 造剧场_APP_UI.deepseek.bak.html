@@ -1,0 +1,2729 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>造剧场 · 头号听力</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* 主色 */
+      --accent: #FF600F;
+      --accent-hover: #E85500;
+      --accent-light: #FF7A33;
+      --accent-dark: #CC4D0C;
+      --accent-glow: rgba(255, 96, 15, 0.3);
+      --accent-subtle: rgba(255, 96, 15, 0.1);
+      --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+      --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+
+      /* 背景 */
+      --bg-0: #000000;
+      --bg-1: #111111;
+      --bg-2: #1A1A1A;
+      --bg-3: #222222;
+      --bg-accent: #2A1508;
+
+      /* 辅助色 */
+      --secondary: #FFB800;
+      --success: #00C853;
+      --info: #448AFF;
+
+      /* 文字 */
+      --text-1: #FFFFFF;
+      --text-2: #AAAAAA;
+      --text-3: #666666;
+      --text-accent: #FF600F;
+
+      /* 间距 */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-2xl: 48px;
+
+      /* 圆角 */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 999px;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                   "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+      background: var(--bg-0);
+      color: var(--text-1);
+      overflow: hidden;
+    }
+
+    .viewport {
+      position: relative;
+      width: 402px;
+      height: 100vh;
+      margin: 0 auto;
+      background: var(--bg-0);
+      border: 1px solid var(--bg-3);
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
+    }
+
+    .page {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: var(--bg-0);
+      overflow-y: auto;
+      overflow-x: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      transform: translateX(20px);
+      padding-bottom: 120px;
+    }
+
+    .page.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .page.exit-left {
+      transform: translateX(-20px);
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 页面 1: 收藏夹长按多选 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      background: rgba(0, 0, 0, 0.98);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--bg-3);
+      padding: 16px;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toolbar-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+
+    .toolbar-count {
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .toolbar-right {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      background: var(--bg-2);
+      border: none;
+      color: var(--text-1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .btn-icon:active {
+      background: var(--bg-3);
+      transform: scale(0.95);
+    }
+
+    .btn-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .word-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding: 16px;
+    }
+
+    .word-card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.3s ease-out backwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .word-card:nth-child(1) { animation-delay: 0s; }
+    .word-card:nth-child(2) { animation-delay: 0.05s; }
+    .word-card:nth-child(3) { animation-delay: 0.1s; }
+    .word-card:nth-child(4) { animation-delay: 0.15s; }
+    .word-card:nth-child(5) { animation-delay: 0.2s; }
+
+    .word-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-subtle);
+      background: var(--bg-accent);
+    }
+
+    .word-card.selected::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .word-card.selected[data-index="0"]::before { content: '1'; }
+    .word-card.selected[data-index="1"]::before { content: '2'; }
+    .word-card.selected[data-index="2"]::before { content: '3'; }
+    .word-card.selected[data-index="3"]::before { content: '4'; }
+    .word-card.selected[data-index="4"]::before { content: '5'; }
+
+    .word-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .word-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    .word-card.selected .word-text {
+      color: var(--accent);
+    }
+
+    .word-phonetic {
+      font-size: 12px;
+      color: var(--text-3);
+      font-style: italic;
+    }
+
+    .word-meaning {
+      font-size: 14px;
+      color: var(--text-2);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .cta-float {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 370px;
+      padding: 14px 32px;
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: all 0.15s ease;
+      z-index: 100;
+    }
+
+    .cta-float:hover:not(:disabled) {
+      box-shadow: 0 6px 30px rgba(255, 96, 15, 0.45);
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    .cta-float:active:not(:disabled) {
+      transform: translateX(-50%) translateY(0) scale(0.97);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    .cta-float:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 定价故事（一镜十练） */
+    /* ═══════════════════════════════════════════════════════════ */
+    .pricing-story {
+      padding: 0 20px 90px;
+      margin-top: var(--space-md);
+    }
+
+    .pricing-main {
+      background: var(--bg-accent);
+      border: 1px solid rgba(255,96,15,0.3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md) var(--space-lg);
+      text-align: center;
+    }
+
+    .pricing-headline {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: var(--space-xs);
+    }
+
+    .pricing-math {
+      font-size: 13px;
+      color: var(--text-2);
+    }
+
+    .pricing-per {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .pricing-expand {
+      margin-top: var(--space-sm);
+      font-size: 12px;
+      color: var(--text-3);
+      text-align: center;
+      cursor: pointer;
+      padding: var(--space-xs) 0;
+      transition: color 0.15s;
+    }
+
+    .pricing-expand:hover { color: var(--text-2); }
+
+    .pricing-detail {
+      display: none;
+      margin-top: var(--space-sm);
+      padding: var(--space-md);
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      font-size: 12px;
+      color: var(--text-2);
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .pricing-detail.open {
+      display: flex;
+    }
+
+    .pricing-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 0;
+    }
+
+    .pi-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 导演候选名单 */
+    /* ═══════════════════════════════════════════════════════════ */
+    .candidate-refresh {
+      padding: 0 20px;
+      margin-bottom: var(--space-md);
+    }
+
+    .btn-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: 8px 16px;
+      background: var(--bg-2);
+      color: var(--text-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-refresh:hover { color: var(--text-1); border-color: var(--text-2); }
+    .btn-refresh:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .candidate-list {
+      padding: 0 20px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .candidate-card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      transition: border-color 0.2s;
+      cursor: pointer;
+    }
+
+    .candidate-card:hover { border-color: rgba(255,96,15,0.3); }
+
+    .cc-theme {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-sm);
+    }
+
+    .cc-words {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: var(--space-xs);
+      font-family: 'Saira', 'SF Pro Display', sans-serif;
+    }
+
+    .cc-desc {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: var(--space-md);
+      font-style: italic;
+    }
+
+    .cc-meta {
+      display: flex;
+      gap: var(--space-lg);
+      margin-bottom: var(--space-md);
+    }
+
+    .cc-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .cc-dots {
+      display: flex;
+      gap: 2px;
+    }
+
+    .cc-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--bg-3);
+    }
+
+    .cc-dot.filled { background: var(--accent); }
+
+    .cc-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-sm);
+    }
+
+    .cc-btn-shoot {
+      padding: 12px 20px;
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cc-btn-shoot:hover { box-shadow: 0 4px 16px var(--accent-glow); }
+
+    .cc-btn-preview {
+      padding: 12px 16px;
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cc-btn-preview:hover { color: var(--text-1); border-color: var(--text-2); }
+
+    .candidate-footer {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+    }
+
+    .link-manual {
+      font-size: 13px;
+      color: var(--text-3);
+      text-decoration: none;
+      padding: 8px 16px;
+      transition: color 0.15s;
+    }
+
+    .link-manual:hover { color: var(--text-1); }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 页面 2: 选词页 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .page-content {
+      padding: 20px 16px;
+      max-width: 402px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: var(--space-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .selected-words-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: var(--space-xl);
+      padding: var(--space-md);
+      background: var(--bg-2);
+      border-radius: var(--radius-lg);
+      min-height: 50px;
+      align-items: center;
+    }
+
+    .word-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      background: var(--bg-accent);
+      border-radius: var(--radius-full);
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .word-chip .remove {
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .word-chip .remove:hover {
+      opacity: 1;
+    }
+
+    .form-group {
+      margin-bottom: var(--space-xl);
+    }
+
+    .form-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-2);
+      margin-bottom: var(--space-sm);
+      display: block;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .radio-option:active {
+      background: var(--bg-2);
+      transform: scale(0.98);
+    }
+
+    .radio-option input[type="radio"] {
+      margin-right: 12px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+
+    .radio-label {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .radio-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .radio-desc {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    .radio-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      background: var(--bg-accent);
+      color: var(--accent);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 页面 3: 脚本预览 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .script-preview {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .script-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--bg-3);
+    }
+
+    .script-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    .script-status {
+      font-size: 12px;
+      color: var(--success);
+      background: rgba(0, 200, 83, 0.12);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+    }
+
+    .script-meta {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-bottom: var(--space-md);
+    }
+
+    .dialogue-block {
+      margin-bottom: var(--space-lg);
+    }
+
+    .character-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--info);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .dialogue-en {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-1);
+      margin-bottom: 6px;
+      word-spacing: 2px;
+    }
+
+    .dialogue-highlight {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .dialogue-zh {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-2);
+      padding-left: 12px;
+      border-left: 2px solid var(--accent-subtle);
+    }
+
+    .target-words {
+      background: var(--bg-2);
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-xl);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .target-words-label {
+      font-size: 12px;
+      color: var(--text-3);
+      width: 100%;
+    }
+
+    .target-word-tag {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .pricing-confirm {
+      background: var(--bg-accent);
+      border: 1px solid rgba(255,96,15,0.25);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .pc-main {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .pc-price {
+      font-family: 'Saira', 'SF Pro Display', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 4px 0;
+    }
+
+    .pc-per {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-3);
+    }
+
+    .pc-math {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    .btn-secondary {
+      padding: 14px 24px;
+      background: var(--bg-2);
+      color: var(--text-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:active {
+      background: var(--bg-3);
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      padding: 14px 32px;
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 30px rgba(255, 96, 15, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 页面 4: 生成等待 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .wait-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: var(--space-lg);
+      gap: var(--space-2xl);
+    }
+
+    .wait-stage {
+      text-align: center;
+      animation: fadeInUp 0.8s ease-out both;
+    }
+
+    .wait-stage.hidden {
+      display: none;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .wait-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-md);
+      animation: pulse-glow-icon 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow-icon {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    .wait-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: var(--space-sm);
+    }
+
+    .wait-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      margin-bottom: var(--space-sm);
+    }
+
+    .wait-check {
+      font-size: 13px;
+      color: var(--success);
+      font-weight: 600;
+      margin-bottom: var(--space-md);
+      animation: fadeInUp 1s ease-out both;
+    }
+
+    .wait-ten-progress {
+      margin-top: var(--space-md);
+      padding: var(--space-md);
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      max-width: 300px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .wtp-label {
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: var(--space-sm);
+      font-weight: 600;
+    }
+
+    .wtp-bar {
+      height: 6px;
+      background: var(--bg-3);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: var(--space-sm);
+    }
+
+    .wtp-fill {
+      height: 100%;
+      background: var(--accent-gradient-h);
+      border-radius: var(--radius-full);
+      transition: width 3s ease;
+    }
+
+    .wtp-text {
+      font-size: 12px;
+      color: var(--text-3);
+      text-align: center;
+    }
+
+    .learning-snippet {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      text-align: left;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .snippet-label {
+      font-size: 11px;
+      color: var(--text-3);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .snippet-content {
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .snippet-highlight {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .progress-track {
+      width: 100px;
+      height: 4px;
+      background: var(--bg-3);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent-gradient-h);
+      width: 25%;
+      transition: width 0.3s ease;
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 页面 5: 杀青完成 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .completion-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+    }
+
+    .completion-celebration {
+      font-size: 72px;
+      animation: slideUp 0.4s ease-out;
+    }
+
+    .completion-text {
+      text-align: center;
+    }
+
+    .completion-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .completion-desc {
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .video-preview {
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 9 / 16;
+      background: linear-gradient(135deg, var(--bg-accent) 0%, var(--bg-1) 100%);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--accent-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin: var(--space-xl) 0;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    .action-buttons {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-sm);
+      margin-top: var(--space-xl);
+    }
+
+    .btn-action {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: var(--space-md);
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: var(--text-1);
+    }
+
+    .btn-action:active {
+      background: var(--bg-2);
+      transform: scale(0.95);
+    }
+
+    .btn-action-icon {
+      font-size: 24px;
+    }
+
+    .btn-action-text {
+      font-size: 11px;
+      color: var(--text-2);
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 页面 6: 我的剧场 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .theater-header {
+      padding: 20px 16px;
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--bg-3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .theater-title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .theater-count {
+      font-size: 12px;
+      color: var(--text-2);
+    }
+
+    .theater-banner {
+      margin: 12px 16px;
+      padding: 14px 16px;
+      background: var(--bg-accent);
+      border: 1px solid rgba(255,96,15,0.2);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .theater-banner:hover { border-color: rgba(255,96,15,0.4); }
+
+    .tb-left { display: flex; align-items: center; gap: 12px; }
+
+    .tb-icon { font-size: 28px; }
+
+    .tb-title { font-size: 14px; font-weight: 700; color: var(--text-1); }
+
+    .tb-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+    .tb-arrow { font-size: 18px; color: var(--accent); }
+
+    /* 拍摄中区 */
+    .filming-section {
+      margin: 0 16px 16px;
+      background: var(--bg-1);
+      border: 1px solid rgba(255,96,15,0.2);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .filming-header {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .filming-chevron { font-size: 12px; transition: transform 0.3s; }
+
+    .filming-body {
+      padding: 0 16px 16px;
+    }
+
+    .filming-body.collapsed { display: none; }
+
+    .filming-item {
+      padding: 12px;
+      margin-bottom: 8px;
+      background: var(--bg-2);
+      border-radius: var(--radius-md);
+    }
+
+    .filming-item:last-child { margin-bottom: 0; }
+
+    .filming-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .filming-name { font-size: 14px; font-weight: 600; color: var(--text-1); }
+
+    .filming-view-btn {
+      padding: 4px 10px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .filming-words { font-size: 12px; color: var(--text-3); margin-bottom: 6px; }
+
+    .filming-meta { font-size: 11px; color: var(--text-3); margin-bottom: 8px; }
+
+    .filming-progress {
+      height: 4px;
+      background: var(--bg-3);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .filming-bar {
+      height: 100%;
+      background: var(--accent-gradient-h);
+      border-radius: var(--radius-full);
+      transition: width 3s ease;
+    }
+
+    .filming-eta { font-size: 11px; color: var(--text-3); }
+
+    .completed-divider {
+      margin: 0 16px 12px;
+    }
+
+    .completed-header {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+
+    /* 开拍确认 overlay */
+    .shoot-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .shoot-overlay.hidden { display: none; }
+
+    .shoot-confirm {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      text-align: center;
+      max-width: 320px;
+      animation: fadeInUp 0.4s ease-out;
+    }
+
+    .sc-icon { font-size: 48px; margin-bottom: 16px; }
+
+    .sc-title { font-size: 18px; font-weight: 700; color: var(--text-1); margin-bottom: 8px; }
+
+    .sc-desc { font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+
+    .sc-time { font-size: 14px; color: var(--accent); font-weight: 600; margin-bottom: 20px; }
+
+    .sc-hint { font-size: 11px; color: var(--text-3); margin-bottom: 16px;
+      background: var(--bg-accent); padding: 8px 12px; border-radius: var(--radius-md); }
+
+    .sc-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .sc-btn-primary {
+      padding: 12px;
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .sc-btn-secondary {
+      padding: 12px;
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .theater-cta {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 12px var(--accent-glow);
+      transition: all 0.2s ease;
+    }
+
+    .theater-cta:active {
+      transform: scale(0.95);
+    }
+
+    .theater-content {
+      padding: 16px;
+    }
+
+    .cta-new-drama {
+      width: 100%;
+      padding: var(--space-lg);
+      background: var(--bg-accent);
+      border: 2px dashed var(--accent);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      margin-bottom: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .cta-new-drama:active {
+      background: rgba(255, 96, 15, 0.15);
+      transform: scale(0.98);
+    }
+
+    .cta-new-drama-icon {
+      font-size: 32px;
+    }
+
+    .cta-new-drama-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .drama-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .drama-item {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.2s ease;
+      display: flex;
+      gap: var(--space-md);
+      cursor: pointer;
+    }
+
+    .drama-item:active {
+      background: var(--bg-2);
+      transform: scale(0.98);
+    }
+
+    .drama-thumbnail {
+      width: 100px;
+      height: 140px;
+      background: linear-gradient(135deg, var(--accent-subtle) 0%, var(--bg-2) 100%);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      border-right: 1px solid var(--bg-3);
+    }
+
+    .drama-info {
+      flex: 1;
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .drama-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .drama-words {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+
+    .drama-meta {
+      display: flex;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .drama-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      background: rgba(0, 200, 83, 0.12);
+      color: var(--success);
+      border-radius: 2px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 页面 7: 头号剧场（瀑布流广场） */
+    /* ═══════════════════════════════════════════════════════════ */
+    .ht-header {
+      padding: 12px 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-0);
+    }
+
+    .ht-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .ht-tab {
+      padding: 8px 20px;
+      background: var(--bg-2);
+      color: var(--text-2);
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .ht-tab.active {
+      background: var(--accent-subtle);
+      color: var(--accent);
+    }
+
+    .ht-waterfall {
+      padding: 12px 12px 100px;
+      column-count: 2;
+      column-gap: 10px;
+    }
+
+    .ht-card {
+      break-inside: avoid;
+      margin-bottom: 10px;
+      background: var(--bg-1);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .ht-card:active { transform: scale(0.98); }
+
+    .ht-card-cover {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .ht-card-cover img,
+    .ht-card-cover .ht-cover-placeholder {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .ht-cover-placeholder {
+      aspect-ratio: 9/16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      color: white;
+    }
+
+    .ht-card-play {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px; height: 40px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      backdrop-filter: blur(4px);
+    }
+
+    .ht-card-body {
+      padding: 10px;
+    }
+
+    .ht-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-1);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .ht-card-author {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .ht-card-avatar {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      flex-shrink: 0;
+    }
+
+    .ht-card-username {
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .ht-card-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .ht-card-footer span {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .ht-card-tags {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .ht-card-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border-radius: var(--radius-full);
+    }
+
+    .ht-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px;
+      color: var(--text-3);
+      font-size: 12px;
+      gap: 8px;
+    }
+
+    .ht-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--bg-3);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 页面 8: 剧目详情 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .drama-detail-header {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      margin-bottom: var(--space-lg);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+    }
+
+    .drama-detail-content {
+      padding: 20px 16px;
+    }
+
+    .drama-detail-name {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-1);
+      margin-bottom: var(--space-sm);
+    }
+
+    .drama-detail-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-3);
+      margin-bottom: var(--space-lg);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--bg-3);
+    }
+
+    .subtitle-controls {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      margin-bottom: var(--space-xl);
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .subtitle-btn {
+      padding: 6px 12px;
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .subtitle-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .subtitle-btn:active {
+      transform: scale(0.95);
+    }
+
+    .target-words-detail {
+      background: var(--bg-2);
+      padding: var(--space-md);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-xl);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .target-word {
+      padding: 6px 12px;
+      background: var(--accent-subtle);
+      color: var(--accent);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .target-word:active {
+      transform: scale(0.95);
+    }
+
+    .learning-section {
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-xl);
+      border-bottom: 1px solid var(--bg-3);
+    }
+
+    .learning-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-2);
+      margin-bottom: var(--space-md);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .learning-action {
+      display: flex;
+      gap: 12px;
+      margin-bottom: var(--space-md);
+    }
+
+    .learning-btn {
+      flex: 1;
+      padding: 14px;
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-md);
+      color: var(--text-1);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .learning-btn:first-child {
+      border-color: var(--accent);
+      background: var(--bg-accent);
+      color: var(--accent);
+    }
+
+    .learning-btn:active {
+      transform: scale(0.97);
+    }
+
+    .production-info {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-2);
+    }
+
+    .production-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+
+    .production-label {
+      color: var(--text-3);
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 通用导航 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 402px;
+      height: 60px;
+      background: rgba(0, 0, 0, 0.98);
+      border-top: 1px solid var(--bg-3);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 99;
+    }
+
+    .nav-item {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      color: var(--text-3);
+      transition: color 0.2s ease;
+      text-decoration: none;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+    }
+
+    .nav-icon {
+      font-size: 20px;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .back-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.98);
+      border-bottom: 1px solid var(--bg-3);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .back-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      background: var(--bg-2);
+      border: none;
+      color: var(--text-1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:active {
+      background: var(--bg-3);
+      transform: scale(0.95);
+    }
+
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-1);
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* 模态框 */
+    /* ═══════════════════════════════════════════════════════════ */
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 200;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      background: var(--bg-0);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      max-width: 300px;
+      text-align: center;
+      animation: slideUp 0.3s ease;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: var(--space-md);
+      color: var(--text-1);
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      color: var(--text-2);
+      margin-bottom: var(--space-lg);
+    }
+
+    .modal-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+    }
+
+    .modal-btn {
+      padding: 12px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .modal-btn-cancel {
+      background: var(--bg-2);
+      color: var(--text-1);
+    }
+
+    .modal-btn-confirm {
+      background: var(--accent-gradient);
+      color: white;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .modal-btn-confirm:active {
+      transform: scale(0.97);
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="viewport">
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 页面 1: 导演候选名单（AI 智能组词 → 一键开拍） -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page active" id="page-candidate">
+    <div class="toolbar">
+      <div>
+        <div class="toolbar-title">🎬 今日候选剧本</div>
+        <div class="toolbar-count">AI 为你打包了 5 组戏剧词汇</div>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn-icon" onclick="navigateTo('page-theater')" aria-label="我的剧场">
+          <svg viewBox="0 0 24 24"><path d="M2 4h20v14H2z"/><path d="M2 18l4 3h12l4-3"/><path d="M8 8l4 4 4-4"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="candidate-refresh">
+      <button class="btn-refresh" id="btn-refresh" onclick="refreshCandidates()">
+        🔄 换一批 <span id="refresh-count">(今日剩余 5 次)</span>
+      </button>
+    </div>
+
+    <div class="candidate-list" id="candidate-list">
+      <!-- 动态生成 5 张组合卡片 -->
+    </div>
+
+    <div class="candidate-footer">
+      <a class="link-manual" href="#" onclick="navigateTo('page-collection'); return false;">
+        不想用推荐的？自己挑演员 →
+      </a>
+    </div>
+  </div>
+
+  <div class="page" id="page-collection">
+    <div class="toolbar">
+      <div>
+        <div class="toolbar-title">已选词汇</div>
+        <div class="toolbar-count" id="select-count">0 / 5</div>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn-icon" onclick="navigateTo('page-theater')" aria-label="我的剧场">
+          <svg viewBox="0 0 24 24"><path d="M2 4h20v14H2z"/><path d="M2 18l4 3h12l4-3"/><path d="M8 8l4 4 4-4"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="word-list" id="word-list">
+      <!-- 动态生成 -->
+    </div>
+
+    <div class="pricing-story" id="pricing-story" style="display:none;">
+      <div class="pricing-main">
+        <div class="pricing-headline">💰 5 个单词 · 一镜十练</div>
+        <div class="pricing-math">¥9.9 = 10 个学习动作 = <span class="pricing-per">¥0.99/动作</span></div>
+      </div>
+      <div class="pricing-expand" onclick="this.nextElementSibling.classList.toggle('open')">
+        ⓘ 展开看 10 个学习动作清单
+      </div>
+      <div class="pricing-detail">
+        <div class="pricing-item"><span class="pi-num">1</span> 主动选词 → 深加工编码</div>
+        <div class="pricing-item"><span class="pi-num">2</span> 想象场景 → 语义编码</div>
+        <div class="pricing-item"><span class="pi-num">3</span> 看脚本预览 → 上下文学习</div>
+        <div class="pricing-item"><span class="pi-num">4</span> 看成片 → 视觉锚点</div>
+        <div class="pricing-item"><span class="pi-num">5</span> 听台词 → 听力输入</div>
+        <div class="pricing-item"><span class="pi-num">6</span> 跟读评分 → 口语输出</div>
+        <div class="pricing-item"><span class="pi-num">7</span> 微练习 6 题 → 主动检索</div>
+        <div class="pricing-item"><span class="pi-num">8</span> 重遇弹幕 → 间隔重复</div>
+        <div class="pricing-item"><span class="pi-num">9</span> 月度复盘 → 元认知</div>
+        <div class="pricing-item"><span class="pi-num">10</span> 作品广场 → 社交承诺</div>
+      </div>
+    </div>
+
+    <button class="cta-float" id="cta-next" disabled onclick="navigateTo('page-select-form')">
+      开拍 · ¥9.9
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 页面 2: 选择形式（图片/视频） -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-select-form">
+    <div class="back-header">
+      <button class="back-btn" onclick="navigateTo('page-collection')">←</button>
+      <div class="header-title">选择呈现形式</div>
+    </div>
+
+    <div class="page-content">
+      <h2 class="section-title">🎬 今天让谁主演？</h2>
+
+      <div class="selected-words-container" id="selected-display">
+        <!-- 动态生成 -->
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">选择形式</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="form" value="image" checked>
+            <div class="radio-label">
+              <div class="radio-title">📸 剧照（图片）</div>
+              <div class="radio-desc">单张 9:16 漫画或写实风格</div>
+            </div>
+            <span class="radio-badge">低成本</span>
+          </label>
+
+          <label class="radio-option">
+            <input type="radio" name="form" value="video">
+            <div class="radio-label">
+              <div class="radio-title">🎥 剧目（视频）</div>
+              <div class="radio-desc">15秒高清双人对话视频</div>
+            </div>
+            <span class="radio-badge">会员</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">选择风格（可跳过，系统自动推荐）</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="style" value="sitcom" checked>
+            <div class="radio-label">
+              <div class="radio-title">🎬 美剧情景</div>
+              <div class="radio-desc">温馨幽默，参考 Friends</div>
+            </div>
+          </label>
+
+          <label class="radio-option">
+            <input type="radio" name="style" value="drama">
+            <div class="radio-label">
+              <div class="radio-title">🎭 戏剧悬疑</div>
+              <div class="radio-desc">暗光、紧张、低沉</div>
+            </div>
+          </label>
+
+          <label class="radio-option">
+            <input type="radio" name="style" value="workplace">
+            <div class="radio-label">
+              <div class="radio-title">💼 职场办公室</div>
+              <div class="radio-desc">会议室、快节奏、现实</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="navigateTo('page-script-preview')">
+        下一步：预览脚本
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 页面 3: 脚本预览 -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-script-preview">
+    <div class="back-header">
+      <button class="back-btn" onclick="navigateTo('page-select-form')">←</button>
+      <div class="header-title">预览脚本初稿</div>
+    </div>
+
+    <div class="page-content">
+      <div class="script-preview">
+        <div class="script-header">
+          <div class="script-title">你的剧本初稿</div>
+          <div class="script-status">✨ 已就绪</div>
+        </div>
+
+        <div class="script-meta">
+          🎭 场景：办公室会议室，下午 3 点
+        </div>
+
+        <div class="dialogue-block">
+          <div class="character-name">Sarah（女，资深员工）</div>
+          <div class="dialogue-en">I'm <span class="dialogue-highlight">reluctantly</span> <span class="dialogue-highlight">committing</span> to this <span class="dialogue-highlight">showdown</span>, but you'd better be ready.</div>
+          <div class="dialogue-zh">我极不情愿地接下这场对决，但你最好做好准备。</div>
+        </div>
+
+        <div class="dialogue-block">
+          <div class="character-name">Mark（男，新人）</div>
+          <div class="dialogue-en">Then let's not waste another minute.</div>
+          <div class="dialogue-zh">那就别再浪费时间了。</div>
+        </div>
+
+        <div class="target-words">
+          <div class="target-words-label">✨ 你的目标词已全部融入</div>
+          <span class="target-word-tag">reluctantly</span>
+          <span class="target-word-tag">commit</span>
+          <span class="target-word-tag">showdown</span>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <button class="btn-secondary" onclick="alert('重写脚本...脚本生成成功！')">重写一版</button>
+        <button class="btn-secondary" onclick="alert('微调台词...编辑完成！')">微调台词</button>
+      </div>
+
+      <div class="pricing-confirm">
+        <div class="pc-main">💰 5 个单词 · 一镜十练</div>
+        <div class="pc-price">¥9.9 <span class="pc-per">/ 段</span></div>
+        <div class="pc-math">10 个学习动作 = ¥0.99/动作</div>
+      </div>
+
+      <button class="btn-primary" onclick="showShootOverlay('办公室对决')">
+        开拍！
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 页面 4: 生成等待 -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-wait">
+    <div class="wait-container">
+      <div class="wait-stage" id="stage-1">
+        <div class="wait-icon">🎬</div>
+        <div class="wait-title">🎬 导演构思中…</div>
+        <div class="wait-desc">正在为你的 5 个词设计语义场景</div>
+        <div class="wait-check">✅ 深加工编码完成</div>
+        <div class="learning-snippet">
+          <div class="snippet-label">顺便学一下</div>
+          <div class="snippet-content">
+            <span class="snippet-highlight">reluctantly</span> 通常用来形容"不情愿地、勉强地"去做某件事。
+          </div>
+        </div>
+      </div>
+
+      <div class="wait-stage hidden" id="stage-2">
+        <div class="wait-icon">🎭</div>
+        <div class="wait-title">🎭 演员就位…</div>
+        <div class="wait-desc">AI 正在让单词"活"起来</div>
+        <div class="wait-check">✅ 情景记忆锚点建立</div>
+        <div class="learning-snippet">
+          <div class="snippet-label">顺便练一下</div>
+          <div class="snippet-content">
+            试读："I'm <span class="snippet-highlight">reluctantly</span> committed to this plan."
+          </div>
+        </div>
+      </div>
+
+      <div class="wait-stage hidden" id="stage-3">
+        <div class="wait-icon">✂️</div>
+        <div class="wait-title">✂️ 剪辑中…</div>
+        <div class="wait-desc">15 秒精华片段，比闪卡有效 5 倍</div>
+        <div class="wait-check">✅ 双重编码加固（视觉+听觉）</div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 60%;"></div>
+        </div>
+        <div style="margin-top: var(--space-lg); font-size: 14px; color: var(--text-2);">
+          快好了，准备首映…
+        </div>
+      </div>
+
+      <div class="wait-stage hidden" id="stage-4">
+        <div class="wait-icon">🎉</div>
+        <div class="wait-title">🎉 杀青！</div>
+        <div class="wait-desc">跟读 + 练习 + 重遇再叠加 5 个学习动作</div>
+        <div class="wait-ten-progress">
+          <div class="wtp-label">一镜十练进度</div>
+          <div class="wtp-bar">
+            <div class="wtp-fill" style="width: 50%;"></div>
+          </div>
+          <div class="wtp-text">5/10 已完成 — 下方解锁剩余 5 个</div>
+        </div>
+        <button class="btn-primary" style="margin-top: var(--space-lg);" onclick="navigateTo('page-completion')">
+          去看看
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 页面 5: 完成/杀青 -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-completion">
+    <div class="back-header">
+      <button class="back-btn" onclick="navigateTo('page-wait')">←</button>
+      <div class="header-title">杀青完成</div>
+    </div>
+
+    <div class="completion-container">
+      <div class="completion-celebration">🎬</div>
+
+      <div class="completion-text">
+        <div class="completion-title">办公室对决</div>
+        <div class="completion-desc">reluctantly · commit · showdown</div>
+      </div>
+
+      <div class="video-preview">
+        🎥
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-action" onclick="alert('开始播放...')">
+          <div class="btn-action-icon">▶️</div>
+          <div class="btn-action-text">播放</div>
+        </button>
+        <button class="btn-action" onclick="alert('分享到朋友圈...')">
+          <div class="btn-action-icon">🌐</div>
+          <div class="btn-action-text">首映</div>
+        </button>
+        <button class="btn-action" onclick="navigateTo('page-drama-detail')">
+          <div class="btn-action-icon">🎯</div>
+          <div class="btn-action-text">学习</div>
+        </button>
+      </div>
+
+      <button class="btn-primary" onclick="navigateTo('page-theater')" style="margin-top: var(--space-2xl);">
+        保存到我的剧场
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 页面 6: 我的剧场 -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-theater">
+    <div class="theater-header">
+      <div>
+        <div class="theater-title">我的剧场</div>
+        <div class="theater-count">共 12 部作品</div>
+      </div>
+      <button class="theater-cta" onclick="navigateTo('page-select-form')">+ 开拍</button>
+    </div>
+
+    <div class="theater-banner" onclick="navigateTo('page-head-theater')">
+      <div class="tb-left">
+        <div class="tb-icon">🎭</div>
+        <div class="tb-text">
+          <div class="tb-title">去头号剧场逛逛 →</div>
+          <div class="tb-desc">看看大家都在拍什么</div>
+        </div>
+      </div>
+      <div class="tb-arrow">→</div>
+    </div>
+
+    <div class="theater-content">
+      <div class="cta-new-drama" onclick="navigateTo('page-select-form')">
+        <div class="cta-new-drama-icon">🎬</div>
+        <div class="cta-new-drama-text">再开拍一场</div>
+      </div>
+
+      <!-- 拍摄中区 -->
+      <div class="filming-section" id="filming-section">
+        <div class="filming-header" onclick="this.parentElement.querySelector('.filming-body').classList.toggle('collapsed')">
+          <div>🎬 拍摄中 <span id="filming-count">（2）</span></div>
+          <div class="filming-chevron">▼</div>
+        </div>
+        <div class="filming-body">
+          <div class="filming-item">
+            <div class="filming-top">
+              <div class="filming-name">办公室对决</div>
+              <button class="filming-view-btn" onclick="navigateTo('page-wait')">查看进度</button>
+            </div>
+            <div class="filming-words">reluctantly · commit · showdown</div>
+            <div class="filming-meta">视频 · 已开拍 <span id="filming-time-1">4</span> 分钟</div>
+            <div class="filming-progress">
+              <div class="filming-bar" style="width: 62%;"></div>
+            </div>
+            <div class="filming-eta">预计还需 3 分钟</div>
+          </div>
+          <div class="filming-item">
+            <div class="filming-top">
+              <div class="filming-name">街角告白</div>
+              <button class="filming-view-btn" onclick="navigateTo('page-wait')">查看进度</button>
+            </div>
+            <div class="filming-words">whisper · confess</div>
+            <div class="filming-meta">图片 · 已开拍 <span id="filming-time-2">1</span> 分钟</div>
+            <div class="filming-progress">
+              <div class="filming-bar" style="width: 85%; background: var(--success);"></div>
+            </div>
+            <div class="filming-eta" style="color: var(--success);">马上杀青</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="completed-divider" id="completed-section">
+        <div class="completed-header">✅ 已完成（12）</div>
+      </div>
+
+      <div class="drama-list">
+        <!-- 精华月报 -->
+        <div class="drama-item" onclick="navigateTo('page-drama-detail')" style="border-color: var(--accent); border-width: 2px;">
+          <div class="drama-thumbnail" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); font-size: 24px;">
+            📌
+          </div>
+          <div class="drama-info">
+            <div>
+              <div class="drama-name">2026.05 月度精华</div>
+              <div class="drama-words" style="color: var(--accent);">100 词中 5 词主演 · 视频 · 15s</div>
+              <div class="drama-meta">
+                <span>已精选 ⭐</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 作品 1 -->
+        <div class="drama-item" onclick="navigateTo('page-drama-detail')">
+          <div class="drama-thumbnail" style="background: linear-gradient(135deg, #FF7A33 0%, #FFB800 100%);">
+            😡
+          </div>
+          <div class="drama-info">
+            <div class="drama-name">办公室对决</div>
+            <div class="drama-words">reluctantly · commit · showdown</div>
+            <div class="drama-meta">
+              <span>视频 · 2026-05-04</span>
+              <span class="drama-badge">已精选 ⭐</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 作品 2 -->
+        <div class="drama-item" onclick="navigateTo('page-drama-detail')">
+          <div class="drama-thumbnail" style="background: linear-gradient(135deg, #448AFF 0%, #64B5F6 100%);">
+            🤫
+          </div>
+          <div class="drama-info">
+            <div class="drama-name">街角告白</div>
+            <div class="drama-words">whisper · confess · betray</div>
+            <div class="drama-meta">
+              <span>图片 · 2026-05-02</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 作品 3 -->
+        <div class="drama-item" onclick="navigateTo('page-drama-detail')">
+          <div class="drama-thumbnail" style="background: linear-gradient(135deg, #00C853 0%, #76FF03 100%);">
+            🎓
+          </div>
+          <div class="drama-info">
+            <div class="drama-name">图书馆的秘密</div>
+            <div class="drama-words">profound · manuscript · revelation</div>
+            <div class="drama-meta">
+              <span>图片 · 2026-05-01</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 页面 7: 头号剧场（瀑布流广场） -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-head-theater">
+    <div class="ht-header">
+      <div class="ht-tabs">
+        <button class="ht-tab active" onclick="switchTab('hot')">🔥 热门</button>
+        <button class="ht-tab" onclick="switchTab('new')">🆕 最新</button>
+      </div>
+    </div>
+
+    <div class="ht-waterfall" id="ht-waterfall">
+      <!-- JS 动态生成瀑布流 -->
+    </div>
+
+    <div class="ht-loading" id="ht-loading" style="display:none;">
+      <div class="ht-spinner"></div>
+      <span>加载更多…</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 页面 8: 剧目详情 -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-drama-detail">
+    <div class="back-header">
+      <button class="back-btn" onclick="navigateTo('page-theater')">←</button>
+      <div class="header-title">剧目详情</div>
+    </div>
+
+    <div class="page-content">
+      <div class="drama-detail-header">
+        😡
+      </div>
+
+      <div class="drama-detail-content">
+        <div class="drama-detail-name">办公室对决</div>
+        <div class="drama-detail-meta">
+          <span>🎬 职场办公室</span>
+          <span>2026-05-04 18:20</span>
+          <span>⭐ 已精选</span>
+        </div>
+
+        <div class="subtitle-controls">
+          <button class="subtitle-btn active">减压</button>
+          <button class="subtitle-btn">中英双语</button>
+          <button class="subtitle-btn">纯英文</button>
+          <button class="subtitle-btn">延迟显示</button>
+        </div>
+
+        <div class="target-words-detail">
+          <span class="target-word">reluctantly</span>
+          <span class="target-word">commit</span>
+          <span class="target-word">showdown</span>
+        </div>
+
+        <div class="learning-section">
+          <div class="learning-section-title">🎯 学习这一场</div>
+          <div class="learning-action">
+            <button class="learning-btn" style="flex: 2;">基于本片做 5 道微练习</button>
+            <button class="learning-btn">跟读评分</button>
+          </div>
+        </div>
+
+        <div class="learning-section">
+          <div class="production-info">
+            <div class="production-row">
+              <span class="production-label">风格</span>
+              <span>职场办公室</span>
+            </div>
+            <div class="production-row">
+              <span class="production-label">角色</span>
+              <span>Sarah (女) / Mark (男)</span>
+            </div>
+            <div class="production-row">
+              <span class="production-label">脚本</span>
+              <span>v2 (已微调)</span>
+            </div>
+            <div class="production-row">
+              <span class="production-label">生成于</span>
+              <span>2026-05-04 18:20</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-top: var(--space-2xl); margin-bottom: var(--space-xl);">
+          <button class="btn-secondary" onclick="alert('分享到朋友圈...')">分享首映</button>
+          <button class="btn-secondary" onclick="alert('重拍确认...')">重拍一场</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- 开拍确认 Overlay（全局覆盖层） -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div class="shoot-overlay hidden" id="shoot-overlay">
+    <div class="shoot-confirm">
+      <div class="sc-icon">🎬</div>
+      <div class="sc-title" id="sc-drama-name">已开拍！</div>
+      <div class="sc-desc">你的剧目正在拍摄中…</div>
+      <div class="sc-time" id="sc-eta">预计 5-8 分钟后杀青</div>
+      <div class="sc-hint">📍 随时在「我的剧场」看进度</div>
+      <div class="sc-buttons">
+        <button class="sc-btn-primary" onclick="dismissShootOverlay('stream')">我先去刷视频</button>
+        <button class="sc-btn-secondary" onclick="dismissShootOverlay('theater')">看进度</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 数据
+  const allWords = [
+    { word: 'reluctantly', phonetic: 'rɪˈlʌktəntli', meaning: '不情愿地、勉强地' },
+    { word: 'commit', phonetic: 'kəˈmɪt', meaning: '承诺、投入、提交' },
+    { word: 'showdown', phonetic: 'ˈʃoʊdaʊn', meaning: '摊牌、对决、最后的决战' },
+    { word: 'whisper', phonetic: 'ˈwɪspər', meaning: '低声说、耳语' },
+    { word: 'confess', phonetic: 'kənˈfes', meaning: '承认、忏悔、坦白' },
+    { word: 'profound', phonetic: 'prəˈfaʊnd', meaning: '深远的、深刻的' },
+    { word: 'manuscript', phonetic: 'ˈmænjəskrɪpt', meaning: '手稿、原稿' },
+    { word: 'revelation', phonetic: 'ˌrevəˈleɪʃn', meaning: '启示、揭露、大吃一惊' },
+  ];
+
+  let selectedWords = [];
+
+  // 导演候选组合数据
+  const candidateCombos = [
+    { theme: '🎭 职场对峙', words: 'reluctantly · commit · showdown', desc: '"一场办公室里的终极摊牌"', urgency: 4, drama: 4 },
+    { theme: '🔮 悬疑揭秘', words: 'whisper · revelation · profound', desc: '"深夜实验室里不该知道的秘密"', urgency: 3, drama: 5 },
+    { theme: '💔 深夜告白', words: 'confess · whisper · commit', desc: '"天台上的坦白，可能太晚了"', urgency: 4, drama: 3 },
+    { theme: '📜 失传手稿', words: 'manuscript · profound · revelation', desc: '"一本旧书改写了所有人的命运"', urgency: 2, drama: 5 },
+    { theme: '🔥 终极对决', words: 'showdown · commit · confess', desc: '"要么摊牌，要么永远消失"', urgency: 5, drama: 5 },
+  ];
+
+  let refreshRemaining = 5;
+
+  function renderCandidates() {
+    const list = document.getElementById('candidate-list');
+    if (!list) return;
+    list.innerHTML = '';
+    candidateCombos.forEach((combo, idx) => {
+      const card = document.createElement('div');
+      card.className = 'candidate-card';
+      card.style.animationDelay = `${idx * 0.08}s`;
+      card.style.animation = 'fadeInUp 0.5s ease-out both';
+      card.innerHTML = `
+        <div class="cc-theme">${combo.theme}</div>
+        <div class="cc-words">${combo.words}</div>
+        <div class="cc-desc">${combo.desc}</div>
+        <div class="cc-meta">
+          <div class="cc-meta-item">
+            学习紧迫度 <div class="cc-dots">${'<div class="cc-dot filled"></div>'.repeat(combo.urgency)}${'<div class="cc-dot"></div>'.repeat(5-combo.urgency)}</div>
+          </div>
+          <div class="cc-meta-item">
+            戏剧张力 <div class="cc-dots">${'<div class="cc-dot filled"></div>'.repeat(combo.drama)}${'<div class="cc-dot"></div>'.repeat(5-combo.drama)}</div>
+          </div>
+        </div>
+        <div class="cc-actions">
+          <button class="cc-btn-shoot" onclick="oneClickShoot('${combo.words}')">¥9.9 一键开拍</button>
+          <button class="cc-btn-preview" onclick="previewScript('${combo.words}')">看脚本 →</button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  function refreshCandidates() {
+    if (refreshRemaining <= 0) {
+      alert('今日刷新次数已用完，明天再来吧~');
+      return;
+    }
+    refreshRemaining--;
+    document.getElementById('refresh-count').textContent = `(今日剩余 ${refreshRemaining} 次)`;
+    if (refreshRemaining <= 0) {
+      document.getElementById('btn-refresh').disabled = true;
+    }
+    // 重新打乱组合（演示：简单 rotate）
+    const first = candidateCombos.shift();
+    candidateCombos.push(first);
+    renderCandidates();
+  }
+
+  function oneClickShoot(words) {
+    const title = words.split(' · ')[0].trim() + '对决';
+    if (confirm(`确认用这些词开拍？\n\n${words.replace(/·/g, ' ')}\n\n风格：AI 自动选择\n费用：¥9.9\n\n首次免费体验不扣费`)) {
+      showShootOverlay(title);
+    }
+  }
+
+  function previewScript(words) {
+    selectedWords = words.split(' · ').map(w => ({ word: w.trim() }));
+    navigateTo('page-script-preview');
+  }
+
+  // 初始化
+  document.addEventListener('DOMContentLoaded', () => {
+    renderWordList();
+    renderCandidates();
+  });
+
+  function renderWordList() {
+    const list = document.getElementById('word-list');
+    list.innerHTML = '';
+    allWords.forEach((word, idx) => {
+      const card = document.createElement('div');
+      card.className = 'word-card';
+      card.setAttribute('data-index', idx);
+      card.innerHTML = `
+        <div class="word-header">
+          <div class="word-text">${word.word}</div>
+          <div class="word-phonetic">${word.phonetic}</div>
+        </div>
+        <div class="word-meaning">${word.meaning}</div>
+      `;
+      card.onclick = () => toggleWordSelect(idx, card);
+      list.appendChild(card);
+    });
+  }
+
+  function toggleWordSelect(idx, card) {
+    const word = allWords[idx];
+    const isSelected = selectedWords.find(w => w.word === word.word);
+
+    if (isSelected) {
+      selectedWords = selectedWords.filter(w => w.word !== word.word);
+      card.classList.remove('selected');
+    } else {
+      if (selectedWords.length < 5) {
+        selectedWords.push(word);
+        card.classList.add('selected');
+      } else {
+        alert('最多选 5 个词');
+        return;
+      }
+    }
+
+    updateSelectCount();
+    updateSelectedDisplay();
+  }
+
+  function updateSelectCount() {
+    document.getElementById('select-count').textContent = `${selectedWords.length} / 5`;
+    const btn = document.getElementById('cta-next');
+    const pricing = document.getElementById('pricing-story');
+    btn.disabled = selectedWords.length === 0;
+    if (pricing) {
+      pricing.style.display = selectedWords.length > 0 ? 'block' : 'none';
+    }
+  }
+
+  function updateSelectedDisplay() {
+    const display = document.getElementById('selected-display');
+    if (display) {
+      display.innerHTML = selectedWords.map(w => `
+        <div class="word-chip">
+          ${w.word}
+          <span class="remove">×</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  function navigateTo(pageId) {
+    // 隐藏所有页面
+    document.querySelectorAll('.page').forEach(page => {
+      page.classList.remove('active', 'exit-left');
+    });
+
+    // 显示目标页面
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+      targetPage.classList.add('active');
+    }
+
+    // 特殊：如果去等待页，启动动画
+    if (pageId === 'page-wait') {
+      startWaitAnimation();
+    }
+
+    window.scrollTo(0, 0);
+  }
+
+  function startWaitAnimation() {
+    let stage = 1;
+    const updateStage = () => {
+      // 隐藏所有阶段
+      document.querySelectorAll('.wait-stage').forEach(s => s.classList.add('hidden'));
+      
+      // 显示当前阶段
+      document.getElementById(`stage-${stage}`).classList.remove('hidden');
+
+      if (stage < 4) {
+        stage++;
+        setTimeout(updateStage, 2000);
+      }
+    };
+    updateStage();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // 头号剧场 - 瀑布流数据和渲染
+  // ═══════════════════════════════════════════════════════════
+  const theaterVideos = [
+    { title: '办公室对决', author: '英语导演小王', avatar: '👨‍💻', coverBg: 'linear-gradient(135deg, #2a1508, #ff600f)', tags: ['reluctantly','commit','showdown'], likes: 238, saves: 89 },
+    { title: '深夜天台告白', author: 'Luna学英语', avatar: '👩‍🎓', coverBg: 'linear-gradient(180deg, #0a0a2e, #448AFF)', tags: ['confess','whisper','heart'], likes: 156, saves: 47 },
+    { title: '图书馆的发现', author: '书虫Jack', avatar: '📚', coverBg: 'linear-gradient(135deg, #1a2a1a, #00C853)', tags: ['profound','manuscript','revelation'], likes: 312, saves: 134 },
+    { title: '街头偶遇', author: 'City Walker', avatar: '🚶', coverBg: 'linear-gradient(180deg, #2a1a0a, #FFB800)', tags: ['encounter','glance','stranger'], likes: 89, saves: 23 },
+    { title: '会议室风暴', author: '英语导演小王', avatar: '👨‍💻', coverBg: 'linear-gradient(135deg, #1a1a2a, #FF600F)', tags: ['negotiate','deadline','pressure'], likes: 421, saves: 198 },
+    { title: '咖啡馆密语', author: 'Luna学英语', avatar: '👩‍🎓', coverBg: 'linear-gradient(180deg, #2a1a1a, #8B4513)', tags: ['secret','betray','trust'], likes: 177, saves: 62 },
+    { title: '星际救援', author: '科幻迷Tom', avatar: '🚀', coverBg: 'linear-gradient(135deg, #0a0a1e, #FF600F)', tags: ['mission','oxygen','survive'], likes: 503, saves: 241 },
+    { title: '教室最后一排', author: '校园剧作家', avatar: '🎒', coverBg: 'linear-gradient(180deg, #1e2a0a, #00C853)', tags: ['whisper','note','secret'], likes: 134, saves: 56 },
+  ];
+
+  function renderWaterfall(containerId, videos) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    videos.forEach((v, idx) => {
+      const card = document.createElement('div');
+      card.className = 'ht-card';
+      card.style.animation = `fadeInUp 0.5s ease-out ${idx * 0.06}s both`;
+      card.onclick = () => {
+        alert(`🎬 播放：${v.title}\n\n目标词：${v.tags.join(' · ')}\n作者：${v.author}\n\n（沉浸式播放页 - v0.7.1上线）`);
+      };
+      card.innerHTML = `
+        <div class="ht-card-cover">
+          <div class="ht-cover-placeholder" style="background:${v.coverBg}; min-height:${180 + (idx%3)*40}px;">
+            🎬
+          </div>
+          <div class="ht-card-play">▶</div>
+        </div>
+        <div class="ht-card-body">
+          <div class="ht-card-title">${v.title}</div>
+          <div class="ht-card-author">
+            <div class="ht-card-avatar" style="display:flex;align-items:center;justify-content:center;font-size:10px;">${v.avatar}</div>
+            <span class="ht-card-username">${v.author}</span>
+          </div>
+          <div class="ht-card-footer">
+            <span>❤️ ${v.likes}</span>
+            <span>📌 ${v.saves}</span>
+          </div>
+          <div class="ht-card-tags">
+            ${v.tags.map(t => `<span class="ht-card-tag">${t}</span>`).join('')}
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  let currentTab = 'hot';
+  function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.ht-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    const sorted = tab === 'hot'
+      ? [...theaterVideos].sort((a,b) => b.likes - a.likes)
+      : [...theaterVideos].reverse();
+    renderWaterfall('ht-waterfall', sorted);
+  }
+
+  // 初始化瀑布流
+  document.addEventListener('DOMContentLoaded', () => {
+    const wf = document.getElementById('ht-waterfall');
+    if (wf) renderWaterfall('ht-waterfall', [...theaterVideos].sort((a,b) => b.likes - a.likes));
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // 开拍即走 - 确认 overlay
+  // ═══════════════════════════════════════════════════════════
+  function showShootOverlay(dramaName) {
+    const overlay = document.getElementById('shoot-overlay');
+    document.getElementById('sc-drama-name').textContent = `🎬 ${dramaName} 已开拍！`;
+    overlay.classList.remove('hidden');
+    // 3秒后自动消失（可选，当前由用户点按钮关闭）
+  }
+
+  function dismissShootOverlay(destination) {
+    const overlay = document.getElementById('shoot-overlay');
+    overlay.classList.add('hidden');
+    if (destination === 'theater') {
+      navigateTo('page-theater');
+    } else if (destination === 'stream') {
+      // 跳回主视频流 — demo中跳到头号剧场瀑布流
+      navigateTo('page-head-theater');
+    }
+  }
+</script>
+
+</body>
+</html>

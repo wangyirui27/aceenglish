@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>头号听力 v0.7 · 功能演示报告</title>
+  <style>
+    :root {
+      --accent: #FF600F;
+      --accent-hover: #E85500;
+      --accent-light: #FF7A33;
+      --accent-dark: #CC4D0C;
+      --accent-glow: rgba(255, 96, 15, 0.3);
+      --accent-subtle: rgba(255, 96, 15, 0.08);
+      --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+      --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+
+      --bg-0: #000000;
+      --bg-1: #111111;
+      --bg-2: #1A1A1A;
+      --bg-3: #222222;
+      --bg-accent: #2A1508;
+
+      --secondary: #FFB800;
+      --success: #00C853;
+      --info: #448AFF;
+
+      --text-1: #FFFFFF;
+      --text-2: #AAAAAA;
+      --text-3: #666666;
+      --text-accent: #FF600F;
+
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 999px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+      background: var(--bg-0);
+      color: var(--text-1);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ============ 幻灯片容器 ============ */
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 80px;
+      position: relative;
+      scroll-snap-align: start;
+    }
+
+    .slide-inner {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    /* ============ SLIDE 1 — COVER ============ */
+    .slide-cover {
+      text-align: center;
+    }
+
+    .cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-accent);
+      border: 1px solid rgba(255, 96, 15, 0.25);
+      padding: 8px 20px;
+      border-radius: var(--radius-full);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 1px;
+      margin-bottom: 32px;
+    }
+
+    .cover-badge svg {
+      width: 18px; height: 18px;
+      stroke-width: 2; stroke: currentColor; fill: none;
+    }
+
+    .cover-title {
+      font-size: 84px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+    }
+
+    .cover-title .accent {
+      color: var(--accent);
+    }
+
+    .cover-sub {
+      font-size: 22px;
+      color: var(--text-2);
+      margin-bottom: 48px;
+    }
+
+    .cover-features {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+    }
+
+    .cover-feature-card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 32px 36px;
+      width: 320px;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+
+    .cover-feature-card:first-child {
+      border-color: rgba(255, 96, 15, 0.35);
+      box-shadow: 0 0 40px var(--accent-subtle);
+    }
+
+    .cover-feature-icon {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .cover-feature-icon svg {
+      width: 26px; height: 26px;
+      stroke-width: 1.5; stroke: var(--accent); fill: none;
+    }
+
+    .cover-feature-name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .cover-feature-desc {
+      font-size: 15px;
+      color: var(--text-3);
+      line-height: 1.6;
+    }
+
+    /* ============ SLIDE 通用 ============ */
+    .slide-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .slide-left h2 {
+      font-size: 48px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .slide-left h2 .accent {
+      color: var(--accent);
+    }
+
+    .slide-left .lead {
+      font-size: 18px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .slide-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ============ 数据大卡 ============ */
+    .stat-card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+    }
+
+    .stat-card.highlight {
+      border-color: rgba(255, 96, 15, 0.3);
+      box-shadow: 0 0 30px var(--accent-subtle);
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-accent));
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--text-3);
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 60px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+      letter-spacing: -1px;
+    }
+
+    .stat-value-unit {
+      font-size: 20px;
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    .stat-desc {
+      font-size: 16px;
+      color: var(--text-2);
+      margin-top: 4px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .stat-mini {
+      text-align: center;
+      padding: 12px 8px;
+      background: var(--bg-2);
+      border-radius: var(--radius-md);
+    }
+
+    .stat-mini-num {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-mini-label {
+      font-size: 13px;
+      color: var(--text-3);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* ============ 步骤条 ============ */
+    .flow-steps {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .flow-step {
+      flex: 1;
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      text-align: center;
+      position: relative;
+    }
+
+    .flow-step-num {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--bg-accent);
+      color: var(--accent);
+      font-size: 16px; font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px;
+    }
+
+    .flow-step-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-1);
+      margin-bottom: 4px;
+    }
+
+    .flow-step-desc {
+      font-size: 13px;
+      color: var(--text-3);
+      line-height: 1.5;
+    }
+
+    /* ============ 对比条 ============ */
+    .compare-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .compare-label {
+      width: 120px;
+      font-size: 16px;
+      color: var(--text-2);
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .compare-track {
+      flex: 1;
+      height: 10px;
+      background: var(--bg-3);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+
+    .compare-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      transition: width 1s ease;
+    }
+
+    .compare-fill.accent {
+      background: var(--accent-gradient-h);
+    }
+
+    .compare-fill.muted {
+      background: var(--bg-3);
+    }
+
+    .compare-value {
+      width: 60px;
+      text-align: right;
+      font-size: 18px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .compare-value.accent {
+      color: var(--accent);
+    }
+
+    .compare-value.muted {
+      color: var(--text-3);
+    }
+
+    /* ============ 段位卡片 ============ */
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+    }
+
+    .tier-card {
+      background: var(--bg-2);
+      border-radius: var(--radius-md);
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .tier-card.top {
+      border: 1px solid rgba(180, 220, 255, 0.3);
+    }
+
+    .tier-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .tier-name.diamond { color: #B4DCFF; }
+    .tier-name.platinum { color: #C8DCF0; }
+    .tier-name.gold { color: var(--secondary); }
+    .tier-name.silver { color: #C0C0C0; }
+    .tier-name.bronze { color: #CD7F32; }
+
+    .tier-score {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    .tier-count {
+      font-size: 13px;
+      color: var(--text-2);
+      margin-top: 4px;
+    }
+
+    /* ============ 排行榜mini ============ */
+    .lb-mini {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .lb-mini-header {
+      display: grid;
+      grid-template-columns: 40px 1fr 90px;
+      gap: 10px;
+      padding: 10px 18px;
+      background: var(--bg-3);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 0.5px;
+    }
+
+    .lb-mini-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 90px;
+      gap: 10px;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--bg-2);
+      font-size: 15px;
+      align-items: center;
+    }
+
+    .lb-mini-row:last-child {
+      border-bottom: none;
+    }
+
+    .lb-mini-rank {
+      font-weight: 700;
+      color: var(--text-3);
+    }
+
+    .lb-mini-rank.gold { color: var(--secondary); }
+    .lb-mini-rank.silver { color: #C0C0C0; }
+    .lb-mini-rank.bronze { color: #CD7F32; }
+
+    .lb-mini-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lb-mini-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: var(--bg-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-2);
+    }
+
+    .lb-mini-name {
+      color: var(--text-1);
+    }
+
+    .lb-mini-score {
+      text-align: right;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .lb-mini-row.me {
+      background: var(--bg-accent);
+    }
+
+    .lb-mini-row.me .lb-mini-avatar {
+      background: var(--accent-subtle);
+      border: 1px solid rgba(255, 96, 15, 0.4);
+      color: var(--accent);
+    }
+
+    .lb-mini-row.me .lb-mini-name {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ============ 价格卡 ============ */
+    .price-cards {
+      display: flex;
+      gap: 16px;
+    }
+
+    .price-card {
+      flex: 1;
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .price-card.best {
+      border-color: rgba(255, 96, 15, 0.35);
+      box-shadow: 0 0 24px var(--accent-subtle);
+      background: linear-gradient(180deg, var(--bg-accent), var(--bg-1));
+    }
+
+    .price-card-label {
+      font-size: 14px;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+
+    .price-card-value {
+      font-size: 44px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .price-card-unit {
+      font-size: 16px;
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    .price-card-desc {
+      font-size: 14px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    .price-extra {
+      margin-top: 12px;
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .tag-orange {
+      background: var(--bg-accent);
+      color: var(--accent);
+    }
+
+    .tag-gold {
+      background: rgba(255, 184, 0, 0.12);
+      color: var(--secondary);
+    }
+
+    .tag-green {
+      background: rgba(0, 200, 83, 0.12);
+      color: var(--success);
+    }
+
+    .tag-blue {
+      background: rgba(68, 138, 255, 0.12);
+      color: var(--info);
+    }
+
+    /* ============ 演示入口卡 ============ */
+    .demo-entry {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .demo-card {
+      background: var(--bg-1);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-xl);
+      padding: 48px 44px;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .demo-card:hover {
+      border-color: rgba(255, 96, 15, 0.4);
+      box-shadow: 0 0 40px var(--accent-subtle);
+    }
+
+    .demo-icon {
+      width: 64px; height: 64px;
+      border-radius: var(--radius-md);
+      background: var(--bg-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .demo-icon svg {
+      width: 30px; height: 30px;
+      stroke-width: 1.5; stroke: var(--accent); fill: none;
+    }
+
+    .demo-title {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .demo-desc {
+      font-size: 16px;
+      color: var(--text-3);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .demo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent-gradient);
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 18px;
+      padding: 14px 36px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 20px var(--accent-glow);
+      transition: all 0.2s ease;
+    }
+
+    .demo-btn:hover {
+      box-shadow: 0 6px 30px rgba(255, 96, 15, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .demo-btn:active {
+      transform: scale(0.97);
+    }
+
+    .demo-btn svg {
+      width: 18px; height: 18px;
+      stroke-width: 2; stroke: currentColor; fill: none;
+    }
+
+    .demo-hint {
+      font-size: 14px;
+      color: var(--text-3);
+      margin-top: 12px;
+    }
+
+    /* ============ 底部导航条 ============ */
+    .slide-nav {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-full);
+      padding: 6px;
+      z-index: 100;
+    }
+
+    .slide-nav-dot {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: var(--text-3);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide-nav-dot.active {
+      background: var(--accent-gradient);
+      color: #fff;
+    }
+
+    .slide-nav-dot:hover {
+      color: var(--text-1);
+    }
+
+    .slide-nav-dot.active:hover {
+      color: #fff;
+    }
+
+    /* ============ 进度指示 ============ */
+    .slide-number {
+      position: absolute;
+      top: 40px;
+      right: 60px;
+      font-size: 15px;
+      color: var(--text-3);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* ============ 动效 ============ */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-up-1 { animation: fadeInUp 0.5s ease-out 0.05s both; }
+    .fade-up-2 { animation: fadeInUp 0.5s ease-out 0.15s both; }
+    .fade-up-3 { animation: fadeInUp 0.5s ease-out 0.25s both; }
+    .fade-up-4 { animation: fadeInUp 0.5s ease-out 0.35s both; }
+
+    /* ============ 分割线 ============ */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 96, 15, 0.3), transparent);
+      margin: 24px 0;
+    }
+
+    /* ============ 小工具 ============ */
+    .text-accent { color: var(--accent); }
+    .text-2 { color: var(--text-2); }
+    .text-3 { color: var(--text-3); }
+    .text-center { text-align: center; }
+    .mt-24 { margin-top: 24px; }
+    .mt-16 { margin-top: 16px; }
+    .mb-16 { margin-bottom: 16px; }
+    .fw-700 { font-weight: 700; }
+    .fw-600 { font-weight: 600; }
+    .text-sm { font-size: 16px; }
+    .text-xs { font-size: 14px; }
+
+    hr { border: none; border-top: 1px solid var(--bg-3); margin: 20px 0; }
+
+    /* ============ 联动标签 ============ */
+    .linkage-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .linkage-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--bg-2);
+      border: 1px solid var(--bg-3);
+      border-radius: var(--radius-full);
+      font-size: 15px;
+      color: var(--text-2);
+    }
+
+    .linkage-chip svg {
+      width: 16px; height: 16px;
+      stroke-width: 1.5; stroke: var(--accent); fill: none;
+    }
+
+    .linkage-arrow {
+      color: var(--accent);
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ==================== SLIDE 1 · 封面 ==================== -->
+<div class="slide slide-cover" id="s1">
+  <div class="slide-number">1 / 7</div>
+  <div class="slide-inner">
+    <div class="cover-badge fade-up-1">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      2026.05 · v0.7 功能报告
+    </div>
+    <div class="cover-title fade-up-2">
+      头号听力<br><span class="accent">两大新功能</span>
+    </div>
+    <div class="cover-sub fade-up-3">从"刷剧学英语"到"导剧学英语"——消费者变创作者</div>
+    <div class="cover-features fade-up-4">
+      <div class="cover-feature-card">
+        <div class="cover-feature-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>
+        </div>
+        <div class="cover-feature-name">🎬 头号剧场</div>
+        <div class="cover-feature-desc">5 词 AI 造 15s 视频 ·<br>5 倍学习法 · 一镜十练</div>
+      </div>
+      <div class="cover-feature-card">
+        <div class="cover-feature-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        </div>
+        <div class="cover-feature-name">⚡ 60 秒排位赛</div>
+        <div class="cover-feature-desc">词汇竞速 · 10 段位升降 ·<br>赛季制全民排位</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 2 · 头号剧场 定位 ==================== -->
+<div class="slide" id="s2">
+  <div class="slide-number">2 / 7</div>
+  <div class="slide-inner">
+    <div class="slide-section">
+      <div class="slide-left fade-up-1">
+        <div class="tag tag-orange mb-16">PART 1</div>
+        <h2>🎬 头号剧场<br><span class="accent">5 倍学习法</span></h2>
+        <p class="lead">记忆链路的最后一块拼图——从被动输入到<strong style="color: var(--accent);">创造性使用</strong>。自创内容的记忆留存率是被动学习的 <span class="text-accent fw-700">3-5 倍</span>。</p>
+        <p class="lead">选 <span class="fw-700">5 个收藏夹单词</span> → AI 生成 <span class="fw-700">15 秒视频</span> → 从消费者变成<span class="text-accent fw-600">导演</span>。</p>
+        <div class="divider"></div>
+        <div class="linkage-row text-sm">
+          <span class="text-3">核心联动力：</span>
+          <span class="linkage-chip">
+            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            收藏夹词库
+          </span>
+          <span class="linkage-arrow">→</span>
+          <span class="linkage-chip" style="border-color: rgba(255, 96, 15, 0.3); color: var(--accent);">
+            <svg viewBox="0 0 24 24"><polyline points="8 21 12 17 16 21"/></svg>
+            头号剧场广场
+          </span>
+          <span class="linkage-arrow">→</span>
+          <span class="linkage-chip">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+            主视频流
+          </span>
+        </div>
+      </div>
+      <div class="slide-right fade-up-3">
+        <div class="stat-card highlight">
+          <div class="stat-label">定价锚</div>
+          <div class="stat-value">¥9.9<span class="stat-value-unit"> / 段</span></div>
+          <div class="stat-desc">= 5 个词 × 10 个学习动作 = <span class="text-accent fw-700">¥0.99 / 动作</span></div>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-mini"><span class="stat-mini-num">①</span><span class="stat-mini-label">主动选词</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">②</span><span class="stat-mini-label">想象场景</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">③</span><span class="stat-mini-label">看脚本</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">④</span><span class="stat-mini-label">看成片</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">⑤</span><span class="stat-mini-label">听台词</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">⑥</span><span class="stat-mini-label">跟读评分</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">⑦</span><span class="stat-mini-label">微练习×6</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">⑧</span><span class="stat-mini-label">重遇弹幕</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">⑨</span><span class="stat-mini-label">月度复盘</span></div>
+          <div class="stat-mini"><span class="stat-mini-num">⑩</span><span class="stat-mini-label">作品广场</span></div>
+        </div>
+        <div class="text-xs text-3 text-center mt-16">外喊 5 倍（学术撑得住），内拆 10 个动作（用户自己数）</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 3 · 头号剧场 流程 ==================== -->
+<div class="slide" id="s3">
+  <div class="slide-number">3 / 7</div>
+  <div class="slide-inner">
+    <div class="tag tag-orange mb-16 fade-up-1">头号剧场 · 生成流程</div>
+    <h2 style="font-size: 36px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 36px;" class="fade-up-1">5 步：从选词到杀青</h2>
+    <div class="flow-steps fade-up-2">
+      <div class="flow-step">
+        <div class="flow-step-num">1</div>
+        <div class="flow-step-title">候选名单</div>
+        <div class="flow-step-desc">AI 推荐 5 套<br>智能词组合<br>一键开拍 ¥9.9</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">2</div>
+        <div class="flow-step-title">选词 1-5</div>
+        <div class="flow-step-desc">演员卡排列<br>可拖动排序<br>从收藏夹选</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">3</div>
+        <div class="flow-step-title">选风格</div>
+        <div class="flow-step-desc">7 种风格<br>全部可跳过<br>AI 自动选</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">4</div>
+        <div class="flow-step-title">预览脚本</div>
+        <div class="flow-step-desc">质量保障层<br>可微调 / 重写<br>修改免费</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">5</div>
+        <div class="flow-step-title">开拍即走</div>
+        <div class="flow-step-desc">3 秒确认<br>跳回刷视频<br>三方通知杀青</div>
+      </div>
+    </div>
+    <div class="slide-section mt-24 fade-up-3" style="grid-template-columns: 1fr 1fr;">
+      <div>
+        <div class="price-cards">
+          <div class="price-card">
+            <div class="price-card-label">剧照</div>
+            <div class="price-card-value">¥1.5</div>
+            <div class="price-card-desc">/ 张 · 10 张 ¥12</div>
+          </div>
+          <div class="price-card best">
+            <div class="price-card-label">剧目视频 15s</div>
+            <div class="price-card-value">¥9.9</div>
+            <div class="price-card-desc">/ 段 · 5 段 ¥39</div>
+          </div>
+        </div>
+        <div class="price-extra text-center mt-16">
+          <span class="tag tag-orange">🔥 首充翻倍</span>
+          <span class="text-sm text-2" style="margin-left: 6px;">首充任意档位赠等额余额</span>
+        </div>
+      </div>
+      <div>
+        <div class="stat-label" style="margin-bottom: 12px;">学习效果验证</div>
+        <div class="compare-row">
+          <div class="compare-label">头号剧场词汇</div>
+          <div class="compare-track"><div class="compare-fill accent" style="width:87%"></div></div>
+          <div class="compare-value accent">87%</div>
+        </div>
+        <div class="compare-row">
+          <div class="compare-label">普通收藏词</div>
+          <div class="compare-track"><div class="compare-fill muted" style="width:32%"></div></div>
+          <div class="compare-value muted">32%</div>
+        </div>
+        <div class="text-center text-sm text-2 mt-16">
+          头号剧场 <span class="text-accent fw-700">2.7×</span> + 跟读+练习+重遇 = 综合 <span class="text-accent fw-700">5.1×</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 4 · 60秒排位赛 定位 ==================== -->
+<div class="slide" id="s4">
+  <div class="slide-number">4 / 7</div>
+  <div class="slide-inner">
+    <div class="slide-section">
+      <div class="slide-left fade-up-1">
+        <div class="tag tag-orange mb-16">PART 2</div>
+        <h2>⚡ 60 秒排位赛<br><span class="accent">词汇竞技场</span></h2>
+        <p class="lead"><strong style="color: var(--accent);">60 秒限时</strong>内比拼词汇反应速度与准确度。5 种题型轮换，连击加成最高 <span class="text-accent fw-700">×2.0</span>。</p>
+        <hr>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <div class="stat-label">核心规则</div>
+            <div class="text-sm text-2" style="line-height: 2;">
+              时间：<span class="fw-600">60 秒</span><br>
+              得分：正答 <span class="fw-600">+15</span><br>
+              连击：<span class="fw-600">×1.2 ~ ×2.0</span><br>
+              错答：<span class="fw-600">-5 分</span>
+            </div>
+          </div>
+          <div>
+            <div class="stat-label">赛季</div>
+            <div class="text-sm text-2" style="line-height: 2;">
+              S1：<span class="fw-600">2026.05.01</span><br>
+              至 <span class="fw-600">2026.07.31</span><br>
+              3 个月后结算<br>
+              积分清空段位保留
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-right fade-up-3">
+        <div class="stat-label">10 段位 · 当前参赛分布</div>
+        <div class="tier-grid">
+          <div class="tier-card top">
+            <div class="tier-name diamond">💎 钻石</div>
+            <div class="tier-score">≥ 12,000</div>
+            <div class="tier-count">12 人</div>
+          </div>
+          <div class="tier-card top">
+            <div class="tier-name platinum">⚪ 铂金</div>
+            <div class="tier-score">10,500-11,999</div>
+            <div class="tier-count">28 人</div>
+          </div>
+          <div class="tier-card">
+            <div class="tier-name gold">🥇 黄金 I·II·III</div>
+            <div class="tier-score">8,200-10,499</div>
+            <div class="tier-count">448 人</div>
+          </div>
+          <div class="tier-card">
+            <div class="tier-name silver">🥈 白银 I·II·III</div>
+            <div class="tier-score">5,500-8,199</div>
+            <div class="tier-count">1,967 人</div>
+          </div>
+          <div class="tier-card">
+            <div class="tier-name bronze">🥉 青铜 I·II</div>
+            <div class="tier-score">0-5,499</div>
+            <div class="tier-count">2,440 人</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 5 · 排位赛 排行 ==================== -->
+<div class="slide" id="s5">
+  <div class="slide-number">5 / 7</div>
+  <div class="slide-inner">
+    <div class="slide-section">
+      <div class="slide-left fade-up-1">
+        <div class="tag tag-orange mb-16">排位赛 · 赛季排行榜</div>
+        <h2 style="font-size: 36px; font-weight: 700; letter-spacing: -0.5px;">📋 青铜 I<br><span class="accent text-sm" style="font-size: 18px;">1,284 人参赛</span></h2>
+        <div class="lb-mini mt-24">
+          <div class="lb-mini-header"><div>#</div><div>玩家</div><div style="text-align: right;">分数</div></div>
+          <div class="lb-mini-row">
+            <div class="lb-mini-rank gold">1</div>
+            <div class="lb-mini-user"><div class="lb-mini-avatar">L</div><div class="lb-mini-name">Luna</div></div>
+            <div class="lb-mini-score">9,240</div>
+          </div>
+          <div class="lb-mini-row">
+            <div class="lb-mini-rank silver">2</div>
+            <div class="lb-mini-user"><div class="lb-mini-avatar">M</div><div class="lb-mini-name">Mike</div></div>
+            <div class="lb-mini-score">8,710</div>
+          </div>
+          <div class="lb-mini-row">
+            <div class="lb-mini-rank bronze">3</div>
+            <div class="lb-mini-user"><div class="lb-mini-avatar">S</div><div class="lb-mini-name">Sarah</div></div>
+            <div class="lb-mini-score">8,320</div>
+          </div>
+          <div class="lb-mini-row" style="font-size: 14px; color: var(--text-3);">
+            <div class="lb-mini-rank">4</div>
+            <div class="lb-mini-user"><div class="lb-mini-avatar">J</div><div class="lb-mini-name">Jack</div></div>
+            <div class="lb-mini-score" style="color: var(--text-2);">7,950</div>
+          </div>
+          <div class="lb-mini-row" style="font-size: 14px; color: var(--text-3);">
+            <div class="lb-mini-rank">5</div>
+            <div class="lb-mini-user"><div class="lb-mini-avatar">E</div><div class="lb-mini-name">Emma</div></div>
+            <div class="lb-mini-score" style="color: var(--text-2);">7,680</div>
+          </div>
+          <div class="lb-mini-row me">
+            <div class="lb-mini-rank" style="color: var(--text-3);">184</div>
+            <div class="lb-mini-user"><div class="lb-mini-avatar">Y</div><div class="lb-mini-name">你</div></div>
+            <div class="lb-mini-score">4,280</div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-right fade-up-3">
+        <div class="stat-card highlight">
+          <div class="stat-label">双功能联动</div>
+          <p class="text-sm text-2" style="line-height: 1.8;">
+            排位赛词库来自<span class="text-accent fw-600">用户收藏夹 + 学习列表</span>，成绩实时反馈到头号剧场<span class="text-accent fw-600">导演候选名单</span>的学习紧迫度维度。
+          </p>
+          <div class="divider"></div>
+          <p class="text-sm text-2" style="line-height: 1.8;">
+            排位赛季榜 <span class="text-accent fw-600">Top 10</span> 作品自动推送到 <span class="text-accent fw-600">头号剧场精选</span>，形成学习 → 竞技 → 创作的闭环。
+          </p>
+        </div>
+        <div class="stat-card mt-16">
+          <div class="stat-label">北极星指标</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px;">
+            <div class="text-center">
+              <div style="font-size: 36px; font-weight: 800; color: var(--accent);">≥ 25%</div>
+            <div class="text-xs text-3">头号剧场<br>月活渗透率</div>
+          </div>
+          <div class="text-center">
+            <div style="font-size: 36px; font-weight: 800; color: var(--accent);">≥ 20%</div>
+              <div class="text-xs text-3">排位赛<br>DAU 渗透率</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 6 · 演示入口 ==================== -->
+<div class="slide" id="s6">
+  <div class="slide-number">6 / 7</div>
+  <div class="slide-inner">
+    <h2 style="font-size: 42px; font-weight: 700; letter-spacing: -1px; text-align: center; margin-bottom: 48px;" class="fade-up-1">
+      现场演示<br><span class="text-accent">两个功能</span>
+    </h2>
+    <div class="demo-entry fade-up-2">
+      <div class="demo-card">
+        <div class="demo-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><polyline points="8 21 12 17 16 21"/></svg>
+        </div>
+        <div class="demo-title">🎬 头号剧场</div>
+        <div class="demo-desc">选词 → AI 生成剧本 → 开拍<br>含导演候选名单 + 10 学习动作</div>
+        <a class="demo-btn" href="头号剧场首页.html" target="_blank">
+          <svg viewBox="0 0 24 24"><polyline points="5 12 15 12"/><polyline points="12 5 19 12 12 19"/></svg>
+          打开演示页面
+        </a>
+        <div class="demo-hint">头号剧场首页.html</div>
+      </div>
+      <div class="demo-card">
+        <div class="demo-icon">
+          <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        </div>
+        <div class="demo-title">⚡ 60 秒排位赛</div>
+        <div class="demo-desc">赛季排行榜 · 10 段位体系<br>含段位切换 + 排行数据</div>
+        <a class="demo-btn" href="60秒排位赛首页.html" target="_blank">
+          <svg viewBox="0 0 24 24"><polyline points="5 12 15 12"/><polyline points="12 5 19 12 12 19"/></svg>
+          打开演示页面
+        </a>
+        <div class="demo-hint">60秒排位赛首页.html<br><span class="text-3">→ 点击「全部」进入完整排行榜</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SLIDE 7 · 收尾 ==================== -->
+<div class="slide slide-cover" id="s7">
+  <div class="slide-number">7 / 7</div>
+  <div class="slide-inner">
+    <div class="stat-label text-center mb-16 fade-up-1">2026.05 · v0.7 上线</div>
+    <div style="font-size: 72px; font-weight: 800; letter-spacing: -2px; text-align: center; margin-bottom: 32px;" class="fade-up-2">
+      感谢观看<span class="text-accent">。</span>
+    </div>
+    <div class="text-center text-2 fade-up-3" style="font-size: 20px; line-height: 1.8;">
+      头号剧场 — 5 倍学习法 · 一镜十练<br>
+      60 秒排位赛 — 词汇竞技场 · 10 段位全民警觉<br>
+      <br>
+      <span class="text-3">头号听力 · 头号剧场广场 · 来造一场</span>
+    </div>
+  </div>
+</div>
+
+<!-- 底部导航 -->
+<div class="slide-nav">
+  <button class="slide-nav-dot active" onclick="goTo(1)" title="封面">1</button>
+  <button class="slide-nav-dot" onclick="goTo(2)" title="头号剧场定位">2</button>
+  <button class="slide-nav-dot" onclick="goTo(3)" title="头号剧场流程">3</button>
+  <button class="slide-nav-dot" onclick="goTo(4)" title="排位赛定位">4</button>
+  <button class="slide-nav-dot" onclick="goTo(5)" title="排位赛排行">5</button>
+  <button class="slide-nav-dot" onclick="goTo(6)" title="演示入口">6</button>
+  <button class="slide-nav-dot" onclick="goTo(7)" title="收尾">7</button>
+</div>
+
+<script>
+  const dots = document.querySelectorAll('.slide-nav-dot');
+
+  function goTo(n) {
+    const el = document.getElementById('s' + n);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // 键盘翻页
+  document.addEventListener('keydown', (e) => {
+    const current = Math.round(window.scrollY / window.innerHeight) + 1;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      goTo(Math.min(current + 1, 7));
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      goTo(Math.max(current - 1, 1));
+    }
+  });
+
+  // 滚动高亮
+  const slides = [1,2,3,4,5,6,7].map(n => document.getElementById('s' + n));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const n = parseInt(entry.target.id.replace('s',''));
+        dots.forEach((d, i) => d.classList.toggle('active', i === n - 1));
+      }
+    });
+  }, { threshold: 0.5 });
+
+  slides.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
