@@ -129,20 +129,31 @@ ACE 的视觉性格：**沉浸式暗黑 + 橙色活力**。
 
 ## 3. 字体系统
 
+**数字字体**：所有数字、价格、货币符号、百分比、统计数据统一使用 `OPPOSans 2.0_En`。中文部分继续使用 PingFang SC 等系统字体。
+
 ```css
-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-             "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+/* 全局字体栈 — 数字自动走 OPPOSans */
+font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont,
+             "SF Pro Display", "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+
+/* 纯数字场景专用（价格、统计、计数）*/
+.font-number {
+  font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
 ```
 
 | 层级 | 字号 | 字重 | 行高 | 用途 |
 |------|------|------|------|------|
-| Display | 36px | 800 | 1.2 | 价格数字 |
+| Display | 36px | 800 | 1.2 | 价格数字（OPPOSans 2.0_En）|
 | H1 | 28px | 700 | 1.3 | 页面主标题 |
 | H2 | 20px | 700 | 1.4 | 区块标题 |
 | H3 | 16px | 600 | 1.5 | 卡片标题 |
 | Body | 14px | 400 | 1.6 | 正文 |
 | Caption | 12px | 400 | 1.5 | 辅助文字 |
 | Overline | 11px | 600 | 1.4 | 标签/badge文字 |
+
+> **注意**：Display 层级几乎只用于价格数字，必须使用 OPPOSans 2.0_En。其他层级若包含数字内容（如统计数据），也优先走 OPPOSans 栈。
 
 ---
 
@@ -274,11 +285,13 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
 
 ```css
 .price-hero {
+  font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 36px;
   font-weight: 800;
   color: var(--accent);
 }
 .price-symbol {
+  font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 20px;
   font-weight: 700;
   color: var(--accent);
@@ -289,6 +302,7 @@ font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
   margin-left: 4px;
 }
 .price-original {
+  font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont, sans-serif;
   text-decoration: line-through;
   color: var(--text-3);
   font-size: 16px;
@@ -541,10 +555,11 @@ ACE 是短视频产品，动效必须**快、准、有反馈感**。像刷抖音
 13. 所有 transition 时长不超过 400ms
 
 ### 内容规则
-14. 价格数字必须用 Display 字级（36px/800）+ 橙色
-15. 原价必须有 `text-decoration: line-through`
+14. 价格数字必须用 Display 字级（36px/800）+ 橙色 + `OPPOSans 2.0_En` 字体
+15. 原价必须有 `text-decoration: line-through`，也使用 `OPPOSans 2.0_En`
 16. Badge 必须使用语义色（绿=完成、蓝=进行中、橙=热门、金=新增）
 17. FAQ 使用 `<details>` / `<summary>` 语义标签
+18. 所有数字内容（价格、统计、百分比、计数）必须显式或通过继承使用 `OPPOSans 2.0_En`
 
 ---
 
@@ -563,6 +578,7 @@ ACE 是短视频产品，动效必须**快、准、有反馈感**。像刷抖音
 
 **必须遵守**：
 - 暗黑沉浸风格，橙色仅用于 CTA 和价格
+- 所有数字使用 OPPOSans 2.0_En 字体
 - 卡片用 slide-up 动画依次入场
 - 底部 CTA 固定悬浮 + 毛玻璃背景
 - 图标用线性 SVG，禁用 emoji
