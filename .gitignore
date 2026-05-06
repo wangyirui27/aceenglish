@@ -1,3 +1,5 @@
 .alma-snapshots
 .DS_Store
 ~/
+auto-sync.sh
+install-auto-sync.sh
