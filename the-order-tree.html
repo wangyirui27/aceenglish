@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>☕ The Order — Full Story Tree</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .header h1 {
+    font-size: 2rem;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .header .subtitle {
+    font-size: 0.9rem;
+    color: #888;
+  }
+  .header .badges {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 99px;
+    background: #2a2a2a;
+    color: #aaa;
+    border: 1px solid #3a3a3a;
+  }
+  .badge.a2 { background: #1a3a1a; color: #6fcf6f; border-color: #2a5a2a; }
+  .badge.b1 { background: #2a2a1a; color: #e2c85f; border-color: #4a4a2a; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #999;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-dot.green { background: #6fcf6f; }
+  .legend-dot.yellow { background: #e2c85f; }
+  .legend-dot.red { background: #e06c6c; }
+  .legend-dot.gray { background: #888; }
+  .legend-dot.decision { background: #5fa3e0; border-radius: 2px; }
+
+  /* Tree */
+  .tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* Root node */
+  .root-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0;
+  }
+  .root-card {
+    background: #2a2020;
+    border: 1px solid #4a3030;
+    border-radius: 12px;
+    padding: 16px 24px;
+    text-align: center;
+    max-width: 460px;
+  }
+  .root-card .round-label {
+    font-size: 0.7rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 4px;
+  }
+  .root-card .speaker {
+    font-size: 0.75rem;
+    color: #e0a060;
+    margin-bottom: 4px;
+  }
+  .root-card .line {
+    font-size: 1rem;
+    color: #e8e8e8;
+    font-style: italic;
+  }
+
+  /* Vertical connector from root */
+  .root-connector {
+    width: 2px;
+    height: 40px;
+    background: #4a4a4a;
+    position: relative;
+  }
+
+  /* Horizontal spread bar */
+  .spread-bar {
+    width: 600px;
+    height: 2px;
+    background: #4a4a4a;
+    position: relative;
+  }
+  .spread-bar .drop-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+  }
+  .spread-bar .drop-line {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 40px;
+    background: #4a4a4a;
+  }
+
+  /* Three main branches container */
+  .branches-row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin-top: 0;
+  }
+
+  /* Branch column */
+  .branch-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 340px;
+  }
+
+  /* Decision node */
+  .decision-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+  }
+  .decision-card {
+    background: #1e2a38;
+    border: 1px solid #2a4a6a;
+    border-radius: 10px;
+    padding: 12px 16px;
+    width: 100%;
+  }
+  .decision-card .d-label {
+    font-size: 0.7rem;
+    color: #5fa3e0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  .decision-card .d-user {
+    color: #5fa3e0;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+  .decision-card .d-line {
+    font-size: 0.9rem;
+    color: #c8d8f0;
+    font-style: italic;
+  }
+  .decision-card .d-teach {
+    font-size: 0.7rem;
+    color: #5a8ab5;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid #2a3a4a;
+  }
+
+  /* NPC response */
+  .npc-card {
+    background: #202020;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px 14px;
+    width: 100%;
+    text-align: center;
+  }
+  .npc-card .n-speaker {
+    font-size: 0.7rem;
+    color: #e0a060;
+    margin-bottom: 2px;
+  }
+  .npc-card .n-line {
+    font-size: 0.85rem;
+    color: #d0d0d0;
+    font-style: italic;
+  }
+  .npc-card .n-note {
+    font-size: 0.65rem;
+    color: #777;
+    margin-top: 2px;
+  }
+
+  /* Sub-branches */
+  .sub-branches {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+  .sub-branch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+  }
+
+  /* Sub decision */
+  .sub-decision-card {
+    background: #1e2a38;
+    border: 1px solid #2a4a6a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 100%;
+  }
+  .sub-decision-card .sd-label {
+    font-size: 0.65rem;
+    color: #5fa3e0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .sub-decision-card .sd-line {
+    font-size: 0.82rem;
+    color: #c8d8f0;
+    font-style: italic;
+    margin-top: 3px;
+  }
+  .sub-decision-card .sd-teach {
+    font-size: 0.65rem;
+    color: #5a8ab5;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid #2a3a4a;
+  }
+
+  /* Ending nodes */
+  .ending-card {
+    border-radius: 8px;
+    padding: 10px 14px;
+    width: 100%;
+    text-align: center;
+    border: 2px solid;
+  }
+  .ending-card.success {
+    background: #1a2a1a;
+    border-color: #3a6a3a;
+  }
+  .ending-card.failure {
+    background: #2a1a1a;
+    border-color: #5a3a3a;
+  }
+  .ending-card.partial {
+    background: #2a2a1a;
+    border-color: #5a5a2a;
+  }
+  .ending-card .e-emoji { font-size: 1.4rem; }
+  .ending-card .e-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .ending-card .e-detail {
+    font-size: 0.65rem;
+    color: #999;
+    margin-top: 2px;
+  }
+  .ending-card .e-review {
+    font-size: 0.65rem;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: #aaa;
+    line-height: 1.4;
+  }
+
+  /* Connector lines between cards within a branch */
+  .v-connector {
+    width: 2px;
+    height: 20px;
+    background: #4a4a4a;
+    flex-shrink: 0;
+  }
+
+  /* Nested connectors */
+  .h-connector-row {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    position: relative;
+    height: 20px;
+  }
+  .h-connector-row .h-bar {
+    position: absolute;
+    top: 0;
+    height: 2px;
+    background: #4a4a4a;
+  }
+  .h-connector-row .v-down {
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 20px;
+    background: #4a4a4a;
+  }
+
+  /* Arrow connector */
+  .arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #4a4a4a;
+  }
+
+  /* Section label */
+  .section-label {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 30px 0 10px;
+  }
+
+  /* Language note pill */
+  .lang-pill {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 2px 7px;
+    border-radius: 99px;
+    margin-top: 3px;
+  }
+  .lang-pill.a2p { background: #1a3a1a; color: #6fcf6f; }
+  .lang-pill.b1p { background: #2a2a1a; color: #e2c85f; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid #333;
+    color: #666;
+    font-size: 0.75rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .branches-row { flex-direction: column; align-items: center; gap: 30px; }
+    .spread-bar { width: 2px; height: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>☕ The Order</h1>
+    <div class="subtitle">6 轮对话 · 咖啡店拿错单 · 交互短剧完整剧情树</div>
+    <div class="badges">
+      <span class="badge">🗣 4 角色</span>
+      <span class="badge">🎬 ~7 段视频</span>
+      <span class="badge">⏱ ~45s / 段</span>
+      <span class="badge a2">A2 · 90%</span>
+      <span class="badge b1">B1 · 10%</span>
+      <span class="badge">3 结局</span>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot green"></span> Success Ending</div>
+    <div class="legend-item"><span class="legend-dot gray"></span> Partial Success</div>
+    <div class="legend-item"><span class="legend-dot red"></span> Failure Ending</div>
+    <div class="legend-item"><span class="legend-dot decision"></span> Decision Point</div>
+    <div class="legend-item" style="margin-left:8px;">🅱️ = B1 word</div>
+  </div>
+
+  <!-- ==================== TREE ==================== -->
+  <div class="tree">
+
+    <!-- ROUND 1: Opening -->
+    <div class="root-node">
+      <div class="root-card">
+        <div class="round-label">Round 1 · 开场</div>
+        <div class="speaker">🧑 Barista</div>
+        <div class="line">"Here you go — iced latte."</div>
+      </div>
+    </div>
+
+    <div class="root-connector"></div>
+    <div class="arrow-down"></div>
+
+    <!-- DECISION 1 -->
+    <div class="root-node" style="margin-bottom:0;">
+      <div class="decision-card" style="background:#1a2840; border-color:#3a6aaa; max-width:460px; text-align:center;">
+        <div class="d-label">🔵 Decision 1 · Round 2</div>
+        <div class="d-user" style="font-size:0.85rem;">你怎么回应？</div>
+      </div>
+    </div>
+
+    <div class="root-connector"></div>
+
+    <!-- Spread to 3 branches -->
+    <div style="position:relative; width:100%; max-width:1100px;">
+      <svg style="position:absolute; top:0; left:0; width:100%; height:60px; pointer-events:none;">
+        <line x1="50%" y1="0" x2="18%" y2="60" stroke="#4a4a4a" stroke-width="2"/>
+        <line x1="50%" y1="0" x2="50%" y2="60" stroke="#4a4a4a" stroke-width="2"/>
+        <line x1="50%" y1="0" x2="82%" y2="60" stroke="#4a4a4a" stroke-width="2"/>
+      </svg>
+      <div style="height:60px;"></div>
+    </div>
+
+    <!-- THREE BRANCHES -->
+    <div class="branches-row">
+
+      <!-- ========== BRANCH A: POLITE ========== -->
+      <div class="branch-col">
+        <!-- Decision A -->
+        <div class="decision-card">
+          <div class="d-label">🟢 Route A · 礼貌纠正</div>
+          <div class="d-user">👤 You</div>
+          <div class="d-line">"Excuse me, I think there's a mistake — I ordered hot, not iced."</div>
+          <div class="d-teach">📖 学: "I think there's a mistake" 纠正错误最安全公式</div>
+        </div>
+
+        <div class="v-connector"></div>
+
+        <!-- NPC Response A -->
+        <div class="npc-card">
+          <div class="n-speaker">🧑 Barista（态度：友好）</div>
+          <div class="n-line">"Oh! I'm so sorry. Let me fix that."</div>
+        </div>
+
+        <div class="v-connector"></div>
+
+        <!-- Decision 2A -->
+        <div class="decision-card">
+          <div class="d-label">🔵 Decision 2 · Round 4</div>
+          <div class="d-user">👤 You — 对方道歉后你怎么接？</div>
+        </div>
+
+        <!-- Sub-branches A1 & A2 -->
+        <div style="display:flex; gap:10px; width:100%;">
+          <div class="sub-branch" style="flex-direction:column; align-items:center; gap:6px;">
+            <div class="sub-decision-card">
+              <div class="sd-label">A1 · 感恩回应</div>
+              <div class="sd-line">"Thank you so much. I really <span style="color:#e2c85f;">appreciate</span> it." 🅱️</div>
+              <div class="sd-teach">📖 appreciate = B1 词汇，"Thank you so much" 升级 "Thanks"</div>
+            </div>
+            <div class="v-connector" style="height:10px;"></div>
+            <div class="npc-card" style="font-size:0.8rem;">
+              <div class="n-speaker">🧑 Barista 重做 + 微笑</div>
+              <div class="n-line" style="font-size:0.75rem;">"Here you go — hot latte. Sorry again!"</div>
+            </div>
+            <div class="v-connector" style="height:8px;"></div>
+            <div class="ending-card success">
+              <div class="e-emoji">🏆</div>
+              <div class="e-label">Success · 关系升温</div>
+              <div class="e-detail">拿到热拿铁 + 咖啡师对你印象好</div>
+              <div class="e-review">💡 礼貌纠正 + 真诚感谢 = 最优路径。appreciate 是 B1 桥梁词。</div>
+            </div>
+          </div>
+
+          <div class="sub-branch" style="flex-direction:column; align-items:center; gap:6px;">
+            <div class="sub-decision-card">
+              <div class="sd-label">A2 · 轻松化解</div>
+              <div class="sd-line">"No worries at all. These things happen."</div>
+              <div class="sd-teach">📖 "No worries" + "these things happen" = 两个口语高频句</div>
+            </div>
+            <div class="v-connector" style="height:10px;"></div>
+            <div class="npc-card" style="font-size:0.8rem;">
+              <div class="n-speaker">🧑 Barista 重做 + 轻松笑</div>
+              <div class="n-line" style="font-size:0.75rem;">"Thanks for being cool about it. Enjoy!"</div>
+            </div>
+            <div class="v-connector" style="height:8px;"></div>
+            <div class="ending-card success">
+              <div class="e-emoji">🏆</div>
+              <div class="e-label">Success · 轻松化解</div>
+              <div class="e-detail">拿到热拿铁 + 氛围轻松</div>
+              <div class="e-review">💡 "No worries" 比 "You're welcome" 更自然，母语者高频。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== BRANCH B: HESITANT ========== -->
+      <div class="branch-col">
+        <div class="decision-card">
+          <div class="d-label">🟡 Route B · 犹豫请求</div>
+          <div class="d-user">👤 You</div>
+          <div class="d-line">"Oh... it's iced. Um, could I get a hot one instead?"</div>
+          <div class="d-teach">📖 "Could I get... instead?" 比 "I want" 更礼貌</div>
+        </div>
+
+        <div class="v-connector"></div>
+
+        <div class="npc-card">
+          <div class="n-speaker">🧑 Barista（态度：偏急）</div>
+          <div class="n-line">"Oh, right. Sorry. Give me a minute."</div>
+          <div class="n-note">语气比 A 路线冷淡</div>
+        </div>
+
+        <div class="v-connector"></div>
+
+        <div class="decision-card">
+          <div class="d-label">🔵 Decision 2 · Round 4</div>
+          <div class="d-user">👤 You — 对方有点急，你怎么说？</div>
+        </div>
+
+        <div style="display:flex; gap:10px; width:100%;">
+          <div class="sub-branch" style="flex-direction:column; align-items:center; gap:6px;">
+            <div class="sub-decision-card">
+              <div class="sd-label">B1 · 体贴等待</div>
+              <div class="sd-line">"Take your time. Thank you."</div>
+              <div class="sd-teach">📖 "Take your time" = 让对方放松，社交润滑剂</div>
+            </div>
+            <div class="v-connector" style="height:10px;"></div>
+            <div class="npc-card" style="font-size:0.8rem;">
+              <div class="n-speaker">🧑 Barista 重做</div>
+              <div class="n-line" style="font-size:0.75rem;">"Here. Sorry about the mix-up."</div>
+            </div>
+            <div class="v-connector" style="height:8px;"></div>
+            <div class="ending-card success">
+              <div class="e-emoji">🏆</div>
+              <div class="e-label">Success</div>
+              <div class="e-detail">拿到热的，气氛恢复</div>
+              <div class="e-review">💡 "Take your time" 把催促变体贴。一句话翻转对方情绪。</div>
+            </div>
+          </div>
+
+          <div class="sub-branch" style="flex-direction:column; align-items:center; gap:6px;">
+            <div class="sub-decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
+              <div class="sd-label" style="color:#e06c6c;">B2 · 退缩放弃</div>
+              <div class="sd-line" style="color:#e0b0b0;">"Actually... never mind, this is fine."</div>
+              <div class="sd-teach" style="color:#b07070;">📖 "never mind" ≠ 万能放弃词。该坚持时别撤。</div>
+            </div>
+            <div class="v-connector" style="height:10px;"></div>
+            <div class="npc-card" style="font-size:0.8rem;">
+              <div class="n-speaker">🧑 Barista</div>
+              <div class="n-line" style="font-size:0.75rem;">"...You sure? Okay."</div>
+            </div>
+            <div class="v-connector" style="height:8px;"></div>
+            <div class="ending-card failure">
+              <div class="e-emoji">💀</div>
+              <div class="e-label">Failure · 委屈自己</div>
+              <div class="e-detail">喝冰拿铁不开心</div>
+              <div class="e-review">💡 不要用 never mind 放弃合理请求。越退缩越后悔。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== BRANCH C: SILENT ========== -->
+      <div class="branch-col">
+        <div class="decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
+          <div class="d-label" style="color:#e06c6c;">🔴 Route C · 沉默接受</div>
+          <div class="d-user" style="color:#e0a0a0;">👤 You</div>
+          <div class="d-line" style="color:#e0b0b0;">"..." （接过冰拿铁，坐下）</div>
+          <div class="d-teach" style="color:#b07070;">📖 沉默 = 放弃第一轮纠正机会</div>
+        </div>
+
+        <div class="v-connector"></div>
+
+        <div class="npc-card" style="background:#1e1818; border-color:#3a2020;">
+          <div class="n-speaker">💭 内心独白</div>
+          <div class="n-line" style="color:#c09090;">喝一口，后悔。还是想喝热的。</div>
+        </div>
+
+        <div class="v-connector"></div>
+
+        <div class="decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
+          <div class="d-label" style="color:#e06c6c;">🔴 Decision 2 · Round 4</div>
+          <div class="d-user" style="color:#e0a0a0;">👤 You — 现在去说还是继续忍？</div>
+        </div>
+
+        <div style="display:flex; gap:10px; width:100%;">
+          <div class="sub-branch" style="flex-direction:column; align-items:center; gap:6px;">
+            <div class="sub-decision-card" style="background:#2a2518; border-color:#4a3a1a;">
+              <div class="sd-label" style="color:#e2c85f;">C1 · 回头补救</div>
+              <div class="sd-line" style="color:#d8c880;">"Excuse me, sorry to bother again. I really did want it hot."</div>
+              <div class="sd-teach" style="color:#a09050;">📖 "Sorry to bother again" 回头说的代价。越晚开口越尴尬。</div>
+            </div>
+            <div class="v-connector" style="height:10px;"></div>
+            <div class="npc-card" style="font-size:0.8rem; background:#202018; border-color:#3a3a18;">
+              <div class="n-speaker">🧑 Barista（没之前友好了）</div>
+              <div class="n-line" style="font-size:0.75rem;">"Oh... okay. I'll remake it."</div>
+            </div>
+            <div class="v-connector" style="height:8px;"></div>
+            <div class="ending-card partial">
+              <div class="e-emoji">⚠️</div>
+              <div class="e-label">Partial Success · 拿到但尴尬</div>
+              <div class="e-detail">热拿铁有了，但关系略僵</div>
+              <div class="e-review">💡 开口越晚成本越高。"I really did want it..." 比一开始就改多了一层解释负担。</div>
+            </div>
+          </div>
+
+          <div class="sub-branch" style="flex-direction:column; align-items:center; gap:6px;">
+            <div class="sub-decision-card" style="background:#1e1515; border-color:#3a1515;">
+              <div class="sd-label" style="color:#e06c6c;">C2 · 彻底放弃</div>
+              <div class="sd-line" style="color:#d09090;">继续默默喝冰的</div>
+              <div class="sd-teach" style="color:#a06060;">📖 沉默不是金。第一反应就改 = 成本最低。</div>
+            </div>
+            <div class="v-connector" style="height:10px;"></div>
+            <div class="ending-card failure">
+              <div class="e-emoji">💀</div>
+              <div class="e-label">Failure · 整杯不开心</div>
+              <div class="e-detail">最差路径：什么都没学到</div>
+              <div class="e-review">💡 从 Round 1 就 silence 一路走到底。这就是语言焦虑的恶性循环。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /branches-row -->
+
+  </div><!-- /tree -->
+
+  <!-- Summary -->
+  <div style="margin-top:60px; padding:30px 24px; background:#202020; border-radius:12px; border:1px solid #333; max-width:1000px; margin-left:auto; margin-right:auto;">
+    <h3 style="color:#fff; font-size:1rem; margin-bottom:16px;">📊 教学拆解总表</h3>
+    <table style="width:100%; border-collapse:collapse; font-size:0.8rem;">
+      <thead>
+        <tr style="color:#aaa; border-bottom:1px solid #333;">
+          <th style="text-align:left; padding:8px 12px;">路径</th>
+          <th style="text-align:center; padding:8px 12px;">结局</th>
+          <th style="text-align:left; padding:8px 12px;">核心学到</th>
+          <th style="text-align:center; padding:8px 12px;">B1 词</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #2a2a2a;">
+          <td style="padding:8px 12px; color:#6fcf6f;">A1</td>
+          <td style="text-align:center; padding:8px 12px;">🏆 关系升温</td>
+          <td style="padding:8px 12px; color:#ccc;">"I think there's a mistake" + "appreciate" + "Thank you so much"</td>
+          <td style="text-align:center; padding:8px 12px;"><span class="lang-pill b1p">appreciate</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid #2a2a2a;">
+          <td style="padding:8px 12px; color:#6fcf6f;">A2</td>
+          <td style="text-align:center; padding:8px 12px;">🏆 轻松化解</td>
+          <td style="padding:8px 12px; color:#ccc;">"No worries" + "These things happen" — 口语高频</td>
+          <td style="text-align:center; padding:8px 12px;">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid #2a2a2a;">
+          <td style="padding:8px 12px; color:#e2c85f;">B1</td>
+          <td style="text-align:center; padding:8px 12px;">🏆 拿到热的</td>
+          <td style="padding:8px 12px; color:#ccc;">"Take your time" — 催促变体贴</td>
+          <td style="text-align:center; padding:8px 12px;">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid #2a2a2a;">
+          <td style="padding:8px 12px; color:#e06c6c;">B2</td>
+          <td style="text-align:center; padding:8px 12px;">💀 委屈自己</td>
+          <td style="padding:8px 12px; color:#ccc;">反面："never mind" 不该放弃时别用</td>
+          <td style="text-align:center; padding:8px 12px;">—</td>
+        </tr>
+        <tr style="border-bottom:1px solid #2a2a2a;">
+          <td style="padding:8px 12px; color:#e2c85f;">C1</td>
+          <td style="text-align:center; padding:8px 12px;">⚠️ 尴尬成功</td>
+          <td style="padding:8px 12px; color:#ccc;">"Sorry to bother again" + "I really did..." 补救句</td>
+          <td style="text-align:center; padding:8px 12px;">—</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 12px; color:#e06c6c;">C2</td>
+          <td style="text-align:center; padding:8px 12px;">💀 彻底失败</td>
+          <td style="padding:8px 12px; color:#ccc;">反面：沉默不是金。开口越晚成本越高。</td>
+          <td style="text-align:center; padding:8px 12px;">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:20px; padding:12px 16px; background:#1a1a1a; border-radius:8px; font-size:0.75rem; color:#888; line-height:1.6;">
+      <strong style="color:#aaa;">🎬 视频制作：</strong>唯一场景（咖啡柜台 + 座位）× ~7 段视频。<br>
+      <strong style="color:#aaa;">⏱ 每段时长：</strong>15-45 秒（纯对话，不包含 UI 选项停留时间）。<br>
+      <strong style="color:#aaa;">📐 A1-A2 词汇：</strong>~95% · <strong style="color:#e2c85f;">B1 插入词：</strong>appreciate（仅 A1 路线出现 1 次）。
+    </div>
+  </div>
+
+  <div class="footer">
+    The Order · Alma Interactive English · A2 Level · Pilot Episode
+  </div>
+
+</div>
+
+</body>
+</html>
