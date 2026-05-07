@@ -3,64 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧾 The Bill — Full Story Tree + T2V Prompts</title>
+<title>🧾 The Bill — Story Tree + T2V Prompts (Fixed)</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #1a1a1a; color: #e0e0e0; padding: 40px 20px; min-height: 100vh;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 40px 20px; min-height: 100vh; }
   .container { max-width: 1400px; margin: 0 auto; }
-
-  .header { text-align: center; margin-bottom: 50px; }
+  .header { text-align: center; margin-bottom: 40px; }
   .header h1 { font-size: 2rem; color: #fff; margin-bottom: 8px; }
   .header .subtitle { font-size: 0.9rem; color: #888; }
   .header .badges { margin-top: 12px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 99px; background: #2a2a2a; color: #aaa; border: 1px solid #3a3a3a; }
   .badge.a2 { background: #1a3a1a; color: #6fcf6f; border-color: #2a5a2a; }
   .badge.b1 { background: #2a2a1a; color: #e2c85f; border-color: #4a4a2a; }
-
-  .legend { display: flex; gap: 16px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+  .badge.warn { background: #2a1a1a; color: #e06c6c; border-color: #4a2a2a; }
+  .legend { display: flex; gap: 16px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
   .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #999; }
   .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .legend-dot.green { background: #6fcf6f; }
-  .legend-dot.yellow { background: #e2c85f; }
-  .legend-dot.red { background: #e06c6c; }
-  .legend-dot.gray { background: #888; }
-  .legend-dot.decision { background: #5fa3e0; border-radius: 2px; }
-
+  .legend-dot.green { background: #6fcf6f; } .legend-dot.red { background: #e06c6c; }
+  .legend-dot.gray { background: #888; } .legend-dot.decision { background: #5fa3e0; border-radius: 2px; }
+  .fix-box { margin: 0 auto 30px; max-width: 1000px; padding: 12px 18px; background: #2a1a1a; border: 1px solid #5a3a3a; border-radius: 8px; font-size: 0.75rem; color: #e0a0a0; }
+  .fix-box strong { color: #e06c6c; }
   .tree { display: flex; flex-direction: column; align-items: center; gap: 0; }
-
-  /* Root / shared cards */
-  .root-card { background: #2a2020; border: 1px solid #4a3030; border-radius: 12px; padding: 16px 24px; text-align: center; max-width: 520px; }
+  .root-card { background: #2a2020; border: 1px solid #4a3030; border-radius: 12px; padding: 16px 24px; text-align: center; max-width: 540px; }
   .root-card .round-label { font-size: 0.7rem; color: #999; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; }
   .root-card .speaker { font-size: 0.75rem; color: #e0a060; margin-bottom: 4px; }
   .root-card .line { font-size: 1rem; color: #e8e8e8; font-style: italic; }
-  .root-connector { width: 2px; height: 40px; background: #4a4a4a; position: relative; flex-shrink: 0; }
+  .root-connector { width: 2px; height: 36px; background: #4a4a4a; flex-shrink: 0; }
   .arrow-down { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #4a4a4a; }
-  .branches-row { display: flex; gap: 36px; justify-content: center; margin-top: 0; }
-  .branch-col { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 360px; }
-  .v-connector { width: 2px; height: 20px; background: #4a4a4a; flex-shrink: 0; }
-
-  .decision-card { background: #1e2a38; border: 1px solid #2a4a6a; border-radius: 10px; padding: 12px 16px; width: 100%; }
+  .branches-row { display: flex; gap: 32px; justify-content: center; margin-top: 0; }
+  .branch-col { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 350px; }
+  .v-connector { width: 2px; height: 18px; background: #4a4a4a; flex-shrink: 0; }
+  .decision-card { background: #1e2a38; border: 1px solid #2a4a6a; border-radius: 10px; padding: 10px 14px; width: 100%; }
   .decision-card .d-label { font-size: 0.7rem; color: #5fa3e0; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px; }
   .decision-card .d-user { color: #5fa3e0; font-size: 0.8rem; margin-bottom: 4px; }
   .decision-card .d-line { font-size: 0.9rem; color: #c8d8f0; font-style: italic; }
   .decision-card .d-teach { font-size: 0.7rem; color: #5a8ab5; margin-top: 6px; padding-top: 6px; border-top: 1px solid #2a3a4a; }
-
   .npc-card { background: #202020; border: 1px solid #333; border-radius: 8px; padding: 10px 14px; width: 100%; text-align: center; }
   .npc-card .n-speaker { font-size: 0.7rem; color: #e0a060; margin-bottom: 2px; }
   .npc-card .n-line { font-size: 0.85rem; color: #d0d0d0; font-style: italic; }
   .npc-card .n-note { font-size: 0.65rem; color: #777; margin-top: 2px; }
-
   .sub-branches { display: flex; gap: 10px; width: 100%; }
   .sub-branch { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
-
   .sub-decision-card { background: #1e2a38; border: 1px solid #2a4a6a; border-radius: 8px; padding: 10px 12px; width: 100%; }
   .sub-decision-card .sd-label { font-size: 0.65rem; color: #5fa3e0; text-transform: uppercase; letter-spacing: 0.1em; }
   .sub-decision-card .sd-line { font-size: 0.82rem; color: #c8d8f0; font-style: italic; margin-top: 3px; }
   .sub-decision-card .sd-teach { font-size: 0.65rem; color: #5a8ab5; margin-top: 4px; padding-top: 4px; border-top: 1px solid #2a3a4a; }
-
   .ending-card { border-radius: 8px; padding: 10px 14px; width: 100%; text-align: center; border: 2px solid; }
   .ending-card.success { background: #1a2a1a; border-color: #3a6a3a; }
   .ending-card.failure { background: #2a1a1a; border-color: #5a3a3a; }
@@ -69,113 +56,101 @@
   .ending-card .e-label { font-size: 0.75rem; font-weight: 600; margin-top: 2px; }
   .ending-card .e-detail { font-size: 0.65rem; color: #999; margin-top: 2px; }
   .ending-card .e-review { font-size: 0.65rem; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.1); color: #aaa; line-height: 1.4; }
-
   .arrow-box { position: relative; width: 100%; max-width: 1100px; }
   .arrow-box svg { width: 100%; height: 60px; }
   .arrow-box svg line { stroke: #4a4a4a; stroke-width: 2; }
 
-  .footer { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid #333; color: #666; font-size: 0.75rem; }
+  /* Prompt box */
+  .prompt-box { margin-top: 8px; padding: 8px 12px; background: #0a0a15; border: 1px solid #1e1e3a; border-radius: 6px; text-align: left; }
+  .prompt-box .p-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+  .prompt-box .p-label { font-size: 0.6rem; color: #6a6aff; text-transform: uppercase; letter-spacing: 0.1em; }
+  .prompt-box .p-time { font-size: 0.6rem; color: #aa8844; }
+  .prompt-box .p-who { font-size: 0.6rem; padding: 1px 6px; border-radius: 99px; }
+  .prompt-box .p-who.pov { background: #1a1a3a; color: #6a6aff; }
+  .prompt-box .p-who.npc { background: #2a2a1a; color: #e0a060; }
+  .prompt-box .p-who.voice { background: #1a3a1a; color: #6fcf6f; }
+  .prompt-box .p-text { font-size: 0.7rem; color: #8888bb; line-height: 1.5; font-family: "SF Mono", "Menlo", "Consolas", monospace; }
+  .prompt-box .p-fix { font-size: 0.65rem; color: #e0a060; margin-top: 4px; padding-top: 4px; border-top: 1px solid #22223a; }
 
   .blame-tag { display: inline-block; font-size: 0.6rem; padding: 2px 6px; border-radius: 99px; margin: 2px 2px; }
   .blame-tag.server { background: #3a1a1a; color: #e06c6c; }
   .blame-tag.you { background: #1a3a1a; color: #6fcf6f; }
 
-  /* PROMPT BOX — NEW */
-  .prompt-box {
-    margin-top: 8px;
-    padding: 6px 10px;
-    background: #0a0a12;
-    border: 1px solid #222244;
-    border-radius: 6px;
-    text-align: left;
-  }
-  .prompt-box .p-label {
-    font-size: 0.6rem;
-    color: #6a6aff;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 3px;
-  }
-  .prompt-box .p-text {
-    font-size: 0.7rem;
-    color: #8888bb;
-    line-height: 1.5;
-    font-family: "SF Mono", "Menlo", "Consolas", monospace;
-  }
-
   table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
   th { color: #aaa; border-bottom: 1px solid #333; text-align: left; padding: 8px 12px; }
   td { padding: 8px 12px; border-bottom: 1px solid #2a2a2a; }
 
-  @media (max-width: 1100px) {
-    .branches-row { flex-direction: column; align-items: center; gap: 30px; }
-  }
+  .footer { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid #333; color: #666; font-size: 0.75rem; }
+  @media (max-width: 1100px) { .branches-row { flex-direction: column; align-items: center; gap: 30px; } }
 </style>
 </head>
 <body>
 <div class="container">
-
   <div class="header">
     <h1>🧾 The Bill</h1>
-    <div class="subtitle">6 轮对话 · 餐厅账单纠纷 · 含 19 段文生视频提示词</div>
+    <div class="subtitle">6 轮对话 · 19 段 POV 视频 · 已修正 v2（防转身 + 防串词）</div>
     <div class="badges">
       <span class="badge">🗣 3 角色</span>
-      <span class="badge">🎬 19 段视频</span>
-      <span class="badge">⏱ ~45s / 段</span>
+      <span class="badge">🎬 19 段</span>
+      <span class="badge">⏱ 总计 ~140s</span>
       <span class="badge a2">A2 · 90%</span>
       <span class="badge b1">B1 · 10%</span>
-      <span class="badge">4 结局</span>
+      <span class="badge warn">🔧 已修复</span>
     </div>
+  </div>
+
+  <div class="fix-box">
+    <strong>🔧 v2 修复内容（基于实际生成反馈）：</strong><br>
+    ① 所有 NPC 台词段：追加"说完台词后原地站住面对镜头，绝不转身离开"指令，防止服务生最后一秒转身走人<br>
+    ② 所有 POV 主角台词段：追加"本段台词是画外音（主角说的，不是画面中角色说的），画面中NPC在聆听，嘴不动"指令，防止服务生说出主角台词<br>
+    ③ 所有段标注了 ⏱ 时长（秒），方便制作排期
   </div>
 
   <div class="legend">
     <div class="legend-item"><span class="legend-dot green"></span> 🏆 Success</div>
     <div class="legend-item"><span class="legend-dot gray"></span> ⚠️ Partial</div>
     <div class="legend-item"><span class="legend-dot red"></span> 💀 Failure</div>
-    <div class="legend-item"><span class="legend-dot decision"></span> Decision</div>
-    <div class="legend-item" style="margin-left:8px;">🎬 = T2V Prompt</div>
+    <div class="legend-item"><span class="legend-dot decision"></span> Decision (UI)</div>
+    <div class="legend-item" style="margin-left:8px;">🎬 = 含 T2V 提示词</div>
   </div>
 
   <!-- TREE -->
   <div class="tree">
 
-    <!-- ROUND 1 · 片段 1 -->
+    <!-- 片段 1 · 开场 -->
     <div class="root-card">
       <div class="round-label">Round 1 · 开场 · 片段 1</div>
       <div class="speaker">👩‍🍳 Server</div>
       <div class="line">"Here's your bill. Whenever you're ready."</div>
-      <div style="font-size:0.7rem; color:#888; margin-top:6px;">🧾 账单上多了一瓶 $45 的红酒——你没点过</div>
+      <div style="font-size:0.7rem; color:#888; margin-top:4px;">🧾 账单上多了一瓶 $45 的红酒——你没点过</div>
       <div class="prompt-box">
-        <div class="p-label">🎬 文生视频提示词</div>
-        <div class="p-text">POV视角，环境音静音。美式餐厅，暖黄灯光，面前是餐桌，两个空盘和杯子在桌上。女服务生从对面走过来，把账单夹放在桌上，微笑看着镜头。台词："Here's your bill. Whenever you're ready."</div>
+        <div class="p-head"><span class="p-label">🎬 T2V Prompt</span><span class="p-time">⏱ 8s</span><span class="p-who npc">NPC 说出</span></div>
+        <div class="p-text">POV视角，环境音静音。美式餐厅，暖黄灯光，面前是餐桌，两个空盘和杯子在桌上。女服务生从对面走过来，把账单夹放在桌上，微笑看着镜头。台词（由服务生说出）："Here's your bill. Whenever you're ready."</div>
+        <div class="p-fix">🔧 防转身：服务生说完台词后原地站住面对镜头，绝不转身离开。</div>
       </div>
     </div>
 
     <div class="root-connector"></div>
     <div class="arrow-down"></div>
 
-    <!-- DECISION 1 (no video, UI only) -->
-    <div class="decision-card" style="background:#1a2840; border-color:#3a6aaa; max-width:520px; text-align:center;">
+    <!-- Decision 1 (UI) -->
+    <div class="decision-card" style="background:#1a2840; border-color:#3a6aaa; max-width:540px; text-align:center;">
       <div class="d-label">🔵 Decision 1 · Round 2</div>
       <div class="d-user">👤 You — 账单上多了 $45 的酒，你怎么开口？</div>
       <div style="font-size:0.65rem; color:#4a6a8a; margin-top:4px;">⏸ UI 选择界面（非视频）</div>
     </div>
 
     <div class="root-connector"></div>
-
     <div class="arrow-box">
       <svg viewBox="0 0 1100 60" preserveAspectRatio="xMidYMin slice">
-        <line x1="550" y1="0" x2="190" y2="60"/>
-        <line x1="550" y1="0" x2="550" y2="60"/>
-        <line x1="550" y1="0" x2="910" y2="60"/>
+        <line x1="550" y1="0" x2="190" y2="60"/><line x1="550" y1="0" x2="550" y2="60"/><line x1="550" y1="0" x2="910" y2="60"/>
       </svg>
       <div style="height:10px;"></div>
     </div>
 
-    <!-- THREE BRANCHES -->
     <div class="branches-row">
 
-      <!-- ========== A: POLITE BUT FIRM ========== -->
+      <!-- ========== ROUTE A ========== -->
       <div class="branch-col">
         <!-- 片段 2 -->
         <div class="decision-card">
@@ -183,26 +158,28 @@
           <div class="d-user">👤 You</div>
           <div class="d-line">"Excuse me, I think there's a mistake. We didn't order any wine."</div>
           <div class="prompt-box">
-            <div class="p-label">🎬 文生视频提示词</div>
-            <div class="p-text">POV视角，环境音静音。视线从账单上抬起来，看向面前站着的女服务生，画面微微上移。说话语气平静，略带困惑。台词："Excuse me, I think there's a mistake — we didn't order any wine."</div>
+            <div class="p-head"><span class="p-label">🎬 T2V Prompt</span><span class="p-time">⏱ 7s</span><span class="p-who voice">POV 画外音</span></div>
+            <div class="p-text">POV视角，环境音静音。视线从账单上抬起来，看向面前站着的女服务生，画面微微上移。台词（画外音——主角说的，不是服务生说的）："Excuse me, I think there's a mistake — we didn't order any wine."</div>
+            <div class="p-fix">🔧 防串词：画面中只有服务生在聆听，嘴不动。台词是画外音。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <!-- 片段 3 -->
         <div class="npc-card">
-          <div class="n-speaker">👩‍🍳 Server（态度：正常）· 片段 3</div>
+          <div class="n-speaker">👩‍🍳 Server · 片段 3</div>
           <div class="n-line">"Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn't order it?"</div>
           <div class="prompt-box">
-            <div class="p-label">🎬 文生视频提示词</div>
-            <div class="p-text">POV视角，环境音静音。服务生接过账单（手从画面下方伸入取走），皱眉低头看了一眼账单，然后抬头看向镜头，表情不确定但不凶。台词："Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn't order it?"</div>
+            <div class="p-head"><span class="p-label">🎬 T2V Prompt</span><span class="p-time">⏱ 9s</span><span class="p-who npc">NPC 说出</span></div>
+            <div class="p-text">POV视角，环境音静音。服务生从镜头前接过账单（一只手从画面下方递出），皱眉低头看账单，然后抬头看向镜头，表情不确定但不凶。台词（由服务生说出）："Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn't order it?"</div>
+            <div class="p-fix">🔧 防转身：服务生说完台词后原地站住面对镜头。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <div class="decision-card">
           <div class="d-label">🔵 Decision 2 · Round 4</div>
-          <div class="d-user">👤 You — Server 反问你"确定没点吗"</div>
+          <div class="d-user">👤 — Server 反问你"确定没点吗"</div>
           <div style="font-size:0.65rem; color:#4a6a8a; margin-top:4px;">⏸ UI 选择界面（非视频）</div>
         </div>
 
@@ -213,60 +190,59 @@
               <div class="sd-label">A1 · 举证据 · 片段 4</div>
               <div class="sd-line">"Yes, I'm sure. We had two sodas and two pasta dishes. That's it. Could you take it off the bill, please?"</div>
               <div class="prompt-box">
-                <div class="p-label">🎬 提示词</div>
-                <div class="p-text">POV视角，环境音静音。面前是服务生，一只手从画面下方伸入镜头，掰着手指数——先伸出一根手指，再两根。说话语气坚定但友好。台词："Yes, I'm sure. We had two sodas and two pasta dishes. That's it. Could you take it off the bill, please?"</div>
-              </div>
-            </div>
-            <div class="v-connector" style="height:10px;"></div>
-            <!-- 片段 5 -->
-            <div class="npc-card" style="font-size:0.8rem;">
-              <div class="n-speaker">👩‍🍳 Server 查下单记录 · 片段 5</div>
-              <div class="n-line" style="font-size:0.75rem;">"You're right — that was for table 6. I'm so sorry. Let me fix it."</div>
-              <div class="prompt-box">
-                <div class="p-label">🎬 提示词</div>
-                <div class="p-text">POV视角，环境音静音。服务生低头查了系统（在柜台设备上点击了几下），然后抬头看向镜头，表情从困惑变成恍然大悟，不好意思地笑了笑。台词："You're right — that was for table 6. I'm so sorry. Let me fix it."</div>
+                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 8s</span><span class="p-who voice">POV 画外音</span></div>
+                <div class="p-text">POV视角，环境音静音。面前是服务生在听，一只手从画面下方伸入，掰着手指数——先一根，再两根。台词（画外音——主角说的）："Yes, I'm sure. We had two sodas and two pasta dishes. That's it. Could you take it off the bill, please?"</div>
+                <div class="p-fix">🔧 防串词：服务生嘴不动，只在听。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
+            <!-- 片段 5 -->
+            <div class="npc-card" style="font-size:0.8rem;">
+              <div class="n-speaker">👩‍🍳 · 片段 5</div>
+              <div class="n-line" style="font-size:0.75rem;">"You're right — that was for table 6. I'm so sorry. Let me fix it."</div>
+              <div class="prompt-box">
+                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 7s</span><span class="p-who npc">NPC 说出</span></div>
+                <div class="p-text">POV视角，环境音静音。服务生低头查了系统（在柜台设备上点击几下），然后抬头看向镜头，表情从困惑变成恍然大悟，不好意思地笑了笑。台词（由服务生说出）："You're right — that was for table 6. I'm so sorry. Let me fix it."</div>
+                <div class="p-fix">🔧 防转身：说完后微笑面对镜头。</div>
+              </div>
+            </div>
+            <div class="v-connector" style="height:6px;"></div>
             <div class="ending-card success">
-              <div class="e-emoji">🏆</div>
-              <div class="e-label">Success · 冷静自证</div>
-              <div class="e-detail">账单修正 + Server 道歉</div>
-              <div class="e-review">💡 列举事实 > 情绪指控。"Could you... please" 把纠正变成请求。</div>
+              <div class="e-emoji">🏆</div><div class="e-label">Success · 冷静自证</div><div class="e-detail">账单修正 + Server 道歉</div>
             </div>
           </div>
+
           <div class="sub-branch">
             <!-- 片段 6 -->
             <div class="sub-decision-card">
               <div class="sd-label">A2 · 要经理 · 片段 6</div>
               <div class="sd-line">"I'm <span style="color:#e2c85f;">absolutely</span> sure. Can I speak to the manager?" 🅱️</div>
               <div class="prompt-box">
-                <div class="p-label">🎬 提示词</div>
-                <div class="p-text">POV视角，环境音静音。视线平视面前的服务生，说话语气比刚才更认真但依然礼貌，画面稳定不晃动。台词："I'm absolutely sure. Can I speak to the manager?"</div>
-              </div>
-            </div>
-            <div class="v-connector" style="height:10px;"></div>
-            <!-- 片段 7 -->
-            <div class="npc-card" style="font-size:0.8rem;">
-              <div class="n-speaker">👨‍💼 Manager 出场 · 片段 7</div>
-              <div class="n-line" style="font-size:0.75rem;">"I just checked — it was the wrong table. I've taken it off. Sorry about that."</div>
-              <div class="prompt-box">
-                <div class="p-label">🎬 提示词</div>
-                <div class="p-text">POV视角，环境音静音。男经理从餐厅深处走过来，手里拿着平板，低头看了一眼屏幕，然后抬头对着镜头说话，表情专业但友善。台词："I just checked — it was the wrong table. I've taken it off. Sorry about that."</div>
+                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 6s</span><span class="p-who voice">POV 画外音</span></div>
+                <div class="p-text">POV视角，环境音静音。视线平视面前的服务生，画面稳定不晃动。台词（画外音——主角说的）："I'm absolutely sure. Can I speak to the manager?"</div>
+                <div class="p-fix">🔧 防串词：服务生嘴不动，只在听。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
+            <!-- 片段 7 -->
+            <div class="npc-card" style="font-size:0.8rem;">
+              <div class="n-speaker">👨‍💼 Manager · 片段 7</div>
+              <div class="n-line" style="font-size:0.75rem;">"I just checked — it was the wrong table. I've taken it off. Sorry about that."</div>
+              <div class="prompt-box">
+                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 8s</span><span class="p-who npc">NPC 说出</span></div>
+                <div class="p-text">POV视角，环境音静音。男经理从餐厅深处走过来，手里拿着平板，低头看了一眼屏幕，然后抬头对着镜头说话，表情专业但友善。台词（由经理说出）："I just checked — it was the wrong table. I've taken it off. Sorry about that."</div>
+                <div class="p-fix">🔧 防转身：经理说完后站住面对镜头。</div>
+              </div>
+            </div>
+            <div class="v-connector" style="height:6px;"></div>
             <div class="ending-card success">
-              <div class="e-emoji">🏆</div>
-              <div class="e-label">Success · 升级得尊严</div>
-              <div class="e-detail">账单修正 + Manager 亲自道歉</div>
-              <div class="e-review">💡 "absolutely sure" 比 "sure" 多了一个档位的坚定。升级前先给过 Server 机会，所以不显得咄咄逼人。</div>
+              <div class="e-emoji">🏆</div><div class="e-label">Success · 升级得尊严</div><div class="e-detail">账单修正 + Manager 亲自道歉</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ========== B: PASSIVE AGGRESSIVE ========== -->
+      <!-- ========== ROUTE B ========== -->
       <div class="branch-col">
         <!-- 片段 8 -->
         <div class="decision-card" style="background:#2a2518; border-color:#4a3a1a;">
@@ -274,27 +250,29 @@
           <div class="d-user" style="color:#e0c880;">👤 You</div>
           <div class="d-line" style="color:#d8c880;">"Excuse me... this doesn't look right. What is this $45?"</div>
           <div class="prompt-box">
-            <div class="p-label" style="color:#8a8a55;">🎬 提示词</div>
-            <div class="p-text" style="color:#888866;">POV视角，环境音静音。视线低垂看着桌上的账单，一只手从画面下方伸入——手指点在账单上的$45那一行。然后视线抬起来，犹豫地看向面前的服务生。台词："Excuse me... this doesn't look right. What is this $45?"</div>
+            <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who voice">POV 画外音</span></div>
+            <div class="p-text" style="color:#888866;">POV视角，环境音静音。视线低垂看着桌上的账单，一只手从画面下方伸入——手指点在$45那一行。然后视线抬起来，犹豫地看向服务生。台词（画外音——主角说的）："Excuse me... this doesn't look right. What is this $45?"</div>
+            <div class="p-fix" style="color:#a08844;">🔧 防串词：服务生嘴不动，只在听。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <!-- 片段 9 -->
         <div class="npc-card" style="background:#202018; border-color:#3a3a18;">
-          <div class="n-speaker">👩‍🍳 Server（态度：防卫）· 片段 9</div>
+          <div class="n-speaker">👩‍🍳 Server · 片段 9</div>
           <div class="n-line">"That's the house wine. You ordered it — I brought it to your table myself."</div>
-          <div class="n-note">⚠️ Server 把话说死了。现在争论升级：你的记忆 vs 她的记忆。</div>
+          <div class="n-note">⚠️ Server 把话说死了。你的记忆 vs 她的记忆。</div>
           <div class="prompt-box">
-            <div class="p-label" style="color:#8a8a55;">🎬 提示词</div>
-            <div class="p-text" style="color:#888866;">POV视角，环境音静音。服务生双手交叉在胸前，下巴微抬，直视镜头，语气带着防卫。台词："That's the house wine. You ordered it — I brought it to your table myself."</div>
+            <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who npc">NPC 说出</span></div>
+            <div class="p-text" style="color:#888866;">POV视角，环境音静音。服务生双手交叉在胸前，下巴微抬，直视镜头，语气带着防卫。台词（由服务生说出）："That's the house wine. You ordered it — I brought it to your table myself."</div>
+            <div class="p-fix" style="color:#a08844;">🔧 防转身：说完后站住，直视镜头。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <div class="decision-card" style="background:#2a2518; border-color:#4a3a1a;">
           <div class="d-label" style="color:#e2c85f;">🔵 Decision 2 · Round 4</div>
-          <div class="d-user" style="color:#e0c880;">👤 You — Server 坚称是你点的</div>
+          <div class="d-user" style="color:#e0c880;">👤 — Server 坚称是你点的</div>
           <div style="font-size:0.65rem; color:#4a4a1a; margin-top:4px;">⏸ UI 选择界面（非视频）</div>
         </div>
 
@@ -305,60 +283,59 @@
               <div class="sd-label">B1 · 坚持立场 · 片段 10</div>
               <div class="sd-line">"No. I didn't order wine. We only had sodas. Please check again."</div>
               <div class="prompt-box">
-                <div class="p-label">🎬 提示词</div>
-                <div class="p-text">POV视角，环境音静音。视线微微左右摇头（画面轻微左右晃动），面对服务生，语气简短直接但不大声。台词："No. I didn't order wine. We only had sodas. Please check again."</div>
-              </div>
-            </div>
-            <div class="v-connector" style="height:10px;"></div>
-            <!-- 片段 11 -->
-            <div class="npc-card" style="font-size:0.8rem;">
-              <div class="n-speaker">👩‍🍳 Server 不情愿地查系统 · 片段 11</div>
-              <div class="n-line" style="font-size:0.75rem;">"...Fine. Let me check. ...Oh. It was table 7. Sorry."</div>
-              <div class="prompt-box">
-                <div class="p-label">🎬 提示词</div>
-                <div class="p-text">POV视角，环境音静音。服务生叹了口气，不情愿地转身在柜台设备上查系统（侧脸或背影），几秒后转回来面对镜头，表情有点尴尬。台词："...Fine. Let me check. ...Oh. It was table 7. Sorry."</div>
+                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 6s</span><span class="p-who voice">POV 画外音</span></div>
+                <div class="p-text">POV视角，环境音静音。画面轻微左右晃动（摇头感），面对服务生。台词（画外音——主角说的）："No. I didn't order wine. We only had sodas. Please check again."</div>
+                <div class="p-fix">🔧 防串词：服务生嘴不动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
+            <!-- 片段 11 -->
+            <div class="npc-card" style="font-size:0.8rem;">
+              <div class="n-speaker">👩‍🍳 · 片段 11</div>
+              <div class="n-line" style="font-size:0.75rem;">"...Fine. Let me check. ...Oh. It was table 7. Sorry."</div>
+              <div class="prompt-box">
+                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 9s</span><span class="p-who npc">NPC 说出</span></div>
+                <div class="p-text">POV视角，环境音静音。服务生叹了口气，不情愿地转身在柜台设备上查系统（侧脸或背影），几秒后转回来面对镜头，表情有点尴尬。台词（由服务生说出）："...Fine. Let me check. ...Oh. It was table 7. Sorry."</div>
+                <div class="p-fix">🔧 防转身：转回来后面对镜头站住。</div>
+              </div>
+            </div>
+            <div class="v-connector" style="height:6px;"></div>
             <div class="ending-card success">
-              <div class="e-emoji">🏆</div>
-              <div class="e-label">Success · 坚持到底</div>
-              <div class="e-detail">账单修正，但 Server 不太高兴</div>
-              <div class="e-review">💡 当对方推回来时，不解释、不道歉、不犹豫。重复事实就是最强的回应。</div>
+              <div class="e-emoji">🏆</div><div class="e-label">Success · 坚持到底</div><div class="e-detail">账单修正，Server 不太高兴</div>
             </div>
           </div>
+
           <div class="sub-branch">
             <!-- 片段 12 -->
             <div class="sub-decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
               <div class="sd-label" style="color:#e06c6c;">B2 · 退缩 · 片段 12</div>
               <div class="sd-line" style="color:#e0b0b0;">"Are you sure? I mean... maybe I forgot. Never mind."</div>
               <div class="prompt-box">
-                <div class="p-label" style="color:#aa6666;">🎬 提示词</div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。视线垂下，避开面前服务生的目光，画面看向桌面——手指无意识地摸着账单边缘。说话声音变小，底气不足。台词："Are you sure? I mean... maybe I forgot. Never mind."</div>
-              </div>
-            </div>
-            <div class="v-connector" style="height:10px;"></div>
-            <!-- 片段 13 -->
-            <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
-              <div class="n-speaker">👩‍🍳 Server · 片段 13</div>
-              <div class="n-line" style="font-size:0.75rem;">"Yeah, I'm sure. So... cash or card?"</div>
-              <div class="prompt-box">
-                <div class="p-label" style="color:#aa6666;">🎬 提示词</div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生站在面前，表情没变，嘴角微微上扬，眼神里闪过一丝"果然如此"。她拿出刷卡机递向镜头。台词："Yeah, I'm sure. So... cash or card?"</div>
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who voice">POV 画外音</span></div>
+                <div class="p-text" style="color:#996666;">POV视角，环境音静音。视线垂下，避开面前服务生的目光，画面看向桌面——手指无意识地摸着账单边缘。台词（画外音——主角说的，声音变小）："Are you sure? I mean... maybe I forgot. Never mind."</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 防串词：服务生嘴不动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
+            <!-- 片段 13 -->
+            <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
+              <div class="n-speaker">👩‍🍳 · 片段 13</div>
+              <div class="n-line" style="font-size:0.75rem;">"Yeah, I'm sure. So... cash or card?"</div>
+              <div class="prompt-box">
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who npc">NPC 说出</span></div>
+                <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生站在面前，表情没变，嘴角微微上扬，眼神里闪过一丝"果然如此"。她拿出刷卡机递向镜头。台词（由服务生说出）："Yeah, I'm sure. So... cash or card?"</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 防转身：递刷卡机后站住。</div>
+              </div>
+            </div>
+            <div class="v-connector" style="height:6px;"></div>
             <div class="ending-card failure">
-              <div class="e-emoji">💀</div>
-              <div class="e-label">Failure · 多付 $45</div>
-              <div class="e-detail">为没点的酒买单 + 心里窝火</div>
-              <div class="e-review">💡 "Maybe I forgot" 是你自己给了对方台阶。当你 100% 确定时，永远不要怀疑自己。</div>
+              <div class="e-emoji">💀</div><div class="e-label">Failure · 多付 $45</div><div class="e-detail">为没点的酒买单 + 心里窝火</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ========== C: ANGRY ========== -->
+      <!-- ========== ROUTE C ========== -->
       <div class="branch-col">
         <!-- 片段 14 -->
         <div class="decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
@@ -366,27 +343,29 @@
           <div class="d-user" style="color:#e0a0a0;">👤 You</div>
           <div class="d-line" style="color:#e0b0b0;">"This is wrong. We never ordered wine. What is this?"</div>
           <div class="prompt-box">
-            <div class="p-label" style="color:#aa6666;">🎬 提示词</div>
-            <div class="p-text" style="color:#996666;">POV视角，环境音静音。一只手从画面下方啪地把账单拍在桌上，视线随即抬起来瞪向面前的服务生。说话声音比正常大，语气愤怒。台词："This is wrong. We never ordered wine. What is this?"</div>
+            <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who voice">POV 画外音</span></div>
+            <div class="p-text" style="color:#996666;">POV视角，环境音静音。一只手从画面下方啪地把账单拍在桌上，视线随即抬起来瞪向面前的服务生。台词（画外音——主角说的，声音比正常大）："This is wrong. We never ordered wine. What is this?"</div>
+            <div class="p-fix" style="color:#aa6666;">🔧 防串词：服务生嘴不动，表情从困惑变成被冒犯。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <!-- 片段 15 -->
         <div class="npc-card" style="background:#1e1818; border-color:#3a2020;">
-          <div class="n-speaker">👩‍🍳 Server（态度：被冒犯）· 片段 15</div>
+          <div class="n-speaker">👩‍🍳 Server · 片段 15</div>
           <div class="n-line">"I brought it to your table. You didn't say anything then. Now you don't want to <span style="color:#e2c85f;">pay for</span> it?" 🅱️</div>
           <div class="n-note">🔥 火药味。Server 觉得你在赖账。</div>
           <div class="prompt-box">
-            <div class="p-label" style="color:#aa6666;">🎬 提示词</div>
-            <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生往后退了半步（画面中她变小了一点），先愣了一下，然后表情冷下来，双臂交叉，直视镜头，语气带刺。台词："I brought it to your table. You didn't say anything then. Now you don't want to pay for it?"</div>
+            <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who npc">NPC 说出</span></div>
+            <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生往后退了半步（画面中她变小了一点），先愣了一下，然后表情冷下来，双臂交叉，直视镜头，语气带刺。台词（由服务生说出）："I brought it to your table. You didn't say anything then. Now you don't want to pay for it?"</div>
+            <div class="p-fix" style="color:#aa6666;">🔧 防转身：说完双臂交叉站住，直视镜头。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <div class="decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
           <div class="d-label" style="color:#e06c6c;">🔴 Decision 2 · Round 4</div>
-          <div class="d-user" style="color:#e0a0a0;">👤 You — Server 反咬你赖账</div>
+          <div class="d-user" style="color:#e0a0a0;">👤 — Server 反咬你赖账</div>
           <div style="font-size:0.65rem; color:#4a2a2a; margin-top:4px;">⏸ UI 选择界面（非视频）</div>
         </div>
 
@@ -397,124 +376,96 @@
               <div class="sd-label" style="color:#e2c85f;">C1 · 强制降火 · 片段 16</div>
               <div class="sd-line" style="color:#d8c880;">"Look — I'm not saying I won't pay. I'm saying it's not ours. Can we just check the order?" <span class="blame-tag you">de-escalate</span></div>
               <div class="prompt-box">
-                <div class="p-label" style="color:#8a8a55;">🎬 提示词</div>
-                <div class="p-text" style="color:#888866;">POV视角，环境音静音。深吸一口气的声音，两只手从画面下方平放在桌上，画面稳定。说话声音放低，语速放慢，努力控制情绪。台词："Look — I'm not saying I won't pay. I'm saying it's not ours. Can we just check the order?"</div>
-              </div>
-            </div>
-            <div class="v-connector" style="height:10px;"></div>
-            <!-- 片段 17 -->
-            <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
-              <div class="n-speaker">👩‍🍳 Server 冷着脸查系统 · 片段 17</div>
-              <div class="n-line" style="font-size:0.75rem;">"...It was a mistake. I'll fix it."</div>
-              <div class="prompt-box">
-                <div class="p-label" style="color:#aa6666;">🎬 提示词</div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生冷着脸，不跟镜头对视，转身在平板上点了几下（侧身/背影），语气冷淡。台词："...It was a mistake. I'll fix it."</div>
+                <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 9s</span><span class="p-who voice">POV 画外音</span></div>
+                <div class="p-text" style="color:#888866;">POV视角，环境音静音。深吸一口气的声音，两只手从画面下方平放在桌上，画面稳定。台词（画外音——主角说的，声音放低，语速放慢）："Look — I'm not saying I won't pay. I'm saying it's not ours. Can we just check the order?"</div>
+                <div class="p-fix" style="color:#a08844;">🔧 防串词：服务生嘴不动，表情从冷转稍有松动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
+            <!-- 片段 17 -->
+            <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
+              <div class="n-speaker">👩‍🍳 · 片段 17</div>
+              <div class="n-line" style="font-size:0.75rem;">"...It was a mistake. I'll fix it."</div>
+              <div class="prompt-box">
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who npc">NPC 说出</span></div>
+                <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生冷着脸，不跟镜头对视，转身在平板上点了几下（侧身/背影），语气冷淡。台词（由服务生说出）："...It was a mistake. I'll fix it."</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 防转身：转身操作完转回来面对镜头。</div>
+              </div>
+            </div>
+            <div class="v-connector" style="height:6px;"></div>
             <div class="ending-card partial">
-              <div class="e-emoji">⚠️</div>
-              <div class="e-label">Partial · 钱对了，关系毁了</div>
-              <div class="e-detail">账单修正，但全程冷脸</div>
-              <div class="e-review">💡 第一句伤人，第二句补救。"I'm not saying X, I'm saying Y" 是好公式，但已经在收拾残局。</div>
+              <div class="e-emoji">⚠️</div><div class="e-label">Partial · 钱对了，关系毁了</div><div class="e-detail">账单修正，但全程冷脸</div>
             </div>
           </div>
+
           <div class="sub-branch">
             <!-- 片段 18 -->
             <div class="sub-decision-card" style="background:#1e1515; border-color:#3a1515;">
               <div class="sd-label" style="color:#e06c6c;">C2 · 火上浇油 · 片段 18</div>
               <div class="sd-line" style="color:#d09090;">"I'm not paying for something I didn't order. This is <span style="color:#e2c85f;">ridiculous</span>." 🅱️ <span class="blame-tag server">escalate</span></div>
               <div class="prompt-box">
-                <div class="p-label" style="color:#aa6666;">🎬 提示词</div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。画面突然升高（站起来了），一只手从下方伸入镜头指着桌上的账单。背后几桌客人转头看过来。说话声音很大，语气愤怒，完全失去耐心。台词："I'm not paying for something I didn't order. This is ridiculous."</div>
-              </div>
-            </div>
-            <div class="v-connector" style="height:10px;"></div>
-            <!-- 片段 19 -->
-            <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
-              <div class="n-speaker">👨‍💼 Manager 被叫来 · 片段 19</div>
-              <div class="n-line" style="font-size:0.75rem;">"I've asked you to leave. Pay your bill and go."</div>
-              <div class="prompt-box">
-                <div class="p-label" style="color:#aa6666;">🎬 提示词</div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。男经理快步走到桌前，面对镜头，表情严肃，手臂抬起指向门口方向。背景里几桌客人都朝这边看。语气不容商量。台词："I've asked you to leave. Pay your bill and go."</div>
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 7s</span><span class="p-who voice">POV 画外音</span></div>
+                <div class="p-text" style="color:#996666;">POV视角，环境音静音。画面突然升高（站起来了），一只手从下方伸入镜头指着桌上的账单。背景里几桌客人转头看过来。台词（画外音——主角说的，声音很大）："I'm not paying for something I didn't order. This is ridiculous."</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 防串词：画面中是服务生/周围客人反应，嘴都不动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
+            <!-- 片段 19 -->
+            <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
+              <div class="n-speaker">👨‍💼 Manager · 片段 19</div>
+              <div class="n-line" style="font-size:0.75rem;">"I've asked you to leave. Pay your bill and go."</div>
+              <div class="prompt-box">
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 7s</span><span class="p-who npc">NPC 说出</span></div>
+                <div class="p-text" style="color:#996666;">POV视角，环境音静音。男经理快步走到桌前，面对镜头，表情严肃，手臂抬起指向门口方向。背景里几桌客人都朝这边看。台词（由经理说出）："I've asked you to leave. Pay your bill and go."</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 防转身：手臂指向门口保持姿势，面对镜头。</div>
+              </div>
+            </div>
+            <div class="v-connector" style="height:6px;"></div>
             <div class="ending-card failure">
-              <div class="e-emoji">💀</div>
-              <div class="e-label">Failure · 被赶出去</div>
-              <div class="e-detail">你还是得付钱 + 当众羞辱</div>
-              <div class="e-review">💡 ridiculous = B1 词汇，但在这个情境下是毒药。问题从"账单错了"变成了"你在大喊大叫"。</div>
+              <div class="e-emoji">💀</div><div class="e-label">Failure · 被赶出去</div><div class="e-detail">你还是得付钱 + 当众羞辱</div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- SUMMARY TABLE -->
-    <div style="margin-top:60px; padding:30px 24px; background:#202020; border-radius:12px; border:1px solid #333; max-width:1100px; width:100%;">
-      <h3 style="color:#fff; font-size:1rem; margin-bottom:16px;">📊 19 段视频索引 + 教学拆解</h3>
+    <!-- Summary -->
+    <div style="margin-top:50px; padding:24px; background:#202020; border-radius:12px; border:1px solid #333; max-width:1100px; width:100%;">
+      <h3 style="color:#fff; font-size:1rem; margin-bottom:14px;">📊 片段时长 + 归属总表</h3>
       <table>
-        <thead>
-          <tr>
-            <th style="text-align:left; width:60px;">片段</th>
-            <th style="text-align:left; width:60px;">路线</th>
-            <th style="text-align:left;">角色</th>
-            <th style="text-align:left;">台词（摘要）</th>
-            <th style="text-align:center;">结局</th>
-          </tr>
-        </thead>
+        <thead><tr><th style="width:50px;">#</th><th>路线</th><th>谁说话</th><th>台词摘要</th><th style="width:50px;">⏱</th><th style="width:80px;">画面中</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>共享</td><td>Server</td><td>"Here's your bill. Whenever you're ready."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>2</td><td>A</td><td>You</td><td>"Excuse me, I think there's a mistake..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>3</td><td>A</td><td>Server</td><td>"Let me check... one bottle of house red..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>4</td><td>A1</td><td>You</td><td>"Yes, I'm sure. We had two sodas..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>5</td><td>A1</td><td>Server</td><td>"You're right — that was for table 6..."</td><td style="text-align:center;">🏆</td></tr>
-          <tr><td>6</td><td>A2</td><td>You</td><td>"I'm absolutely sure. Can I speak to..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>7</td><td>A2</td><td>Manager</td><td>"I just checked — wrong table..."</td><td style="text-align:center;">🏆</td></tr>
-          <tr><td>8</td><td>B</td><td>You</td><td>"Excuse me... this doesn't look right..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>9</td><td>B</td><td>Server</td><td>"That's the house wine. You ordered it..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>10</td><td>B1</td><td>You</td><td>"No. I didn't order wine..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>11</td><td>B1</td><td>Server</td><td>"...Fine. Let me check. ...Oh."</td><td style="text-align:center;">🏆</td></tr>
-          <tr><td>12</td><td>B2</td><td>You</td><td>"Are you sure? I mean... maybe I forgot..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>13</td><td>B2</td><td>Server</td><td>"Yeah, I'm sure. So... cash or card?"</td><td style="text-align:center;">💀</td></tr>
-          <tr><td>14</td><td>C</td><td>You</td><td>"This is wrong. We never ordered wine..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>15</td><td>C</td><td>Server</td><td>"I brought it to your table..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>16</td><td>C1</td><td>You</td><td>"Look — I'm not saying I won't pay..."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>17</td><td>C1</td><td>Server</td><td>"...It was a mistake. I'll fix it."</td><td style="text-align:center;">⚠️</td></tr>
-          <tr><td>18</td><td>C2</td><td>You</td><td>"I'm not paying... This is ridiculous."</td><td style="text-align:center;">—</td></tr>
-          <tr><td>19</td><td>C2</td><td>Manager</td><td>"I've asked you to leave..."</td><td style="text-align:center;">💀</td></tr>
+          <tr><td>1</td><td>共享</td><td>👩‍🍳 Server</td><td>"Here's your bill..."</td><td>8s</td><td style="color:#e0a060;">服务生</td></tr>
+          <tr><td>2</td><td>A</td><td>👤 You (画外)</td><td>"Excuse me, I think there's a mistake..."</td><td>7s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
+          <tr><td>3</td><td>A</td><td>👩‍🍳 Server</td><td>"Let me check... one bottle of house red..."</td><td>9s</td><td style="color:#e0a060;">服务生</td></tr>
+          <tr><td>4</td><td>A1</td><td>👤 You (画外)</td><td>"Yes, I'm sure. We had two sodas..."</td><td>8s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
+          <tr><td>5</td><td>A1</td><td>👩‍🍳 Server</td><td>"You're right — that was for table 6..." 🏆</td><td>7s</td><td style="color:#e0a060;">服务生</td></tr>
+          <tr><td>6</td><td>A2</td><td>👤 You (画外)</td><td>"I'm absolutely sure. Can I speak to..."</td><td>6s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
+          <tr><td>7</td><td>A2</td><td>👨‍💼 Manager</td><td>"I just checked — wrong table..." 🏆</td><td>8s</td><td style="color:#e0a060;">经理</td></tr>
+          <tr><td>8</td><td>B</td><td>👤 You (画外)</td><td>"Excuse me... this doesn't look right..."</td><td>8s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
+          <tr><td>9</td><td>B</td><td>👩‍🍳 Server</td><td>"That's the house wine. You ordered it..."</td><td>8s</td><td style="color:#e0a060;">服务生</td></tr>
+          <tr><td>10</td><td>B1</td><td>👤 You (画外)</td><td>"No. I didn't order wine..."</td><td>6s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
+          <tr><td>11</td><td>B1</td><td>👩‍🍳 Server</td><td>"...Fine. Let me check. ...Oh." 🏆</td><td>9s</td><td style="color:#e0a060;">服务生</td></tr>
+          <tr><td>12</td><td>B2</td><td>👤 You (画外)</td><td>"Are you sure? I mean... maybe I forgot..."</td><td>8s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
+          <tr><td>13</td><td>B2</td><td>👩‍🍳 Server</td><td>"Yeah, I'm sure. So... cash or card?" 💀</td><td>6s</td><td style="color:#e0a060;">服务生</td></tr>
+          <tr><td>14</td><td>C</td><td>👤 You (画外)</td><td>"This is wrong. We never ordered wine..."</td><td>6s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
+          <tr><td>15</td><td>C</td><td>👩‍🍳 Server</td><td>"I brought it to your table..."</td><td>8s</td><td style="color:#e0a060;">服务生</td></tr>
+          <tr><td>16</td><td>C1</td><td>👤 You (画外)</td><td>"Look — I'm not saying I won't pay..."</td><td>9s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
+          <tr><td>17</td><td>C1</td><td>👩‍🍳 Server</td><td>"...It was a mistake. I'll fix it." ⚠️</td><td>6s</td><td style="color:#e0a060;">服务生</td></tr>
+          <tr><td>18</td><td>C2</td><td>👤 You (画外)</td><td>"I'm not paying... This is ridiculous."</td><td>7s</td><td style="color:#6a6aff;">服务生+客人</td></tr>
+          <tr><td>19</td><td>C2</td><td>👨‍💼 Manager</td><td>"I've asked you to leave..." 💀</td><td>7s</td><td style="color:#e0a060;">经理</td></tr>
         </tbody>
       </table>
-    </div>
-
-    <!-- WHY THIS WORKS -->
-    <div style="margin-top:30px; padding:24px; background:#1a1a1a; border-radius:12px; border:1px solid #333; max-width:1100px; width:100%;">
-      <h3 style="color:#fff; font-size:1rem; margin-bottom:12px;">🎯 为什么这个比咖啡店更"激烈"</h3>
-      <table style="font-size:0.78rem;">
-        <thead>
-          <tr>
-            <th style="text-align:left;">维度</th>
-            <th style="text-align:left;">☕ The Order（上回）</th>
-            <th style="text-align:left;">🧾 The Bill（今回）</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td style="color:#aaa;">冲突类型</td><td>纠正服务错误（无争议）</td><td style="color:#e06c6c;">对质争议（你说没点·她说你点了）</td></tr>
-          <tr><td style="color:#aaa;">对方反应</td><td>"Sorry, let me fix it"</td><td style="color:#e06c6c;">"Are you sure? I brought it myself."</td></tr>
-          <tr><td style="color:#aaa;">输的代价</td><td>喝冰的（~$0）</td><td style="color:#e06c6c;">多付 $45 + 被当成赖账</td></tr>
-          <tr><td style="color:#aaa;">赢的爽感</td><td>拿到热咖啡</td><td style="color:#6fcf6f;">对方认错 + 你证明了自己是对的</td></tr>
-          <tr><td style="color:#aaa;">失败耻辱感</td><td>低（只是没开口）</td><td style="color:#e06c6c;">高（被赶出去 / 付了冤枉钱）</td></tr>
-        </tbody>
-      </table>
+      <div style="margin-top:16px; padding:12px 16px; background:#1a1a1a; border-radius:8px; font-size:0.75rem; color:#999;">
+        <strong style="color:#e0a060;">🔧 两条铁律（每条提示词均已内置）：</strong><br>
+        ① NPC 台词段：<em>"说完台词后原地站住面对镜头，绝不转身离开"</em> — 防止服务生最后一秒走人<br>
+        ② POV 画外音段：<em>"台词是画外音（主角说的），画面中角色嘴不动"</em> — 防止服务生抢主角台词
+      </div>
     </div>
 
   </div>
 
-  <div class="footer">
-    The Bill · Alma Interactive English · A2 Level · 19 T2V Segments
-  </div>
+  <div class="footer">The Bill v2 · POV Interactive English · A2 Level · 19 Segments / ~140s total</div>
 </div>
 </body>
 </html>
