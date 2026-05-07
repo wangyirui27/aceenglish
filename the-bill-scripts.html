@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧾 The Bill · 6 Route Scripts</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #1a1a1a; color: #d0d0d0; min-height: 100vh; }
+  .container { max-width: 900px; margin: 0 auto; padding: 30px 20px; }
+
+  .header { text-align: center; margin-bottom: 30px; }
+  .header h1 { font-size: 1.8rem; color: #fff; margin-bottom: 6px; }
+  .header .sub { font-size: 0.85rem; color: #888; }
+
+  /* Tabs */
+  .tab-bar { display: flex; gap: 4px; margin-bottom: 30px; background: #111; border-radius: 12px; padding: 4px; overflow-x: auto; }
+  .tab-btn { flex: 1; min-width: 90px; padding: 12px 10px; border: none; border-radius: 10px; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: #777; background: transparent; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn:hover { color: #aaa; background: #1a1a1a; }
+  .tab-btn.active { color: #fff; background: #2a2a2a; }
+  .tab-btn .route-tag { display: block; font-size: 0.6rem; color: inherit; opacity: 0.7; margin-bottom: 2px; }
+  .tab-btn.success.active { background: #1a3a1a; color: #6fcf6f; }
+  .tab-btn.failure.active { background: #2a1a1a; color: #e06c6c; }
+  .tab-btn.partial.active { background: #2a2a1a; color: #e2c85f; }
+
+  /* Script panel */
+  .script-panel { display: none; }
+  .script-panel.active { display: block; }
+
+  /* Scene card */
+  .scene { background: #202020; border: 1px solid #2a2a2a; border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .scene-header { padding: 10px 16px; background: #181818; border-bottom: 1px solid #2a2a2a; display: flex; align-items: center; gap: 10px; }
+  .scene-num { font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 0.1em; min-width: 60px; }
+  .scene-title { font-size: 0.85rem; color: #ccc; font-weight: 500; }
+  .scene-tag { font-size: 0.6rem; padding: 2px 8px; border-radius: 99px; }
+  .scene-tag.decision { background: #1a2a3a; color: #5fa3e0; }
+  .scene-tag.shared { background: #1a1a1a; color: #666; }
+
+  .scene-body { padding: 16px; }
+
+  .stage-direction { font-size: 0.8rem; color: #888; font-style: italic; margin-bottom: 14px; line-height: 1.6; border-left: 2px solid #333; padding-left: 12px; }
+
+  .line-block { margin-bottom: 12px; }
+  .char-name { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; font-weight: 600; }
+  .char-name.server { color: #e0a060; }
+  .char-name.customer { color: #5fa3e0; }
+  .char-name.manager { color: #a080c0; }
+  .dialogue { font-size: 1rem; color: #e0e0e0; font-style: italic; line-height: 1.5; }
+
+  /* Decision card between scenes */
+  .decision-marker { padding: 14px 18px; background: #1a2840; border: 1px solid #2a5a8a; border-radius: 10px; margin-bottom: 16px; text-align: center; }
+  .decision-marker .dm-label { font-size: 0.65rem; color: #5fa3e0; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px; }
+  .decision-marker .dm-text { font-size: 0.85rem; color: #a0c8f0; }
+  .decision-marker .dm-arrow { font-size: 1.2rem; color: #3a6aaa; margin-top: 4px; }
+
+  /* Ending card */
+  .ending { padding: 16px 20px; border-radius: 10px; margin-top: 16px; text-align: center; border: 2px solid; }
+  .ending.success { background: #1a2a1a; border-color: #3a6a3a; }
+  .ending.failure { background: #2a1a1a; border-color: #5a3a3a; }
+  .ending.partial { background: #2a2a1a; border-color: #5a5a2a; }
+  .ending .e-emoji { font-size: 1.6rem; }
+  .ending .e-label { font-size: 0.85rem; font-weight: 600; margin-top: 4px; }
+  .ending .e-detail { font-size: 0.7rem; color: #999; margin-top: 3px; }
+
+  /* Summary grid */
+  .summary { margin-top: 40px; }
+  .summary h3 { font-size: 0.9rem; color: #aaa; margin-bottom: 12px; }
+  .route-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+  .route-card { padding: 12px; border-radius: 8px; border: 1px solid #2a2a2a; cursor: pointer; transition: background 0.2s; text-align: center; }
+  .route-card:hover { background: #222; }
+  .route-card .rc-label { font-size: 0.75rem; font-weight: 600; }
+  .route-card .rc-outcome { font-size: 0.65rem; color: #888; margin-top: 3px; }
+  .route-card.s { border-color: #3a6a3a; } .route-card.s .rc-label { color: #6fcf6f; }
+  .route-card.f { border-color: #5a3a3a; } .route-card.f .rc-label { color: #e06c6c; }
+  .route-card.p { border-color: #5a5a2a; } .route-card.p .rc-label { color: #e2c85f; }
+
+  .divider { height: 1px; background: #2a2a2a; margin: 20px 0; }
+
+  .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #2a2a2a; font-size: 0.7rem; color: #555; }
+
+  @media (max-width: 600px) {
+    .tab-bar { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tab-btn { font-size: 0.7rem; padding: 10px 8px; }
+    .dialogue { font-size: 0.9rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>🧾 The Bill</h1>
+    <div class="sub">6 Route Scripts · 3 Rounds Each · A2 / B1 CEFR</div>
+  </div>
+
+  <!-- Route Summary Grid -->
+  <div class="summary" style="margin-top:0; margin-bottom: 20px;">
+    <div class="route-grid">
+      <div class="route-card s" onclick="switchTab('a1')">
+        <div class="rc-label">A1 · 举证据</div>
+        <div class="rc-outcome">🏆 冷静自证</div>
+      </div>
+      <div class="route-card s" onclick="switchTab('a2')">
+        <div class="rc-label">A2 · 要经理</div>
+        <div class="rc-outcome">🏆 升级得尊严</div>
+      </div>
+      <div class="route-card s" onclick="switchTab('b1')">
+        <div class="rc-label">B1 · 坚持立场</div>
+        <div class="rc-outcome">🏆 坚持到底</div>
+      </div>
+      <div class="route-card f" onclick="switchTab('b2')">
+        <div class="rc-label">B2 · 退缩</div>
+        <div class="rc-outcome">💀 多付 $45</div>
+      </div>
+      <div class="route-card p" onclick="switchTab('c1')">
+        <div class="rc-label">C1 · 强制降火</div>
+        <div class="rc-outcome">⚠️ 关系毁了</div>
+      </div>
+      <div class="route-card f" onclick="switchTab('c2')">
+        <div class="rc-label">C2 · 火上浇油</div>
+        <div class="rc-outcome">💀 被赶出去</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn success active" id="tab-a1" onclick="switchTab('a1')">
+      <span class="route-tag">Route A1</span>举证据 🏆
+    </button>
+    <button class="tab-btn success" id="tab-a2" onclick="switchTab('a2')">
+      <span class="route-tag">Route A2</span>要经理 🏆
+    </button>
+    <button class="tab-btn success" id="tab-b1" onclick="switchTab('b1')">
+      <span class="route-tag">Route B1</span>坚持立场 🏆
+    </button>
+    <button class="tab-btn failure" id="tab-b2" onclick="switchTab('b2')">
+      <span class="route-tag">Route B2</span>退缩 💀
+    </button>
+    <button class="tab-btn partial" id="tab-c1" onclick="switchTab('c1')">
+      <span class="route-tag">Route C1</span>强制降火 ⚠️
+    </button>
+    <button class="tab-btn failure" id="tab-c2" onclick="switchTab('c2')">
+      <span class="route-tag">Route C2</span>火上浇油 💀
+    </button>
+  </div>
+
+  <!-- ==================== ROUTE A1 ==================== -->
+  <div class="script-panel active" id="panel-a1">
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 1</span>
+        <span class="scene-title">开场</span>
+        <span class="scene-tag shared">共享</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生从餐厅深处走来，把黑色皮革账单夹放在桌上，双手交叠在腹部，职业微笑。你拿起账单扫了一眼——$45 的红酒？你没点过。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Here's your bill. Whenever you're ready."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 1</div>
+      <div class="dm-text">账单上多了 $45 的酒 —— 你怎么开口？</div>
+      <div class="dm-arrow">▼ 选择了：礼貌质疑</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 2</span>
+        <span class="scene-title">礼貌开口</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">视线从账单抬起来，看着面前的服务生。手指夹起账单，纸张轻微翻动。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"Excuse me, I think there's a mistake — we didn't order any wine."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 3</span>
+        <span class="scene-title">不确定的反问</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生接过账单，皱眉低头扫读项目。抬头看你，表情不确定但不凶——困惑。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn't order it?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 2</div>
+      <div class="dm-text">服务生反问"你确定没点吗" —— 你怎么回应？</div>
+      <div class="dm-arrow">▼ 选择了：举出具体证据</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 4</span>
+        <span class="scene-title">举出证据</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">一只手从画面下方伸入——先竖食指，再竖中指。关节有自然弹动，然后手掌摊平，指尖轻点账单。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"Yes, I'm sure. We had two sodas and two pasta dishes. That's it. Could you take it off the bill, please?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 5</span>
+        <span class="scene-title">恍然大悟</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生转身去柜台查系统——几秒后身体顿住。转回来面对你，眉毛先挑后松，眼角细纹聚拢，不好意思地笑了。情绪递进自然，非跳变。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"You're right — that was for table 6. I'm so sorry. Let me fix it."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ending success">
+      <div class="e-emoji">🏆</div>
+      <div class="e-label">Success · 冷静自证</div>
+      <div class="e-detail">账单修正 + Server 道歉。你说清了事实，保持了风度。</div>
+    </div>
+  </div>
+
+  <!-- ==================== ROUTE A2 ==================== -->
+  <div class="script-panel" id="panel-a2">
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 1</span>
+        <span class="scene-title">开场</span>
+        <span class="scene-tag shared">共享</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生递上账单。你发现上面多了一瓶 $45 的红酒。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Here's your bill. Whenever you're ready."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 1</div>
+      <div class="dm-text">账单上多了 $45 的酒 —— 你怎么开口？</div>
+      <div class="dm-arrow">▼ 选择了：礼貌质疑</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 2</span>
+        <span class="scene-title">礼貌开口</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">视线从账单抬起，看服务生。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"Excuse me, I think there's a mistake — we didn't order any wine."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 3</span>
+        <span class="scene-title">不确定的反问</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生接过账单查看，抬头时表情不确定但不凶。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn't order it?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 2</div>
+      <div class="dm-text">服务生反问"你确定没点吗" —— 你怎么回应？</div>
+      <div class="dm-arrow">▼ 选择了：直接要求见经理</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 6</span>
+        <span class="scene-title">坚决要经理</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">画面极稳——你完全确定，没有犹豫。语气里的 "absolutely" 让服务生感觉到了分量。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"I'm absolutely sure. Can I speak to the manager?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 7</span>
+        <span class="scene-title">经理出面</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">男经理从餐厅深处走来——</div>
+        <div class="line-block">
+          <div class="char-name manager">Manager ♂</div>
+          <div class="dialogue">"I just checked — it was the wrong table. I've taken it off. Sorry about that."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ending success">
+      <div class="e-emoji">🏆</div>
+      <div class="e-label">Success · 升级得尊严</div>
+      <div class="e-detail">账单修正 + Manager 亲自道歉。你没有对抗，你直接换了对话对象。</div>
+    </div>
+  </div>
+
+  <!-- ==================== ROUTE B1 ==================== -->
+  <div class="script-panel" id="panel-b1">
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 1</span>
+        <span class="scene-title">开场</span>
+        <span class="scene-tag shared">共享</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生递上账单。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Here's your bill. Whenever you're ready."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 1</div>
+      <div class="dm-text">账单上多了 $45 的酒 —— 你怎么开口？</div>
+      <div class="dm-arrow">▼ 选择了：含糊地抱怨</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 8</span>
+        <span class="scene-title">含糊地抱怨</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">手指点在账单 $45 那一行，停留了一秒。视线犹豫地抬起来看她。语气不确定。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"Excuse me... this doesn't look right. What is this $45?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 9</span>
+        <span class="scene-title">服务生把话说死</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生双臂交叉在胸前，下巴微抬，直视你。防卫姿态——她不觉得自己有错。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"That's the house wine. You ordered it — I brought it to your table myself."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 2</div>
+      <div class="dm-text">服务生坚称是你点的 —— 你的记忆 vs 她的记忆</div>
+      <div class="dm-arrow">▼ 选择了：坚持否认</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 10</span>
+        <span class="scene-title">坚持否认</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">画面轻微左右晃动——你在摇头。她真的觉得自己没错，但你也是真的没点。两股确信碰撞。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"No. I didn't order wine. We only had sodas. Please check again."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 11</span>
+        <span class="scene-title">不情愿的核实</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生叹了口气——肩膀先抬后落。不情愿地转身查系统。几秒后身体一顿。转回来面对你，表情从防卫变成尴尬。眼球短暂游移——不好意思直视你。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"...Fine. Let me check. ...Oh. It was table 7. Sorry."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ending success">
+      <div class="e-emoji">🏆</div>
+      <div class="e-label">Success · 坚持到底</div>
+      <div class="e-detail">账单修正，但服务生不太高兴。你对了，但气氛有点僵。</div>
+    </div>
+  </div>
+
+  <!-- ==================== ROUTE B2 ==================== -->
+  <div class="script-panel" id="panel-b2">
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 1</span>
+        <span class="scene-title">开场</span>
+        <span class="scene-tag shared">共享</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生递上账单。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Here's your bill. Whenever you're ready."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 1</div>
+      <div class="dm-text">账单上多了 $45 的酒 —— 你怎么开口？</div>
+      <div class="dm-arrow">▼ 选择了：含糊地抱怨</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 8</span>
+        <span class="scene-title">含糊地抱怨</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">手指点在 $45 那一行，语气犹豫。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"Excuse me... this doesn't look right. What is this $45?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 9</span>
+        <span class="scene-title">服务生把话说死</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生双臂交叉，防卫姿态拉满。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"That's the house wine. You ordered it — I brought it to your table myself."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 2</div>
+      <div class="dm-text">服务生坚称是你点的 —— 你的记忆 vs 她的记忆</div>
+      <div class="dm-arrow">▼ 选择了：退缩</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 12</span>
+        <span class="scene-title">退缩</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">视线垂下去，避开她的目光。画面缓慢向下移动——焦点从她的脸切换到桌面上的账单。手指无意识地摸着账单边缘，指甲在纸边来回轻刮。声音越来越小。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"Are you sure? I mean... maybe I forgot. Never mind."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 13</span>
+        <span class="scene-title">刷卡机递过来</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生嘴角微微上扬了一瞬——"果然如此"。她取出刷卡机递到你面前。刷卡机屏幕反射吊灯的高光，挡在你和服务生之间。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Yeah, I'm sure. So... cash or card?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ending failure">
+      <div class="e-emoji">💀</div>
+      <div class="e-label">Failure · 多付 $45</div>
+      <div class="e-detail">为没点的酒买单了。你心里清楚自己是对的，但没说出口。</div>
+    </div>
+  </div>
+
+  <!-- ==================== ROUTE C1 ==================== -->
+  <div class="script-panel" id="panel-c1">
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 1</span>
+        <span class="scene-title">开场</span>
+        <span class="scene-tag shared">共享</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生递上账单。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Here's your bill. Whenever you're ready."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 1</div>
+      <div class="dm-text">账单上多了 $45 的酒 —— 你怎么开口？</div>
+      <div class="dm-arrow">▼ 选择了：直接指控</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 14</span>
+        <span class="scene-title">拍桌质问</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">你啪地把账单拍在桌上。桌面微震颤，账单边缘因掌风翘起。视线狠狠抬起来瞪向服务生。她的表情瞬间变化：眉先扬（惊讶 0.3s）→ 转为皱眉（被冒犯）→ 嘴唇紧抿。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"This is wrong. We never ordered wine. What is this?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 15</span>
+        <span class="scene-title">被反咬</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生往后撤了半步，画面中她变小了。冷下脸——眉毛压平、眼睑微眯、嘴角下压。双臂交叉在胸前，身体重心后移。这是"你在跟我耍横？"的全面防御+反击姿态。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"I brought it to your table. You didn't say anything then. Now you don't want to pay for it?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 2</div>
+      <div class="dm-text">服务生反咬你赖账 —— 火药味正浓</div>
+      <div class="dm-arrow">▼ 选择了：自己降火</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 16</span>
+        <span class="scene-title">强制降火</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">深吸一口气（能听到画面外的呼吸声）。双手从下方抬起，平放在桌上——掌心贴住桌布，手掌边缘在桌布上形成轻微凹陷。声音放低，语速放慢。画面随着手的放下而稳定。从冲突姿态转为对话姿态。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"Look — I'm not saying I won't pay. I'm saying it's not ours. Can we just check the order?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 17</span>
+        <span class="scene-title">冷脸的核实</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生冷着脸不跟镜头对视。转身在平板上敷衍地点了几下——动作干脆冷淡，不是在"查"，是在"给个说法"。停了一秒。转回来，视线落在你旁边的某个点上——仍然不直视你。"勉强认错"。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"...It was a mistake. I'll fix it."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ending partial">
+      <div class="e-emoji">⚠️</div>
+      <div class="e-label">Partial · 钱对了，关系毁了</div>
+      <div class="e-detail">账单修正了。但全程冷脸。你把火灭了，但关系回不去了。</div>
+    </div>
+  </div>
+
+  <!-- ==================== ROUTE C2 ==================== -->
+  <div class="script-panel" id="panel-c2">
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 1</span>
+        <span class="scene-title">开场</span>
+        <span class="scene-tag shared">共享</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生递上账单。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"Here's your bill. Whenever you're ready."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 1</div>
+      <div class="dm-text">账单上多了 $45 的酒 —— 你怎么开口？</div>
+      <div class="dm-arrow">▼ 选择了：直接指控</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 14</span>
+        <span class="scene-title">拍桌质问</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">手掌啪地把账单拍在桌上。视线狠狠抬起来瞪向服务生。她的表情从困惑变为被冒犯。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"This is wrong. We never ordered wine. What is this?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 15</span>
+        <span class="scene-title">被反咬</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">服务生后撤半步，表情冷下来。双臂交叉，语气带刺。火药味弥漫。</div>
+        <div class="line-block">
+          <div class="char-name server">Server ♀</div>
+          <div class="dialogue">"I brought it to your table. You didn't say anything then. Now you don't want to pay for it?"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="decision-marker">
+      <div class="dm-label">🔵 Decision 2</div>
+      <div class="dm-text">服务生反咬你赖账 —— 火药味正浓</div>
+      <div class="dm-arrow">▼ 选择了：火上浇油</div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 18</span>
+        <span class="scene-title">站起来吼</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">画面突然升高——你站了起来。一只手伸入画面，食指狠狠指向桌上的账单。背景里几桌客人都转头看过来。服务生被惊到——交叉的手臂松开了，嘴唇微张。远处经理注意到骚动。</div>
+        <div class="line-block">
+          <div class="char-name customer">Customer ♂</div>
+          <div class="dialogue">"I'm not paying for something I didn't order. This is ridiculous."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scene">
+      <div class="scene-header">
+        <span class="scene-num">Scene 19</span>
+        <span class="scene-title">被赶出去</span>
+      </div>
+      <div class="scene-body">
+        <div class="stage-direction">经理快步走到桌前——不看账单，直接面对你。表情严肃，下颌收紧。他抬起手臂，食指指向门口方向。背景里所有人都在看。</div>
+        <div class="line-block">
+          <div class="char-name manager">Manager ♂</div>
+          <div class="dialogue">"I've asked you to leave. Pay your bill and go."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ending failure">
+      <div class="e-emoji">💀</div>
+      <div class="e-label">Failure · 被赶出去</div>
+      <div class="e-detail">你还是得付那 $45。当众被驱逐——钱没了，面子也没了。</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Summary Table -->
+  <div class="summary">
+    <h3>📊 路线全景</h3>
+    <div class="route-grid">
+      <div class="route-card s" onclick="switchTab('a1')">
+        <div class="rc-label">A1 · 举证据</div>
+        <div class="rc-outcome">礼貌→坚定→具体事实<br>🏆 冷静自证</div>
+      </div>
+      <div class="route-card s" onclick="switchTab('a2')">
+        <div class="rc-label">A2 · 要经理</div>
+        <div class="rc-outcome">礼貌→直接升级<br>🏆 升级得尊严</div>
+      </div>
+      <div class="route-card s" onclick="switchTab('b1')">
+        <div class="rc-label">B1 · 坚持立场</div>
+        <div class="rc-outcome">含糊→被顶回→坚持<br>🏆 坚持到底</div>
+      </div>
+      <div class="route-card f" onclick="switchTab('b2')">
+        <div class="rc-label">B2 · 退缩</div>
+        <div class="rc-outcome">含糊→被顶回→放弃<br>💀 多付 $45</div>
+      </div>
+      <div class="route-card p" onclick="switchTab('c1')">
+        <div class="rc-label">C1 · 强制降火</div>
+        <div class="rc-outcome">拍桌→被反咬→冷静<br>⚠️ 关系毁了</div>
+      </div>
+      <div class="route-card f" onclick="switchTab('c2')">
+        <div class="rc-label">C2 · 火上浇油</div>
+        <div class="rc-outcome">拍桌→被反咬→爆发<br>💀 被赶出去</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">The Bill · 6 Route Scripts · A2/B1 CEFR · 3-Round Interactive Dialogue</div>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.script-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('panel-' + id).classList.add('active');
+  document.getElementById('panel-' + id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>

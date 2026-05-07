@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧾 The Bill — Interactive Demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0d0d0d; color: #d0d0d0; min-height: 100vh; height: 100vh; display: flex; justify-content: center; overflow: hidden; }
+  .app { width: 100%; max-width: 720px; display: flex; flex-direction: column; height: 100vh; }
+
+  /* Header */
+  .top-bar { flex-shrink: 0; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar .title { font-size: 1.05rem; color: #fff; font-weight: 600; }
+  .top-ctrls { display: flex; gap: 6px; }
+  .btn-sm { font-size: 0.68rem; padding: 5px 10px; border-radius: 99px; border: 1px solid #2a2a2a; background: #141414; color: #999; cursor: pointer; transition: all 0.2s; }
+  .btn-sm:hover { background: #222; color: #fff; }
+  .btn-sm.active { background: #1a2a3a; color: #5fa3e0; border-color: #2a4a6a; }
+
+  /* Breadcrumb */
+  .breadcrumb { flex-shrink: 0; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; font-size: 0.65rem; color: #555; min-height: 20px; padding: 0 20px 6px; }
+  .breadcrumb .crumb { padding: 2px 7px; border-radius: 99px; background: #1a1a1a; }
+  .breadcrumb .crumb.played { background: #1a2a2a; color: #6a8a6a; }
+  .breadcrumb .sep { color: #333; }
+
+  /* Video */
+  .video-wrap { flex-shrink: 0; width: 100%; aspect-ratio: 16/9; max-height: 55vh; margin: 0 20px; background: #111; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #222; }
+  .video-wrap video { width: 100%; height: 100%; object-fit: contain; display: none; }
+  .video-wrap video.show { display: block; }
+  .ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+  .ph .ph-scene { font-size: 2.8rem; font-weight: 700; color: #2a2a2a; }
+  .ph .ph-speaker { font-size: 0.8rem; color: #e0a060; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .ph .ph-action { font-size: 0.7rem; color: #444; margin-top: 6px; max-width: 260px; line-height: 1.4; }
+  .ph .ph-line { font-size: 0.95rem; color: #ccc; font-style: italic; margin-top: 12px; max-width: 280px; line-height: 1.5; }
+  .ph .ph-loading { font-size: 0.6rem; color: #333; margin-top: 10px; }
+  .ph.hidden { display: none; }
+  .hidden { display: none !important; }
+
+  .sub-btn { position: absolute; bottom: 12px; right: 12px; z-index: 2; font-size: 0.6rem; padding: 5px 10px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.15); background: rgba(0,0,0,0.55); color: #aaa; cursor: pointer; }
+  .sub-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .sub-btn.on { border-color: #5fa3e0; color: #5fa3e0; }
+
+  .sub-bar { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 6px 20px; min-height: 22px; }
+  .sub-bar .sub-text { flex: 1; font-size: 0.9rem; color: #ccc; font-style: italic; text-align: center; }
+  .replay-btn { flex-shrink: 0; font-size: 0.65rem; padding: 3px 9px; border-radius: 99px; border: 1px solid #333; background: #141414; color: #888; cursor: pointer; transition: all 0.2s; }
+  .replay-btn:hover { background: #222; color: #fff; }
+
+  /* Prompt area */
+  .prompt-when { flex-shrink: 0; width: 100%; padding: 14px 20px; background: #0a0a0a; border-top: 1px solid #1a1a1a; max-height: 42vh; overflow-y: auto; margin-top: auto; }
+  .q-box { background: #14141e; border: 1px solid #22224a; border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; text-align: center; }
+  .q-box .q-badge { font-size: 0.6rem; color: #6a6aff; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px; }
+  .q-box .q-text { font-size: 0.9rem; color: #b8b8e8; }
+
+  .opts { display: flex; flex-direction: column; gap: 8px; }
+  .opt-btn { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #2a2a2a; background: #141414; color: #bbb; cursor: pointer; font-size: 0.82rem; text-align: left; transition: all 0.2s; line-height: 1.5; }
+  .opt-btn:hover { background: #1a2432; border-color: #2a4a6a; color: #a0c8f0; }
+  .opt-btn .opt-en { font-style: italic; font-size: 1rem; }
+  .opt-btn .opt-zh { font-size: 0.7rem; color: #555; margin-top: 3px; display: none; }
+  .opt-btn.show-zh .opt-zh { display: block; }
+  .opt-btn .opt-hint { font-size: 0.6rem; color: #444; margin-top: 2px; }
+
+  /* Ending */
+  .end-card { width: 100%; padding: 22px; border-radius: 12px; text-align: center; border: 2px solid; }
+  .end-card.success { background: #1a2a1a; border-color: #3a6a3a; }
+  .end-card.failure { background: #2a1a1a; border-color: #5a3a3a; }
+  .end-card .e-emoji { font-size: 2.5rem; }
+  .end-card .e-label { font-size: 1.1rem; font-weight: 600; margin-top: 6px; }
+  .end-card .e-detail { font-size: 0.78rem; color: #999; margin-top: 3px; }
+  .end-card .e-again { margin-top: 14px; font-size: 0.72rem; padding: 7px 18px; border-radius: 99px; border: 1px solid #333; background: transparent; color: #999; cursor: pointer; }
+  .end-card .e-again:hover { background: #222; color: #fff; }
+
+  /* Intro overlay */
+  .intro-overlay { position: fixed; inset: 0; z-index: 10; background: #0a0a0a; display: flex; align-items: center; justify-content: center; padding: 30px; }
+  .intro-card { max-width: 420px; text-align: center; }
+  .intro-card .intro-emoji { font-size: 4rem; }
+  .intro-card .intro-title { font-size: 2.2rem; color: #fff; font-weight: 700; margin-top: 14px; }
+  .intro-card .intro-start { margin-top: 28px; padding: 16px 56px; border-radius: 99px; border: none; background: #2a4a6a; color: #fff; font-size: 1.3rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .intro-card .intro-start:hover { background: #3a6a8a; transform: scale(1.03); }
+
+  /* Confetti */
+  .confetti-container { position: fixed; inset: 0; z-index: 20; pointer-events: none; overflow: hidden; }
+  .confetti-piece { position: absolute; width: 10px; height: 14px; top: -30px; animation: confetti-fall linear forwards; }
+  @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(105vh) rotate(720deg); opacity: 0; } }
+
+  /* Fullscreen ending */
+  .ending-overlay { position: fixed; inset: 0; z-index: 15; display: flex; align-items: center; justify-content: center; padding: 30px; }
+  .ending-overlay.success { background: rgba(6,20,10,0.95); }
+  .ending-overlay.failure { background: rgba(20,6,6,0.95); }
+  .ending-overlay .end-big { text-align: center; animation: pop-in 0.5s ease-out; }
+  @keyframes pop-in { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .ending-overlay .end-big .eb-emoji { font-size: 4rem; }
+  .ending-overlay .end-big .eb-label { font-size: 1.5rem; color: #fff; font-weight: 700; margin-top: 10px; }
+  .ending-overlay .end-big .eb-detail { font-size: 0.9rem; color: #aaa; margin-top: 6px; }
+  .ending-overlay .end-big .eb-again { margin-top: 20px; padding: 12px 30px; border-radius: 99px; border: 1px solid #444; background: transparent; color: #ccc; font-size: 0.85rem; cursor: pointer; }
+  .ending-overlay .end-big .eb-again:hover { background: #222; color: #fff; }
+
+  /* Route map */
+  .tree-section { margin-top: 6px; border-top: 1px solid #1a1a1a; padding-top: 14px; }
+  .tree-section .tree-title { font-size: 0.65rem; color: #555; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .route-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 0.65rem; color: #555; flex-wrap: wrap; }
+  .route-row .route-name { font-weight: 600; min-width: 70px; }
+  .route-row .route-name.s { color: #6a8a6a; } .route-row .route-name.f { color: #a06060; }
+  .route-row .route-flow { display: flex; gap: 3px; align-items: center; }
+  .route-row .dot { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; background: #1a1a1a; color: #555; }
+  .route-row .dot.played { background: #1a2a2a; color: #6a8a6a; }
+  .route-row .dot.decision { background: #1a2a3a; border-radius: 3px; color: #5fa3e0; font-size: 0.5rem; min-width: 28px; }
+  .route-row .dot.end { border-radius: 3px; width: auto; padding: 0 5px; }
+  .route-row .dot.end.s { background: #1a2a1a; color: #6fcf6f; }
+  .route-row .dot.end.f { background: #2a1a1a; color: #e06c6c; }
+  .route-row .arrow { color: #333; font-size: 0.5rem; }
+</style>
+</head>
+<body>
+<div class="intro-overlay" id="intro">
+  <div class="intro-card">
+    <div class="intro-emoji">🧾</div>
+    <div class="intro-title">账单风波</div>
+    <div class="intro-mission" style="font-size:1.05rem; color:#ccc;">你在美国餐厅刚用完餐<br>服务生递来账单——<br>上面多了一瓶 <strong style="color:#e0a060;">$45 的红酒</strong><br><strong>你根本没点过</strong></div>
+    <button class="intro-start" onclick="startGame()">开始</button>
+  </div>
+</div>
+
+<div class="app">
+  <div class="top-bar">
+    <span class="title">🧾 The Bill</span>
+    <div class="top-ctrls">
+      <button class="btn-sm" id="btnZh" onclick="toggleZh()">中</button>
+      <button class="btn-sm" onclick="restart()">↺ Restart</button>
+    </div>
+  </div>
+
+  <div class="breadcrumb" id="bread"></div>
+
+  <div class="video-wrap" id="videoWrap" onclick="manualPlay()">
+    <video id="video" playsinline preload="auto" onended="onVideoEnded()" onerror="onVideoError()" oncanplay="onVideoReady()" onpause="onVideoPause()"></video>
+    <div class="ph" id="ph">
+      <div class="ph-scene" id="phScene">1</div>
+      <div class="ph-speaker" id="phSpeaker">Server</div>
+      <div class="ph-action" id="phAction">She walks over and places the bill on your table.</div>
+      <div class="ph-line" id="phLine">"Here's your bill. Whenever you're ready."</div>
+      <div class="ph-loading" id="phLoading"></div>
+    </div>
+    <button class="sub-btn" id="subBtn" onclick="toggleSub()">CC</button>
+  </div>
+
+  <div class="sub-bar" id="subBar">
+    <div class="sub-text" id="subText"></div>
+    <button class="replay-btn" onclick="replayScene()">↺ Replay</button>
+  </div>
+
+  <div class="prompt-when" id="promptWhen"></div>
+
+
+</div>
+
+<script>
+// ==================== DATA ====================
+const SCENES = {
+  1:  { speaker:'Server',   action:'She walks over and places the bill on your table.', sub:'Here\'s your bill. Whenever you\'re ready.' },
+  2:  { speaker:'Customer', action:'You look up from the bill, meeting her eyes.', sub:'Excuse me, I think there\'s a mistake — we didn\'t order any wine.' },
+  3:  { speaker:'Server',   action:'She takes the bill, frowns, scans the items, looks back up — confused but not hostile.', sub:'Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn\'t order it?' },
+  4:  { speaker:'Customer', action:'You count on your fingers — one, two.', sub:'Yes, I\'m sure. We had two sodas and two pasta dishes. That\'s it. Could you take it off the bill, please?' },
+  5:  { speaker:'Server',   action:'She turns to check the system. Her body pauses — she found it. Turns back with an embarrassed smile.', sub:'You\'re right — that was for table 6. I\'m so sorry. Let me fix it.' },
+  8:  { speaker:'Customer', action:'Your finger points at the $45 line. Your voice hesitates.', sub:'Excuse me... this doesn\'t look right. What is this $45?' },
+  9:  { speaker:'Server',   action:'She crosses her arms, chin raised — defensive.', sub:'That\'s the house wine. You ordered it — I brought it to your table myself.' },
+  10: { speaker:'Customer', action:'The camera shakes slightly — you\'re shaking your head. You know you\'re right.', sub:'No. I didn\'t order wine. We only had sodas. Please check again.' },
+  11: { speaker:'Server',   action:'She sighs, reluctantly turns to check. Her body freezes — she sees the mistake. Turns back, embarrassed.', sub:'...Fine. Let me check. ...Oh. It was table 7. Sorry.' },
+  12: { speaker:'Customer', action:'Your eyes drop. Fingers trace the edge of the bill. Your voice gets quieter.', sub:'Are you sure? I mean... maybe I forgot. Never mind.' },
+  13: { speaker:'Server',   action:'The corner of her mouth lifts — just slightly. She pulls out the card machine.', sub:'Yeah, I\'m sure. So... cash or card?' },
+  14: { speaker:'Customer', action:'You slap the bill onto the table. Your eyes snap up at her.', sub:'This is wrong. We never ordered wine. What is this?' },
+  15: { speaker:'Server',   action:'She steps back half a pace. Her face goes cold. Arms crossed.', sub:'I brought it to your table. You didn\'t say anything then. Now you don\'t want to pay for it?' },
+  18: { speaker:'Customer', action:'You stand up. Your finger jabs at the bill. Other diners turn to look.', sub:'I\'m not paying for something I didn\'t order. This is ridiculous.' },
+  19: { speaker:'Manager',  action:'The manager strides over. Doesn\'t look at the bill. Points toward the door.', sub:'I\'ve asked you to leave. Pay your bill and go.' }
+};
+
+const D1 = {
+  q: 'There\'s a $45 wine charge you didn\'t order. What do you do?',
+  qZh: '账单上多了 $45 的红酒——你怎么办？',
+  opts: [
+    { en:'"Excuse me, I think there\'s a mistake — we didn\'t order any wine."', zh:'礼貌质疑："不好意思，我觉得账单有误——我们没有点酒。"', scenes:[2,3,4,5], end:{emoji:'🏆',label:'Success · 冷静自证',detail:'账单修正 + 服务生道歉',type:'success'} },
+    { en:'"Excuse me... this doesn\'t look right. What is this $45?"', zh:'含糊抱怨："这个……好像不对。这 $45 是什么？"', scenes:[8,9,'d2'], end:null },
+    { en:'"This is wrong. We never ordered wine. What is this?"', zh:'直接指控："这个错了。我们从没点酒。这是什么？"', scenes:[14,15,18,19], end:{emoji:'💀',label:'Failure · 被赶出去',detail:'你还是得付钱 + 当众羞辱',type:'failure'} }
+  ]
+};
+
+const D2 = {
+  q: 'Server insists you ordered it. Now what?',
+  qZh: '服务生坚称是你点的酒。现在怎么办？',
+  opts: [
+    { en:'"No. I didn\'t order wine. We only had sodas. Please check again."', zh:'坚持否认："不，我没点酒。我们只要了汽水。"', scenes:[10,11], end:{emoji:'🏆',label:'Success · 坚持到底',detail:'账单修正，但服务生不太高兴',type:'success'} },
+    { en:'"Are you sure? I mean... maybe I forgot. Never mind."', zh:'退缩："你确定吗？也许……我忘了。算了。"', scenes:[12,13], end:{emoji:'💀',label:'Failure · 多付 $45',detail:'为没点的酒买单，心里窝火',type:'failure'} }
+  ]
+};
+
+// ==================== STEP CHOICES (after each linear scene) ====================
+const STEP_CHOICES = {
+  2: {
+    q: 'Server takes the bill. What do you say while she checks?',
+    qZh: '服务生接过了账单。她核实的时候你想说什么？',
+    opts: [
+      { en:'"Just the two pastas and two sodas. Nothing else."', zh:'"就两份意面两杯汽水。没别的了。"' },
+      { en:'"I\'m pretty sure that wine isn\'t ours."', zh:'"我很确定那瓶酒不是我们的。"' }
+    ]
+  },
+  3: {
+    q: '"Are you sure you didn\'t order it?" — Your response:',
+    qZh: '"你确定你没点？" —— 你怎么回：',
+    opts: [
+      { en:'"Yes, I\'m sure. Two sodas, two pastas — that\'s it."', zh:'"对，我确定。两杯汽水两份意面——就这些。"' },
+      { en:'"Absolutely. I never ordered any wine."', zh:'"绝对没有。我从没点过酒。"' }
+    ]
+  },
+  4: {
+    q: 'You\'ve made your case. Server goes to check the system. You say:',
+    qZh: '你说清了。服务生去查系统了。你说：',
+    opts: [
+      { en:'"Thank you. I appreciate you checking."', zh:'"谢谢。麻烦你查一下。"' },
+      { en:'(Stay quiet — let her do her job.)', zh:'（保持安静——让她做事。）' }
+    ]
+  },
+  8: {
+    q: 'You pointed at the $45. You add:',
+    qZh: '你指向了 $45。你补了一句：',
+    opts: [
+      { en:'"I don\'t remember seeing wine on our table."', zh:'"我不记得桌上出现过酒。"' },
+      { en:'"Could you double-check? Maybe it\'s for another table?"', zh:'"能再核实一下吗？也许是别的桌的？"' }
+    ]
+  },
+  9: {
+    q: 'Server insists you ordered it. Before she walks off, you say:',
+    qZh: '服务生坚持说是你点的。趁她还没走开，你说：',
+    opts: [
+      { en:'"I really didn\'t. We only had sodas."', zh:'"我真的没点。我们只喝了汽水。"' },
+      { en:'"Then check the system — it\'ll prove I\'m right."', zh:'"那你查系统——系统会证明我对。"' }
+    ]
+  },
+  10: {
+    q: 'You stood your ground. Server sighs and turns to check. You say:',
+    qZh: '你坚持住了。服务生叹气转身去查。你说：',
+    opts: [
+      { en:'"I\'ll wait. Take your time."', zh:'"我等。你慢慢查。"' },
+      { en:'(Stay silent — you\'ve already said enough.)', zh:'（保持沉默——你已经说够了。）' }
+    ]
+  },
+  12: {
+    q: 'You just backed down. Server heard you mumble. You follow up:',
+    qZh: '你退缩了。服务生听到了你的嘟囔。你接着说：',
+    opts: [
+      { en:'"Actually, just forget it. I\'ll pay."', zh:'"算了，当我没说。我付。"' },
+      { en:'(Say nothing — just look down at the bill.)', zh:'（什么也不说——低头看账单。）' }
+    ]
+  },
+  14: {
+    q: 'You slapped the bill down. Server looks shocked. You add:',
+    qZh: '你拍了桌子。服务生被吓到了。你补了句：',
+    opts: [
+      { en:'"That $45 — it\'s not mine. Explain it."', zh:'"那 $45——不是我的。解释一下。"' },
+      { en:'"Sorry I snapped — but this bill is wrong."', zh:'"抱歉我急了——但这个账单确实错了。"' }
+    ]
+  },
+  15: {
+    q: 'Server accused you of trying to dodge the bill. You fire back:',
+    qZh: '服务生说你赖账。你回怼：',
+    opts: [
+      { en:'"Look — I\'m not saying I won\'t pay. Just check the order, okay?"', zh:'"听着——我不是不付钱。查一下订单，行吗？"' },
+      { en:'"I\'m not paying for something I never ordered. Period."', zh:'"我没点的东西我不付。句号。"' }
+    ]
+  },
+  18: {
+    q: 'You\'re standing, everyone is watching. The manager is coming. You say:',
+    qZh: '你站着，所有人都在看。经理过来了。你说：',
+    opts: [
+      { en:'"This isn\'t right and I\'m not backing down."', zh:'"这不合理，我绝不退让。"' },
+      { en:'"Fine — get the manager. Let\'s sort this out."', zh:'"行——叫经理。我们来搞清楚。"' }
+    ]
+  }
+};
+
+// ==================== STATE ====================
+let queue = [1, 'd1'];
+let subOn = true;
+let zhOn = true;
+let playedScenes = [];
+let ending = null;
+
+// DOM
+const video = document.getElementById('video');
+const ph = document.getElementById('ph');
+const phScene = document.getElementById('phScene');
+const phSpeaker = document.getElementById('phSpeaker');
+const phAction = document.getElementById('phAction');
+const phLine = document.getElementById('phLine');
+const phLoading = document.getElementById('phLoading');
+const subBar = document.getElementById('subBar');
+const subText = document.getElementById('subText');
+const subBtn = document.getElementById('subBtn');
+const promptWhen = document.getElementById('promptWhen');
+const bread = document.getElementById('bread');
+const btnZh = document.getElementById('btnZh');
+
+// ==================== CORE ====================
+function videoSrc(n) { return `video/${n}.mp4`; }
+
+function manualPlay() {
+  if (video.paused && video.readyState >= 2 && !video.ended) {
+    ph.classList.add('hidden');
+    video.classList.add('show');
+    video.play().catch(() => {});
+  }
+}
+
+// ==================== FLOW CONTROL ====================
+function onVideoFinished() {
+  ph.classList.add('hidden');
+  if (queue.length === 0) { showEnding(); return; }
+  showNextPrompt();
+}
+
+function showNextPrompt() {
+  const next = queue[0];
+  if (typeof next === 'number') {
+    showStepChoices(next);
+  } else if (typeof next === 'string') {
+    showDecision(next);
+  }
+}
+
+function showStepChoices(nextScene) {
+  const def = STEP_CHOICES[lastScene] || {
+    q: 'What next?', qZh: '下一步？',
+    opts: [{ en:'Keep going', zh:'继续' }, { en:'Let\'s go', zh:'走' }]
+  };
+  let html = `<div class="q-box"><div class="q-badge">❓ Your Choice</div><div class="q-text">${zhOn ? def.qZh : def.q}</div></div><div class="opts">`;
+  def.opts.forEach(o => {
+    html += `<button class="opt-btn${zhOn?' show-zh':''}" onclick="doStepChoice()">
+      <div class="opt-en">${o.en}</div>
+      <div class="opt-zh">${o.zh}</div>
+    </button>`;
+  });
+  html += '</div>';
+  promptWhen.innerHTML = html;
+}
+
+function doStepChoice() {
+  const item = queue.shift();
+  playScene(item);
+}
+
+function continueNext() {
+  const item = queue.shift();
+  playScene(item);
+}
+
+let lastScene = 0;
+
+function playScene(n) {
+  lastScene = n;
+  promptWhen.innerHTML = '';
+  playedScenes.push(n);
+  updateBreadcrumb();
+
+  const s = SCENES[n] || { speaker:'?', action:'Scene ' + n, sub:'' };
+  phScene.textContent = n;
+  phSpeaker.textContent = s.speaker;
+  phAction.textContent = s.action;
+  phLine.textContent = '"' + s.sub + '"';
+  phLoading.textContent = 'Waiting for video...';
+
+  subText.innerHTML = `<strong>${s.speaker}</strong> &nbsp;<em>${s.sub}</em>`;
+  subBar.classList.toggle('hidden', !subOn);
+
+  const src = videoSrc(n);
+  ph.classList.remove('hidden');
+  video.classList.remove('show');
+  video.src = src;
+  video.load();
+}
+
+function onVideoReady() {
+  ph.classList.add('hidden');
+  video.classList.add('show');
+  const p = video.play();
+  if (p) p.catch(() => {
+    // Autoplay blocked — show tap hint
+    phLoading.textContent = '▶ Tap video to play';
+    ph.classList.remove('hidden');
+  });
+}
+
+function onVideoPause() {
+  // If video is paused but not ended and not loading, browser might have blocked autoplay
+  if (!video.ended && video.readyState >= 2 && ph.classList.contains('hidden') === false) {
+    // Show tap hint if placeholder is visible (autoplay was blocked)
+    phLoading.textContent = '▶ Tap video to play';
+  }
+}
+
+function onVideoEnded() {
+  onVideoFinished();
+}
+
+function onVideoError() {
+  phLoading.textContent = '(video not ready — auto-advancing 2s)';
+  ph.classList.remove('hidden');
+  video.classList.remove('show');
+  setTimeout(() => onVideoFinished(), 2000);
+}
+
+// ==================== DECISIONS ====================
+function showDecision(id) {
+  const dec = id === 'd1' ? D1 : D2;
+  playedScenes.push('d' + (id === 'd1' ? '1' : '2'));
+  updateBreadcrumb();
+
+  let html = `<div class="q-box"><div class="q-badge">❓ Your Choice</div><div class="q-text">${zhOn ? dec.qZh : dec.q}</div></div><div class="opts">`;
+  dec.opts.forEach((o,i) => {
+    html += `<button class="opt-btn${zhOn?' show-zh':''}" onclick="choose('${id}',${i})">
+      <div class="opt-en">${o.en}</div>
+      <div class="opt-zh">${o.zh}</div>
+    </button>`;
+  });
+  html += '</div>';
+  promptWhen.innerHTML = html;
+}
+
+function choose(decId, idx) {
+  const dec = decId === 'd1' ? D1 : D2;
+  const o = dec.opts[idx];
+  queue = [...o.scenes];
+  ending = o.end;
+  continueNext();
+}
+
+// ==================== ENDING ====================
+function showEnding() {
+  const e = ending || { emoji:'?', label:'Unknown', detail:'', type:'success' };
+  promptWhen.innerHTML = '';
+  if (e.type === 'success') launchConfetti();
+  const overlay = document.createElement('div');
+  overlay.className = 'ending-overlay ' + e.type;
+  overlay.id = 'endingOverlay';
+  overlay.innerHTML = `<div class="end-big">
+    <div class="eb-emoji">${e.emoji}</div>
+    <div class="eb-label">${e.label}</div>
+    <div class="eb-detail">${e.detail}</div>
+    <button class="eb-again" onclick="closeEnding()">🔄 Play Again</button>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+function closeEnding() {
+  const ov = document.getElementById('endingOverlay');
+  if (ov) ov.remove();
+  const cc = document.getElementById('confettiBox');
+  if (cc) cc.remove();
+  restart();
+}
+
+function launchConfetti() {
+  const box = document.createElement('div');
+  box.className = 'confetti-container';
+  box.id = 'confettiBox';
+  const colors = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff8fe8','#ffb830','#5ce0e0','#c084fc'];
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (2 + Math.random() * 3) + 's';
+    p.style.animationDelay = Math.random() * 1.5 + 's';
+    p.style.width = (6 + Math.random() * 10) + 'px';
+    p.style.height = (8 + Math.random() * 12) + 'px';
+    p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => { const cb = document.getElementById('confettiBox'); if (cb) cb.remove(); }, 5000);
+}
+
+// ==================== UI ====================
+function updateBreadcrumb() {
+  let html = '';
+  playedScenes.forEach((s,i) => {
+    if (i > 0) html += '<span class="sep">›</span>';
+    if (typeof s === 'string') html += `<span class="crumb">⚡ Decision</span>`;
+    else html += `<span class="crumb played">Scene ${s}</span>`;
+  });
+  bread.innerHTML = html;
+}
+
+function highlightTree(n) {
+  document.querySelectorAll('.dot[data-scene]').forEach(d => {
+    d.classList.toggle('played', parseInt(d.dataset.scene) === n);
+  });
+}
+
+function toggleSub() {
+  subOn = !subOn;
+  subBtn.textContent = subOn ? 'CC ON' : 'CC';
+  subBtn.classList.toggle('on', subOn);
+  subBar.classList.toggle('hidden', !subOn);
+}
+
+function replayScene() {
+  if (!lastScene) return;
+  ph.classList.remove('hidden');
+  video.classList.remove('show');
+  video.src = videoSrc(lastScene);
+  video.load();
+}
+
+function toggleZh() {
+  zhOn = !zhOn;
+  btnZh.textContent = zhOn ? 'EN' : '中';
+  btnZh.classList.toggle('active', zhOn);
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('show-zh', zhOn));
+  const qt = document.querySelector('.q-text');
+  if (qt) {
+    // Refresh prompt area so question text switches language
+    const next = queue[0];
+    if (typeof next === 'number') showStepChoices(next);
+    else if (typeof next === 'string') showDecision(next);
+  }
+}
+
+function restart() {
+  const ov = document.getElementById('endingOverlay'); if (ov) ov.remove();
+  const cc = document.getElementById('confettiBox'); if (cc) cc.remove();
+  queue = [1, 'd1'];
+  playedScenes = [];
+  ending = null;
+  promptWhen.innerHTML = '';
+  bread.innerHTML = '';
+  continueNext();
+}
+
+// ==================== INIT ====================
+function startGame() {
+  document.getElementById('intro').classList.add('hidden');
+  subBtn.textContent = 'CC ON'; subBtn.classList.add('on');
+  subBar.classList.remove('hidden');
+  btnZh.textContent = 'EN'; btnZh.classList.add('active');
+  queue = [1, 'd1'];
+  continueNext();
+}
+</script>
+</body>
+</html>

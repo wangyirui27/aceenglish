@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🧾 The Bill — Story Tree + T2V Prompts (Fixed)</title>
+<title>🧾 The Bill — Story Tree + T2V Prompts v3</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #1a1a1a; color: #e0e0e0; padding: 40px 20px; min-height: 100vh; }
@@ -16,6 +16,7 @@
   .badge.a2 { background: #1a3a1a; color: #6fcf6f; border-color: #2a5a2a; }
   .badge.b1 { background: #2a2a1a; color: #e2c85f; border-color: #4a4a2a; }
   .badge.warn { background: #2a1a1a; color: #e06c6c; border-color: #4a2a2a; }
+  .badge.v3 { background: #1a1a3a; color: #6a6aff; border-color: #2a2a5a; }
   .legend { display: flex; gap: 16px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
   .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: #999; }
   .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
@@ -23,6 +24,8 @@
   .legend-dot.gray { background: #888; } .legend-dot.decision { background: #5fa3e0; border-radius: 2px; }
   .fix-box { margin: 0 auto 30px; max-width: 1000px; padding: 12px 18px; background: #2a1a1a; border: 1px solid #5a3a3a; border-radius: 8px; font-size: 0.75rem; color: #e0a0a0; }
   .fix-box strong { color: #e06c6c; }
+  .upgrade-box { margin: 0 auto 30px; max-width: 1000px; padding: 14px 18px; background: #1a1a2a; border: 1px solid #2a2a5a; border-radius: 8px; font-size: 0.75rem; color: #a0a0e0; line-height: 1.6; }
+  .upgrade-box strong { color: #6a6aff; }
   .tree { display: flex; flex-direction: column; align-items: center; gap: 0; }
   .root-card { background: #2a2020; border: 1px solid #4a3030; border-radius: 12px; padding: 16px 24px; text-align: center; max-width: 540px; }
   .root-card .round-label { font-size: 0.7rem; color: #999; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 4px; }
@@ -37,7 +40,6 @@
   .decision-card .d-label { font-size: 0.7rem; color: #5fa3e0; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px; }
   .decision-card .d-user { color: #5fa3e0; font-size: 0.8rem; margin-bottom: 4px; }
   .decision-card .d-line { font-size: 0.9rem; color: #c8d8f0; font-style: italic; }
-  .decision-card .d-teach { font-size: 0.7rem; color: #5a8ab5; margin-top: 6px; padding-top: 6px; border-top: 1px solid #2a3a4a; }
   .npc-card { background: #202020; border: 1px solid #333; border-radius: 8px; padding: 10px 14px; width: 100%; text-align: center; }
   .npc-card .n-speaker { font-size: 0.7rem; color: #e0a060; margin-bottom: 2px; }
   .npc-card .n-line { font-size: 0.85rem; color: #d0d0d0; font-style: italic; }
@@ -47,7 +49,6 @@
   .sub-decision-card { background: #1e2a38; border: 1px solid #2a4a6a; border-radius: 8px; padding: 10px 12px; width: 100%; }
   .sub-decision-card .sd-label { font-size: 0.65rem; color: #5fa3e0; text-transform: uppercase; letter-spacing: 0.1em; }
   .sub-decision-card .sd-line { font-size: 0.82rem; color: #c8d8f0; font-style: italic; margin-top: 3px; }
-  .sub-decision-card .sd-teach { font-size: 0.65rem; color: #5a8ab5; margin-top: 4px; padding-top: 4px; border-top: 1px solid #2a3a4a; }
   .ending-card { border-radius: 8px; padding: 10px 14px; width: 100%; text-align: center; border: 2px solid; }
   .ending-card.success { background: #1a2a1a; border-color: #3a6a3a; }
   .ending-card.failure { background: #2a1a1a; border-color: #5a3a3a; }
@@ -55,32 +56,28 @@
   .ending-card .e-emoji { font-size: 1.4rem; }
   .ending-card .e-label { font-size: 0.75rem; font-weight: 600; margin-top: 2px; }
   .ending-card .e-detail { font-size: 0.65rem; color: #999; margin-top: 2px; }
-  .ending-card .e-review { font-size: 0.65rem; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.1); color: #aaa; line-height: 1.4; }
   .arrow-box { position: relative; width: 100%; max-width: 1100px; }
   .arrow-box svg { width: 100%; height: 60px; }
   .arrow-box svg line { stroke: #4a4a4a; stroke-width: 2; }
-
-  /* Prompt box */
   .prompt-box { margin-top: 8px; padding: 8px 12px; background: #0a0a15; border: 1px solid #1e1e3a; border-radius: 6px; text-align: left; }
-  .prompt-box .p-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+  .prompt-box .p-head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; flex-wrap: wrap; }
   .prompt-box .p-label { font-size: 0.6rem; color: #6a6aff; text-transform: uppercase; letter-spacing: 0.1em; }
   .prompt-box .p-time { font-size: 0.6rem; color: #aa8844; }
   .prompt-box .p-who { font-size: 0.6rem; padding: 1px 6px; border-radius: 99px; }
   .prompt-box .p-who.pov { background: #1a1a3a; color: #6a6aff; }
   .prompt-box .p-who.npc { background: #2a2a1a; color: #e0a060; }
   .prompt-box .p-who.voice { background: #1a3a1a; color: #6fcf6f; }
-  .prompt-box .p-text { font-size: 0.7rem; color: #8888bb; line-height: 1.5; font-family: "SF Mono", "Menlo", "Consolas", monospace; }
+  .prompt-box .p-text { font-size: 0.68rem; color: #9999cc; line-height: 1.55; font-family: "SF Mono", "Menlo", "Consolas", monospace; }
+  .prompt-box .p-text em { color: #aaaacc; font-style: normal; }
   .prompt-box .p-fix { font-size: 0.65rem; color: #e0a060; margin-top: 4px; padding-top: 4px; border-top: 1px solid #22223a; }
-
   .blame-tag { display: inline-block; font-size: 0.6rem; padding: 2px 6px; border-radius: 99px; margin: 2px 2px; }
   .blame-tag.server { background: #3a1a1a; color: #e06c6c; }
   .blame-tag.you { background: #1a3a1a; color: #6fcf6f; }
-
   table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
   th { color: #aaa; border-bottom: 1px solid #333; text-align: left; padding: 8px 12px; }
   td { padding: 8px 12px; border-bottom: 1px solid #2a2a2a; }
-
   .footer { text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid #333; color: #666; font-size: 0.75rem; }
+  .dim-tag { display: inline-block; font-size: 0.55rem; padding: 2px 5px; border-radius: 99px; margin: 1px; background: #1a1a2a; color: #5a5a8a; }
   @media (max-width: 1100px) { .branches-row { flex-direction: column; align-items: center; gap: 30px; } }
 </style>
 </head>
@@ -88,22 +85,31 @@
 <div class="container">
   <div class="header">
     <h1>🧾 The Bill</h1>
-    <div class="subtitle">6 轮对话 · 19 段 POV 视频 · 已修正 v2（防转身 + 防串词）</div>
+    <div class="subtitle">6 轮对话 · 19 段 POV 视频 · v3 7 维去假升级</div>
     <div class="badges">
       <span class="badge">🗣 3 角色</span>
       <span class="badge">🎬 19 段</span>
-      <span class="badge">⏱ 总计 ~140s</span>
+      <span class="badge">⏱ ~140s</span>
       <span class="badge a2">A2 · 90%</span>
       <span class="badge b1">B1 · 10%</span>
-      <span class="badge warn">🔧 已修复</span>
+      <span class="badge v3">🎬 v3 升级</span>
     </div>
   </div>
 
+  <div class="upgrade-box">
+    <strong>🎬 v3 升级（基于「短剧研究」7 维去假法 + 7 种镜头角度）</strong><br>
+    v2 → v3 每条 prompt 从 ~100 字扩展至 ~400 字，新增：<br>
+    ⓪ <strong>POV 英文术语</strong> — `first person POV shot` 替代"POV视角"标签，模型理解更准<br>
+    ① <strong>光源因果链</strong> — 光从哪来→照到哪→产生什么明暗效果<br>
+    ② <strong>动作链</strong> — 眼神→面部→身体→收尾 多步骤递进<br>
+    ③ <strong>微表情幅度%</strong> — 情绪控制百分比，防止表情跳变<br>
+    ④ <strong>物理法则</strong> — 惯性/重量感/光线逻辑<br>
+    ⑤ <strong>三层空间</strong> — 前景遮挡+中景主体+背景虚化，f/2.8 浅景深
+  </div>
+
   <div class="fix-box">
-    <strong>🔧 v2 修复内容（基于实际生成反馈）：</strong><br>
-    ① 所有 NPC 台词段：追加"说完台词后原地站住面对镜头，绝不转身离开"指令，防止服务生最后一秒转身走人<br>
-    ② 所有 POV 主角台词段：追加"本段台词是画外音（主角说的，不是画面中角色说的），画面中NPC在聆听，嘴不动"指令，防止服务生说出主角台词<br>
-    ③ 所有段标注了 ⏱ 时长（秒），方便制作排期
+    <strong>🔧 v2 铁律仍然内置：</strong>
+    所有 NPC 台词段 → 说完站住不转身 | 所有 POV 段 → 画面中角色嘴不动
   </div>
 
   <div class="legend">
@@ -111,32 +117,37 @@
     <div class="legend-item"><span class="legend-dot gray"></span> ⚠️ Partial</div>
     <div class="legend-item"><span class="legend-dot red"></span> 💀 Failure</div>
     <div class="legend-item"><span class="legend-dot decision"></span> Decision (UI)</div>
-    <div class="legend-item" style="margin-left:8px;">🎬 = 含 T2V 提示词</div>
+    <div class="legend-item" style="margin-left:8px;"><span class="dim-tag">🎬</span> 含 v3 T2V 提示词</div>
   </div>
 
-  <!-- TREE -->
+  <!-- ============ TREE ============ -->
   <div class="tree">
 
     <!-- 片段 1 · 开场 -->
     <div class="root-card">
       <div class="round-label">Round 1 · 开场 · 片段 1</div>
-      <div class="speaker">👩‍🍳 Server</div>
+      <div class="speaker">Server ♀</div>
       <div class="line">"Here's your bill. Whenever you're ready."</div>
       <div style="font-size:0.7rem; color:#888; margin-top:4px;">🧾 账单上多了一瓶 $45 的红酒——你没点过</div>
       <div class="prompt-box">
-        <div class="p-head"><span class="p-label">🎬 T2V Prompt</span><span class="p-time">⏱ 8s</span><span class="p-who npc">NPC 说出</span></div>
-        <div class="p-text">POV视角，环境音静音。美式餐厅，暖黄灯光，面前是餐桌，两个空盘和杯子在桌上。女服务生从对面走过来，把账单夹放在桌上，微笑看着镜头。台词（由服务生说出）："Here's your bill. Whenever you're ready."</div>
-        <div class="p-fix">🔧 防转身：服务生说完台词后原地站住面对镜头，绝不转身离开。</div>
+        <div class="p-head"><span class="p-label">🎬 v3 Prompt</span><span class="p-time">⏱ 8s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">光源</span><span class="dim-tag">动作链</span><span class="dim-tag">皮肤</span></div>
+        <div class="p-text">first person POV shot · 
+【光源】吊灯在桌布上投射柔和暖黄光池，桌边衰减为暖阴影。<br>
+【动作链】服务生走来→停步→前倾→放账单→双手交叠→微笑40%→平视镜头。<br>
+
+【镜头】前景空盘虚化+f/2.8+中景服务生+背景暖色壁灯虚化。<br>
+台词："Here's your bill. Whenever you're ready."</div>
+        <div class="p-fix">🔧 说完站住面对镜头。完整 prompt 见 the-bill-prompts.md</div>
       </div>
     </div>
 
     <div class="root-connector"></div>
     <div class="arrow-down"></div>
 
-    <!-- Decision 1 (UI) -->
+    <!-- Decision 1 -->
     <div class="decision-card" style="background:#1a2840; border-color:#3a6aaa; max-width:540px; text-align:center;">
       <div class="d-label">🔵 Decision 1 · Round 2</div>
-      <div class="d-user">👤 You — 账单上多了 $45 的酒，你怎么开口？</div>
+      <div class="d-user">Customer ♂ — 账单上多了 $45 的酒，你怎么开口？</div>
       <div style="font-size:0.65rem; color:#4a6a8a; margin-top:4px;">⏸ UI 选择界面（非视频）</div>
     </div>
 
@@ -145,65 +156,76 @@
       <svg viewBox="0 0 1100 60" preserveAspectRatio="xMidYMin slice">
         <line x1="550" y1="0" x2="190" y2="60"/><line x1="550" y1="0" x2="550" y2="60"/><line x1="550" y1="0" x2="910" y2="60"/>
       </svg>
-      <div style="height:10px;"></div>
     </div>
 
     <div class="branches-row">
 
-      <!-- ========== ROUTE A ========== -->
+      <!-- ===== ROUTE A ===== -->
       <div class="branch-col">
-        <!-- 片段 2 -->
         <div class="decision-card">
           <div class="d-label">🟢 Route A · 礼貌质疑 · 片段 2</div>
-          <div class="d-user">👤 You</div>
+          <div class="d-user">Customer ♂</div>
           <div class="d-line">"Excuse me, I think there's a mistake. We didn't order any wine."</div>
           <div class="prompt-box">
-            <div class="p-head"><span class="p-label">🎬 T2V Prompt</span><span class="p-time">⏱ 7s</span><span class="p-who voice">POV 画外音</span></div>
-            <div class="p-text">POV视角，环境音静音。视线从账单上抬起来，看向面前站着的女服务生，画面微微上移。台词（画外音——主角说的，不是服务生说的）："Excuse me, I think there's a mistake — we didn't order any wine."</div>
-            <div class="p-fix">🔧 防串词：画面中只有服务生在聆听，嘴不动。台词是画外音。</div>
+            <div class="p-head"><span class="p-label">🎬 v3</span><span class="p-time">⏱ 7s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">动作链</span><span class="dim-tag">物理</span></div>
+            <div class="p-text">first person POV shot · 
+【动作链】视线从账单上移→扫过服务生的手→定格面部→画面微移（抬头惯性）。<br>
+【物理】手指夹起账单翻页，纸张摩擦声。抬头颈椎转动传递到镜头晃动→稳定。<br>
+【镜头】前景账单虚化+中景服务生面部。<br>
+台词画外音："Excuse me, I think there's a mistake — we didn't order any wine."</div>
+            <div class="p-fix">🔧 服务生聆听，嘴不动。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
-        <!-- 片段 3 -->
         <div class="npc-card">
-          <div class="n-speaker">👩‍🍳 Server · 片段 3</div>
+          <div class="n-speaker">Server ♀ · 片段 3</div>
           <div class="n-line">"Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn't order it?"</div>
+          <div class="n-note">⚠️ 她不确定，但系统显示如此</div>
           <div class="prompt-box">
-            <div class="p-head"><span class="p-label">🎬 T2V Prompt</span><span class="p-time">⏱ 9s</span><span class="p-who npc">NPC 说出</span></div>
-            <div class="p-text">POV视角，环境音静音。服务生从镜头前接过账单（一只手从画面下方递出），皱眉低头看账单，然后抬头看向镜头，表情不确定但不凶。台词（由服务生说出）："Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn't order it?"</div>
-            <div class="p-fix">🔧 防转身：服务生说完台词后原地站住面对镜头。</div>
+            <div class="p-head"><span class="p-label">🎬 v3</span><span class="p-time">⏱ 9s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">微表情35%</span><span class="dim-tag">动作链</span></div>
+            <div class="p-text">first person POV shot · 
+【动作链】接过账单→皱眉→眼睑压低→扫读行项目→抬头看镜头（困惑35%非对抗）。<br>
+【微表情】眉毛内侧微扬（不确定），嘴角中性。视线在账单与镜头间切换+0.3s停留。<br>
+【物理】纸张弯曲+拇指压痕+围裙前倾褶皱。f/2.8浅景深。<br>
+台词："Let me check... Hmm, it says here — one bottle of house red. Are you sure you didn't order it?"</div>
+            <div class="p-fix">🔧 说完站住面对镜头。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <div class="decision-card">
           <div class="d-label">🔵 Decision 2 · Round 4</div>
-          <div class="d-user">👤 — Server 反问你"确定没点吗"</div>
-          <div style="font-size:0.65rem; color:#4a6a8a; margin-top:4px;">⏸ UI 选择界面（非视频）</div>
+          <div class="d-user">Customer ♂ — Server 反问"确定没点吗"</div>
+          <div style="font-size:0.65rem; color:#4a6a8a; margin-top:4px;">⏸ UI 选择界面</div>
         </div>
 
         <div class="sub-branches">
           <div class="sub-branch">
-            <!-- 片段 4 -->
             <div class="sub-decision-card">
               <div class="sd-label">A1 · 举证据 · 片段 4</div>
-              <div class="sd-line">"Yes, I'm sure. We had two sodas and two pasta dishes. That's it. Could you take it off the bill, please?"</div>
+              <div class="sd-line">"Yes, I'm sure. We had two sodas and two pasta dishes. That's it."</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 8s</span><span class="p-who voice">POV 画外音</span></div>
-                <div class="p-text">POV视角，环境音静音。面前是服务生在听，一只手从画面下方伸入，掰着手指数——先一根，再两根。台词（画外音——主角说的）："Yes, I'm sure. We had two sodas and two pasta dishes. That's it. Could you take it off the bill, please?"</div>
-                <div class="p-fix">🔧 防串词：服务生嘴不动，只在听。</div>
+                <div class="p-head"><span class="p-label">🎬 v3</span><span class="p-time">⏱ 8s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">动作链</span><span class="dim-tag">物理</span></div>
+                <div class="p-text">first person POV shot · 
+【动作链】手指掰开计数→食指→中指→关节弹动→手掌摊平→指尖点账单。<br>
+【物理】桌面木纹反光。<br>
+【服务生】聆听→头部偏转5°→眼神不打断。f/2.8前景手指清晰+服务生虚化。<br>
+台词："Yes, I'm sure. We had two sodas and two pasta dishes. That's it."</div>
+                <div class="p-fix">🔧 服务生聆听，嘴不动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
-            <!-- 片段 5 -->
             <div class="npc-card" style="font-size:0.8rem;">
-              <div class="n-speaker">👩‍🍳 · 片段 5</div>
+              <div class="n-speaker">Server ♀ · 片段 5</div>
               <div class="n-line" style="font-size:0.75rem;">"You're right — that was for table 6. I'm so sorry. Let me fix it."</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 7s</span><span class="p-who npc">NPC 说出</span></div>
-                <div class="p-text">POV视角，环境音静音。服务生低头查了系统（在柜台设备上点击几下），然后抬头看向镜头，表情从困惑变成恍然大悟，不好意思地笑了笑。台词（由服务生说出）："You're right — that was for table 6. I'm so sorry. Let me fix it."</div>
-                <div class="p-fix">🔧 防转身：说完后微笑面对镜头。</div>
+                <div class="p-head"><span class="p-label">🎬 v3</span><span class="p-time">⏱ 7s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">微表情50%</span></div>
+                <div class="p-text">first person POV shot · 
+【动作链】转身→点平板→屏幕蓝光照面→看到结果→眉先挑0.3s→放松→眼角细纹聚拢→嘴角上扬→走回微笑。<br>
+【微表情】恍然大悟50%，自然递进非跳变。围裙转身惯性摆动。<br>
+台词："You're right — that was for table 6. I'm so sorry. Let me fix it."</div>
+                <div class="p-fix">🔧 微笑面对镜头，不转身。</div>
               </div>
             </div>
             <div class="v-connector" style="height:6px;"></div>
@@ -213,25 +235,31 @@
           </div>
 
           <div class="sub-branch">
-            <!-- 片段 6 -->
             <div class="sub-decision-card">
               <div class="sd-label">A2 · 要经理 · 片段 6</div>
               <div class="sd-line">"I'm <span style="color:#e2c85f;">absolutely</span> sure. Can I speak to the manager?" 🅱️</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 6s</span><span class="p-who voice">POV 画外音</span></div>
-                <div class="p-text">POV视角，环境音静音。视线平视面前的服务生，画面稳定不晃动。台词（画外音——主角说的）："I'm absolutely sure. Can I speak to the manager?"</div>
-                <div class="p-fix">🔧 防串词：服务生嘴不动，只在听。</div>
+                <div class="p-head"><span class="p-label">🎬 v3</span><span class="p-time">⏱ 6s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">镜头语言</span></div>
+                <div class="p-text">first person POV shot · 
+【动作】画面极其稳定（"绝对确定"的心理状态→无视线游移）。<br>
+【服务生】表情从期待→等待，眉毛微挑，能感到"absolutely"一词的分量。<br>
+【构图】服务生中央偏右，对称性被打破→暗示权力关系转移。<br>
+台词："I'm absolutely sure. Can I speak to the manager?"</div>
+                <div class="p-fix">🔧 服务生聆听，嘴不动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
-            <!-- 片段 7 -->
             <div class="npc-card" style="font-size:0.8rem;">
-              <div class="n-speaker">👨‍💼 Manager · 片段 7</div>
+              <div class="n-speaker">Manager ♂ · 片段 7</div>
               <div class="n-line" style="font-size:0.75rem;">"I just checked — it was the wrong table. I've taken it off. Sorry about that."</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 8s</span><span class="p-who npc">NPC 说出</span></div>
-                <div class="p-text">POV视角，环境音静音。男经理从餐厅深处走过来，手里拿着平板，低头看了一眼屏幕，然后抬头对着镜头说话，表情专业但友善。台词（由经理说出）："I just checked — it was the wrong table. I've taken it off. Sorry about that."</div>
-                <div class="p-fix">🔧 防转身：经理说完后站住面对镜头。</div>
+                <div class="p-head"><span class="p-label">🎬 v3</span><span class="p-time">⏱ 8s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">外表</span><span class="dim-tag">微表情25%</span></div>
+                <div class="p-text">first person POV shot · 
+【外表】<br>
+【微表情】友善25%以专业为主。微笑幅度小——"问题解决了"的释然，非社交微笑。<br>
+【动作链】走出→停住→低头扫平板0.5s→抬头→直视镜头。<br>
+台词："I just checked — it was the wrong table. I've taken it off. Sorry about that."</div>
+                <div class="p-fix">🔧 经理说完站住面对镜头。</div>
               </div>
             </div>
             <div class="v-connector" style="height:6px;"></div>
@@ -242,61 +270,73 @@
         </div>
       </div>
 
-      <!-- ========== ROUTE B ========== -->
+      <!-- ===== ROUTE B ===== -->
       <div class="branch-col">
-        <!-- 片段 8 -->
         <div class="decision-card" style="background:#2a2518; border-color:#4a3a1a;">
           <div class="d-label" style="color:#e2c85f;">🟡 Route B · 含糊抱怨 · 片段 8</div>
-          <div class="d-user" style="color:#e0c880;">👤 You</div>
+          <div class="d-user" style="color:#e0c880;">Customer ♂</div>
           <div class="d-line" style="color:#d8c880;">"Excuse me... this doesn't look right. What is this $45?"</div>
           <div class="prompt-box">
-            <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who voice">POV 画外音</span></div>
-            <div class="p-text" style="color:#888866;">POV视角，环境音静音。视线低垂看着桌上的账单，一只手从画面下方伸入——手指点在$45那一行。然后视线抬起来，犹豫地看向服务生。台词（画外音——主角说的）："Excuse me... this doesn't look right. What is this $45?"</div>
-            <div class="p-fix" style="color:#a08844;">🔧 防串词：服务生嘴不动，只在听。</div>
+            <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">物理</span></div>
+            <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】视线低垂→食指尖点$45→停留1秒→缓慢抬眼看服务生。<br>
+【服务生】眉毛微皱（"怎么这么久"的不耐烦征兆）→表情已从微笑转中性。<br>
+【物理】指尖压账单产生极小凹陷+纸张纤维纹理+吊灯光暖色。<br>
+台词："Excuse me... this doesn't look right. What is this $45?"</div>
+            <div class="p-fix" style="color:#a08844;">🔧 服务生聆听，嘴不动。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
-        <!-- 片段 9 -->
         <div class="npc-card" style="background:#202018; border-color:#3a3a18;">
-          <div class="n-speaker">👩‍🍳 Server · 片段 9</div>
+          <div class="n-speaker">Server ♀ · 片段 9</div>
           <div class="n-line">"That's the house wine. You ordered it — I brought it to your table myself."</div>
-          <div class="n-note">⚠️ Server 把话说死了。你的记忆 vs 她的记忆。</div>
+          <div class="n-note">⚠️ Server 把话说死了。防卫姿态。</div>
           <div class="prompt-box">
-            <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who npc">NPC 说出</span></div>
-            <div class="p-text" style="color:#888866;">POV视角，环境音静音。服务生双手交叉在胸前，下巴微抬，直视镜头，语气带着防卫。台词（由服务生说出）："That's the house wine. You ordered it — I brought it to your table myself."</div>
-            <div class="p-fix" style="color:#a08844;">🔧 防转身：说完后站住，直视镜头。</div>
+            <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">微表情60%</span><span class="dim-tag">物理</span></div>
+            <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】肩后收→双臂交叉→下巴微抬→直视镜头（防御姿态建立）。<br>
+【微表情】防卫60%。眉毛平直微压，嘴唇紧抿，眼神"我有理"的自信。<br>
+【皮肤】重心后移（物理距离=心理距离）。<br>
+台词："That's the house wine. You ordered it — I brought it to your table myself."</div>
+            <div class="p-fix" style="color:#a08844;">🔧 站住，直视镜头。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <div class="decision-card" style="background:#2a2518; border-color:#4a3a1a;">
           <div class="d-label" style="color:#e2c85f;">🔵 Decision 2 · Round 4</div>
-          <div class="d-user" style="color:#e0c880;">👤 — Server 坚称是你点的</div>
-          <div style="font-size:0.65rem; color:#4a4a1a; margin-top:4px;">⏸ UI 选择界面（非视频）</div>
+          <div class="d-user" style="color:#e0c880;">Customer ♂ — Server 坚称是你点的</div>
+          <div style="font-size:0.65rem; color:#4a4a1a; margin-top:4px;">⏸ UI 选择界面</div>
         </div>
 
         <div class="sub-branches">
           <div class="sub-branch">
-            <!-- 片段 10 -->
             <div class="sub-decision-card">
               <div class="sd-label">B1 · 坚持立场 · 片段 10</div>
               <div class="sd-line">"No. I didn't order wine. We only had sodas. Please check again."</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 6s</span><span class="p-who voice">POV 画外音</span></div>
-                <div class="p-text">POV视角，环境音静音。画面轻微左右晃动（摇头感），面对服务生。台词（画外音——主角说的）："No. I didn't order wine. We only had sodas. Please check again."</div>
-                <div class="p-fix">🔧 防串词：服务生嘴不动。</div>
+                <div class="p-head"><span class="p-label">🎬 v3</span><span class="p-time">⏱ 6s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">物理</span></div>
+                <div class="p-text">first person POV shot · 
+【动作链】画面左右微晃（摇头的身体物理→POV镜头传递）。<br>
+【服务生】双臂仍交叉，防卫表情不松动——她真信自己是对的。<br>
+【物理】颈部转动→肩转→画面晃动与身体一致，非随机效果。<br>
+台词："No. I didn't order wine. We only had sodas. Please check again."</div>
+                <div class="p-fix">🔧 服务生聆听，嘴不动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
-            <!-- 片段 11 -->
             <div class="npc-card" style="font-size:0.8rem;">
-              <div class="n-speaker">👩‍🍳 · 片段 11</div>
+              <div class="n-speaker">Server ♀ · 片段 11</div>
               <div class="n-line" style="font-size:0.75rem;">"...Fine. Let me check. ...Oh. It was table 7. Sorry."</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label">🎬</span><span class="p-time">⏱ 9s</span><span class="p-who npc">NPC 说出</span></div>
-                <div class="p-text">POV视角，环境音静音。服务生叹了口气，不情愿地转身在柜台设备上查系统（侧脸或背影），几秒后转回来面对镜头，表情有点尴尬。台词（由服务生说出）："...Fine. Let me check. ...Oh. It was table 7. Sorry."</div>
-                <div class="p-fix">🔧 防转身：转回来后面对镜头站住。</div>
+                <div class="p-head"><span class="p-label">🎬 v3</span><span class="p-time">⏱ 9s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">微表情45%</span></div>
+                <div class="p-text">first person POV shot · 
+【动作链】叹气+肩抬落→不情愿转身→点平板→屏幕蓝光照侧脸→停住→身体一顿→转回来→表情从防卫到尴尬。<br>
+【微表情】尴尬45%。眉挑0.3s→眼角细纹聚拢→0.5s后嘴角才勉强上扬→眼球游移不直视。<br>
+【物理】围裙惯性摆动+叹气胸廓起伏+手指点击有力道。<br>
+台词："...Fine. Let me check. ...Oh. It was table 7. Sorry."</div>
+                <div class="p-fix">🔧 转回来后面对镜头站住。</div>
               </div>
             </div>
             <div class="v-connector" style="height:6px;"></div>
@@ -306,25 +346,31 @@
           </div>
 
           <div class="sub-branch">
-            <!-- 片段 12 -->
             <div class="sub-decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
               <div class="sd-label" style="color:#e06c6c;">B2 · 退缩 · 片段 12</div>
               <div class="sd-line" style="color:#e0b0b0;">"Are you sure? I mean... maybe I forgot. Never mind."</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who voice">POV 画外音</span></div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。视线垂下，避开面前服务生的目光，画面看向桌面——手指无意识地摸着账单边缘。台词（画外音——主角说的，声音变小）："Are you sure? I mean... maybe I forgot. Never mind."</div>
-                <div class="p-fix" style="color:#aa6666;">🔧 防串词：服务生嘴不动。</div>
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">物理</span><span class="dim-tag">镜头</span></div>
+                <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】视线垂下→避开直视→画面缓下移→手指摸账单边缘→指甲轻刮纸边。<br>
+【服务生】双臂仍交叉，眉微扬——胜利者等投降的姿态。<br>
+【镜头】焦点从服务生面部→切换到账单+手指。画面下降有重力加速度（先快后慢）。<br>
+台词："Are you sure? I mean... maybe I forgot. Never mind."</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 服务生聆听，嘴不动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
-            <!-- 片段 13 -->
             <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
-              <div class="n-speaker">👩‍🍳 · 片段 13</div>
+              <div class="n-speaker">Server ♀ · 片段 13</div>
               <div class="n-line" style="font-size:0.75rem;">"Yeah, I'm sure. So... cash or card?"</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who npc">NPC 说出</span></div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生站在面前，表情没变，嘴角微微上扬，眼神里闪过一丝"果然如此"。她拿出刷卡机递向镜头。台词（由服务生说出）："Yeah, I'm sure. So... cash or card?"</div>
-                <div class="p-fix" style="color:#aa6666;">🔧 防转身：递刷卡机后站住。</div>
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">微表情20%</span></div>
+                <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【微表情】"果然如此"得意20%。左嘴角极微上扬0.5s+眼睑压低0.3s——职业性的"我就知道"（非反派）。<br>
+【动作链】表情几乎不变→取刷卡机→递向镜头。刷卡机屏幕反射吊灯矩形高光。<br>
+【镜头】刷卡机在前景形成遮挡——"付钱"行为的视觉象征。<br>
+台词："Yeah, I'm sure. So... cash or card?"</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 递刷卡机后站住。</div>
               </div>
             </div>
             <div class="v-connector" style="height:6px;"></div>
@@ -335,61 +381,73 @@
         </div>
       </div>
 
-      <!-- ========== ROUTE C ========== -->
+      <!-- ===== ROUTE C ===== -->
       <div class="branch-col">
-        <!-- 片段 14 -->
         <div class="decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
           <div class="d-label" style="color:#e06c6c;">🔴 Route C · 直接指控 · 片段 14</div>
-          <div class="d-user" style="color:#e0a0a0;">👤 You</div>
+          <div class="d-user" style="color:#e0a0a0;">Customer ♂</div>
           <div class="d-line" style="color:#e0b0b0;">"This is wrong. We never ordered wine. What is this?"</div>
           <div class="prompt-box">
-            <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who voice">POV 画外音</span></div>
-            <div class="p-text" style="color:#996666;">POV视角，环境音静音。一只手从画面下方啪地把账单拍在桌上，视线随即抬起来瞪向面前的服务生。台词（画外音——主角说的，声音比正常大）："This is wrong. We never ordered wine. What is this?"</div>
-            <div class="p-fix" style="color:#aa6666;">🔧 防串词：服务生嘴不动，表情从困惑变成被冒犯。</div>
+            <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">动作链</span><span class="dim-tag">物理</span></div>
+            <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】手掌啪地拍桌（不是放）→桌面微震颤→视线急抬→瞪向服务生。<br>
+【服务生】微表情递进：眉先扬（惊讶0.3s）→皱眉（被冒犯）→紧抿嘴唇→下巴微收。<br>
+【物理】手掌血管因冲击力微凸+桌面振动+账单边缘翘起。<br>
+台词："This is wrong. We never ordered wine. What is this?"</div>
+            <div class="p-fix" style="color:#aa6666;">🔧 服务生嘴不动，表情从困惑→被冒犯（递进需可见）。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
-        <!-- 片段 15 -->
         <div class="npc-card" style="background:#1e1818; border-color:#3a2020;">
-          <div class="n-speaker">👩‍🍳 Server · 片段 15</div>
+          <div class="n-speaker">Server ♀ · 片段 15</div>
           <div class="n-line">"I brought it to your table. You didn't say anything then. Now you don't want to <span style="color:#e2c85f;">pay for</span> it?" 🅱️</div>
           <div class="n-note">🔥 火药味。Server 觉得你在赖账。</div>
           <div class="prompt-box">
-            <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who npc">NPC 说出</span></div>
-            <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生往后退了半步（画面中她变小了一点），先愣了一下，然后表情冷下来，双臂交叉，直视镜头，语气带刺。台词（由服务生说出）："I brought it to your table. You didn't say anything then. Now you don't want to pay for it?"</div>
-            <div class="p-fix" style="color:#aa6666;">🔧 防转身：说完双臂交叉站住，直视镜头。</div>
+            <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 8s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">微表情70%</span></div>
+            <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】后撤半步→画面中变小→愣0.5s→表情冷→双臂交叉→直视。<br>
+【微表情】冷脸70%。眉压平（"你跟我耍横？"），眼睑微眯（瞳孔暴露↓=攻击性），嘴角下压。<br>
+【外表】衬衫腋下褶皱+站姿偏斜不对称+围裙下摆惯性前摆。<br>
+台词："I brought it to your table. You didn't say anything then. Now you don't want to pay for it?"</div>
+            <div class="p-fix" style="color:#aa6666;">🔧 双臂交叉站住，直视镜头。</div>
           </div>
         </div>
         <div class="v-connector"></div>
 
         <div class="decision-card" style="background:#2a1e1e; border-color:#4a2a2a;">
           <div class="d-label" style="color:#e06c6c;">🔴 Decision 2 · Round 4</div>
-          <div class="d-user" style="color:#e0a0a0;">👤 — Server 反咬你赖账</div>
-          <div style="font-size:0.65rem; color:#4a2a2a; margin-top:4px;">⏸ UI 选择界面（非视频）</div>
+          <div class="d-user" style="color:#e0a0a0;">Customer ♂ — Server 反咬你赖账</div>
+          <div style="font-size:0.65rem; color:#4a2a2a; margin-top:4px;">⏸ UI 选择界面</div>
         </div>
 
         <div class="sub-branches">
           <div class="sub-branch">
-            <!-- 片段 16 -->
             <div class="sub-decision-card" style="background:#2a2518; border-color:#4a3a1a;">
               <div class="sd-label" style="color:#e2c85f;">C1 · 强制降火 · 片段 16</div>
               <div class="sd-line" style="color:#d8c880;">"Look — I'm not saying I won't pay. I'm saying it's not ours. Can we just check the order?" <span class="blame-tag you">de-escalate</span></div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 9s</span><span class="p-who voice">POV 画外音</span></div>
-                <div class="p-text" style="color:#888866;">POV视角，环境音静音。深吸一口气的声音，两只手从画面下方平放在桌上，画面稳定。台词（画外音——主角说的，声音放低，语速放慢）："Look — I'm not saying I won't pay. I'm saying it's not ours. Can we just check the order?"</div>
-                <div class="p-fix" style="color:#a08844;">🔧 防串词：服务生嘴不动，表情从冷转稍有松动。</div>
+                <div class="p-head"><span class="p-label" style="color:#8a8a55;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 9s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">物理</span><span class="dim-tag">镜头</span></div>
+                <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】深吸气→双手抬起→平放桌面→手掌张开→画面稳定。<br>
+【服务生】冷脸松动→眉从压平转微挑0.5s→手臂没松但肩膀紧绷减少。<br>
+【镜头】双手俯角+桌布凹陷——构图从冲突转对话。<br>
+台词："Look — I'm not saying I won't pay. I'm saying it's not ours. Can we just check the order?"</div>
+                <div class="p-fix" style="color:#a08844;">🔧 服务生聆听，表情从冷转松动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
-            <!-- 片段 17 -->
             <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
-              <div class="n-speaker">👩‍🍳 · 片段 17</div>
+              <div class="n-speaker">Server ♀ · 片段 17</div>
               <div class="n-line" style="font-size:0.75rem;">"...It was a mistake. I'll fix it."</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who npc">NPC 说出</span></div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。服务生冷着脸，不跟镜头对视，转身在平板上点了几下（侧身/背影），语气冷淡。台词（由服务生说出）："...It was a mistake. I'll fix it."</div>
-                <div class="p-fix" style="color:#aa6666;">🔧 防转身：转身操作完转回来面对镜头。</div>
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 6s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">微表情10%</span></div>
+                <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】冷脸不直视→转身侧对→点平板敷衍干脆→停1秒→转回来→仍不直视。<br>
+【微表情】"勉强认错"10%。唇动少，眉始终未松——不是真歉意，是"给个说法结束"。<br>
+【镜头】她转回后面面偏左+右侧留白→冷场空间→关系断裂。<br>
+台词："...It was a mistake. I'll fix it."</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 转回来面对镜头。</div>
               </div>
             </div>
             <div class="v-connector" style="height:6px;"></div>
@@ -399,25 +457,31 @@
           </div>
 
           <div class="sub-branch">
-            <!-- 片段 18 -->
             <div class="sub-decision-card" style="background:#1e1515; border-color:#3a1515;">
               <div class="sd-label" style="color:#e06c6c;">C2 · 火上浇油 · 片段 18</div>
               <div class="sd-line" style="color:#d09090;">"I'm not paying for something I didn't order. This is <span style="color:#e2c85f;">ridiculous</span>." 🅱️ <span class="blame-tag server">escalate</span></div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 7s</span><span class="p-who voice">POV 画外音</span></div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。画面突然升高（站起来了），一只手从下方伸入镜头指着桌上的账单。背景里几桌客人转头看过来。台词（画外音——主角说的，声音很大）："I'm not paying for something I didn't order. This is ridiculous."</div>
-                <div class="p-fix" style="color:#aa6666;">🔧 防串词：画面中是服务生/周围客人反应，嘴都不动。</div>
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 7s</span><span class="p-who voice">POV 画外音</span><span class="dim-tag">物理</span><span class="dim-tag">镜头</span></div>
+                <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】画面突然升高（从坐姿→站姿）→手伸入→食指指账单→背景客人转头。<br>
+【服务生+Mgr】服务生被慑住→双臂松开+唇微张+头后仰。远处经理注意到骚动。<br>
+【物理】站立加速度（先爆发后匀速）→手臂完全伸展→POV从低→中角度瞬变。<br>
+台词："I'm not paying for something I didn't order. This is ridiculous."</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 服务生/客人反应，嘴不动。</div>
               </div>
             </div>
             <div class="v-connector" style="height:8px;"></div>
-            <!-- 片段 19 -->
             <div class="npc-card" style="font-size:0.8rem; background:#1e1818;">
-              <div class="n-speaker">👨‍💼 Manager · 片段 19</div>
+              <div class="n-speaker">Manager ♂ · 片段 19</div>
               <div class="n-line" style="font-size:0.75rem;">"I've asked you to leave. Pay your bill and go."</div>
               <div class="prompt-box">
-                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬</span><span class="p-time" style="color:#aa8844;">⏱ 7s</span><span class="p-who npc">NPC 说出</span></div>
-                <div class="p-text" style="color:#996666;">POV视角，环境音静音。男经理快步走到桌前，面对镜头，表情严肃，手臂抬起指向门口方向。背景里几桌客人都朝这边看。台词（由经理说出）："I've asked you to leave. Pay your bill and go."</div>
-                <div class="p-fix" style="color:#aa6666;">🔧 防转身：手臂指向门口保持姿势，面对镜头。</div>
+                <div class="p-head"><span class="p-label" style="color:#aa6666;">🎬 v3</span><span class="p-time" style="color:#aa8844;">⏱ 7s</span><span class="p-who npc">NPC 说出</span><span class="dim-tag">微表情80%</span><span class="dim-tag">镜头</span></div>
+                <div class="p-text" style="color:#9999aa;">first person POV shot · 
+【动作链】快步走来→停住→不看账单→面对镜头→表情严肃→抬臂→食指指门口→保持姿势。<br>
+【微表情】严肃+愤怒80%。下颌收紧。"到此为止"的终结眼神。<br>
+【镜头】多人物关系：主角→经理对峙→服务生退后→围观客人虚化。晃动幅度增大。<br>
+台词："I've asked you to leave. Pay your bill and go."</div>
+                <div class="p-fix" style="color:#aa6666;">🔧 手臂指向门口保持姿势，面对镜头。</div>
               </div>
             </div>
             <div class="v-connector" style="height:6px;"></div>
@@ -429,43 +493,53 @@
       </div>
     </div>
 
-    <!-- Summary -->
+    <!-- Summary Table -->
     <div style="margin-top:50px; padding:24px; background:#202020; border-radius:12px; border:1px solid #333; max-width:1100px; width:100%;">
       <h3 style="color:#fff; font-size:1rem; margin-bottom:14px;">📊 片段时长 + 归属总表</h3>
       <table>
-        <thead><tr><th style="width:50px;">#</th><th>路线</th><th>谁说话</th><th>台词摘要</th><th style="width:50px;">⏱</th><th style="width:80px;">画面中</th></tr></thead>
+        <thead><tr><th style="width:40px;">#</th><th>路线</th><th>谁说话</th><th>台词摘要</th><th style="width:40px;">⏱</th><th style="width:120px;">v3 新增维度</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>共享</td><td>👩‍🍳 Server</td><td>"Here's your bill..."</td><td>8s</td><td style="color:#e0a060;">服务生</td></tr>
-          <tr><td>2</td><td>A</td><td>👤 You (画外)</td><td>"Excuse me, I think there's a mistake..."</td><td>7s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
-          <tr><td>3</td><td>A</td><td>👩‍🍳 Server</td><td>"Let me check... one bottle of house red..."</td><td>9s</td><td style="color:#e0a060;">服务生</td></tr>
-          <tr><td>4</td><td>A1</td><td>👤 You (画外)</td><td>"Yes, I'm sure. We had two sodas..."</td><td>8s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
-          <tr><td>5</td><td>A1</td><td>👩‍🍳 Server</td><td>"You're right — that was for table 6..." 🏆</td><td>7s</td><td style="color:#e0a060;">服务生</td></tr>
-          <tr><td>6</td><td>A2</td><td>👤 You (画外)</td><td>"I'm absolutely sure. Can I speak to..."</td><td>6s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
-          <tr><td>7</td><td>A2</td><td>👨‍💼 Manager</td><td>"I just checked — wrong table..." 🏆</td><td>8s</td><td style="color:#e0a060;">经理</td></tr>
-          <tr><td>8</td><td>B</td><td>👤 You (画外)</td><td>"Excuse me... this doesn't look right..."</td><td>8s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
-          <tr><td>9</td><td>B</td><td>👩‍🍳 Server</td><td>"That's the house wine. You ordered it..."</td><td>8s</td><td style="color:#e0a060;">服务生</td></tr>
-          <tr><td>10</td><td>B1</td><td>👤 You (画外)</td><td>"No. I didn't order wine..."</td><td>6s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
-          <tr><td>11</td><td>B1</td><td>👩‍🍳 Server</td><td>"...Fine. Let me check. ...Oh." 🏆</td><td>9s</td><td style="color:#e0a060;">服务生</td></tr>
-          <tr><td>12</td><td>B2</td><td>👤 You (画外)</td><td>"Are you sure? I mean... maybe I forgot..."</td><td>8s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
-          <tr><td>13</td><td>B2</td><td>👩‍🍳 Server</td><td>"Yeah, I'm sure. So... cash or card?" 💀</td><td>6s</td><td style="color:#e0a060;">服务生</td></tr>
-          <tr><td>14</td><td>C</td><td>👤 You (画外)</td><td>"This is wrong. We never ordered wine..."</td><td>6s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
-          <tr><td>15</td><td>C</td><td>👩‍🍳 Server</td><td>"I brought it to your table..."</td><td>8s</td><td style="color:#e0a060;">服务生</td></tr>
-          <tr><td>16</td><td>C1</td><td>👤 You (画外)</td><td>"Look — I'm not saying I won't pay..."</td><td>9s</td><td style="color:#6a6aff;">服务生聆听</td></tr>
-          <tr><td>17</td><td>C1</td><td>👩‍🍳 Server</td><td>"...It was a mistake. I'll fix it." ⚠️</td><td>6s</td><td style="color:#e0a060;">服务生</td></tr>
-          <tr><td>18</td><td>C2</td><td>👤 You (画外)</td><td>"I'm not paying... This is ridiculous."</td><td>7s</td><td style="color:#6a6aff;">服务生+客人</td></tr>
-          <tr><td>19</td><td>C2</td><td>👨‍💼 Manager</td><td>"I've asked you to leave..." 💀</td><td>7s</td><td style="color:#e0a060;">经理</td></tr>
+          <tr><td>1</td><td>共享</td><td>Server ♀</td><td>"Here's your bill..."</td><td>8s</td><td style="font-size:0.65rem; color:#6a6aff;">光源·动作链·皮肤·外表·镜头</td></tr>
+          <tr><td>2</td><td>A</td><td>Customer ♂ (画外)</td><td>"I think there's a mistake..."</td><td>7s</td><td style="font-size:0.65rem; color:#6a6aff;">动作链·物理·镜头</td></tr>
+          <tr><td>3</td><td>A</td><td>Server ♀</td><td>"Let me check... house red..."</td><td>9s</td><td style="font-size:0.65rem; color:#6a6aff;">动作链·微表情35%·物理</td></tr>
+          <tr><td>4</td><td>A1</td><td>Customer ♂ (画外)</td><td>"Yes, I'm sure. Two sodas..."</td><td>8s</td><td style="font-size:0.65rem; color:#6a6aff;">动作链·物理·镜头</td></tr>
+          <tr><td>5</td><td>A1</td><td>Server ♀</td><td>"You're right — table 6..." 🏆</td><td>7s</td><td style="font-size:0.65rem; color:#6a6aff;">动作链·微表情50%·物理</td></tr>
+          <tr><td>6</td><td>A2</td><td>Customer ♂ (画外)</td><td>"I'm absolutely sure..."</td><td>6s</td><td style="font-size:0.65rem; color:#6a6aff;">镜头语言·构图</td></tr>
+          <tr><td>7</td><td>A2</td><td>Manager ♂</td><td>"I just checked — wrong table..." 🏆</td><td>8s</td><td style="font-size:0.65rem; color:#6a6aff;">外表·皮肤·微表情25%</td></tr>
+          <tr><td>8</td><td>B</td><td>Customer ♂ (画外)</td><td>"This doesn't look right..."</td><td>8s</td><td style="font-size:0.65rem; color:#6a6aff;">动作链·物理·皮肤</td></tr>
+          <tr><td>9</td><td>B</td><td>Server ♀</td><td>"You ordered it — I brought it..."</td><td>8s</td><td style="font-size:0.65rem; color:#6a6aff;">微表情60%·皮肤·物理</td></tr>
+          <tr><td>10</td><td>B1</td><td>Customer ♂ (画外)</td><td>"No. I didn't order wine..."</td><td>6s</td><td style="font-size:0.65rem; color:#6a6aff;">物理·动作链（摇头传递）</td></tr>
+          <tr><td>11</td><td>B1</td><td>Server ♀</td><td>"...Fine. Let me check..." 🏆</td><td>9s</td><td style="font-size:0.65rem; color:#6a6aff;">微表情45%·物理·动作链</td></tr>
+          <tr><td>12</td><td>B2</td><td>Customer ♂ (画外)</td><td>"Are you sure? Maybe I forgot..."</td><td>8s</td><td style="font-size:0.65rem; color:#6a6aff;">动作链·物理·镜头（焦点切换）</td></tr>
+          <tr><td>13</td><td>B2</td><td>Server ♀</td><td>"Yeah, I'm sure. Cash or card?" 💀</td><td>6s</td><td style="font-size:0.65rem; color:#6a6aff;">微表情20%·镜头（刷卡机遮挡）</td></tr>
+          <tr><td>14</td><td>C</td><td>Customer ♂ (画外)</td><td>"This is wrong. What is this?"</td><td>6s</td><td style="font-size:0.65rem; color:#6a6aff;">动作链·物理（掌击）·微表情</td></tr>
+          <tr><td>15</td><td>C</td><td>Server ♀</td><td>"You didn't say anything then..."</td><td>8s</td><td style="font-size:0.65rem; color:#6a6aff;">微表情70%·外表·物理</td></tr>
+          <tr><td>16</td><td>C1</td><td>Customer ♂ (画外)</td><td>"Look — I'm not saying I won't pay..."</td><td>9s</td><td style="font-size:0.65rem; color:#6a6aff;">物理（深呼吸）·镜头·微表情</td></tr>
+          <tr><td>17</td><td>C1</td><td>Server ♀</td><td>"...It was a mistake. I'll fix it." ⚠️</td><td>6s</td><td style="font-size:0.65rem; color:#6a6aff;">微表情10%·镜头（留白）</td></tr>
+          <tr><td>18</td><td>C2</td><td>Customer ♂ (画外)</td><td>"I'm not paying... ridiculous."</td><td>7s</td><td style="font-size:0.65rem; color:#6a6aff;">物理（站立加速度）·镜头</td></tr>
+          <tr><td>19</td><td>C2</td><td>Manager ♂</td><td>"I've asked you to leave..." 💀</td><td>7s</td><td style="font-size:0.65rem; color:#6a6aff;">微表情80%·镜头（多层关系）</td></tr>
         </tbody>
       </table>
       <div style="margin-top:16px; padding:12px 16px; background:#1a1a1a; border-radius:8px; font-size:0.75rem; color:#999;">
-        <strong style="color:#e0a060;">🔧 两条铁律（每条提示词均已内置）：</strong><br>
-        ① NPC 台词段：<em>"说完台词后原地站住面对镜头，绝不转身离开"</em> — 防止服务生最后一秒走人<br>
-        ② POV 画外音段：<em>"台词是画外音（主角说的），画面中角色嘴不动"</em> — 防止服务生抢主角台词
+        <strong style="color:#e0a060;">🔧 v2 铁律</strong> — ① NPC说完站住不转身 ② POV画外音段角色嘴不动<br>
+        <strong style="color:#6a6aff; margin-top:8px; display:block;">🎬 v3 新增法则</strong> — ⓪ `first person POV shot` 英文术语（非"POV视角"标签） ① 光源因果链 ② 三层空间（前景/中景/背景+f/2.8）
+      </div>
+    </div>
+
+    <!-- Methodology Reference -->
+    <div style="margin-top:30px; padding:20px 24px; background:#1a1a2a; border-radius:12px; border:1px solid #2a2a5a; max-width:1100px; width:100%;">
+      <h3 style="color:#6a6aff; font-size:0.9rem; margin-bottom:12px;">📖 v3 方法论来源（短剧研究知识库）</h3>
+      <div style="font-size:0.7rem; color:#8a8aaa; line-height:1.7;">
+        <strong>7 维去假法</strong> — 动作/运镜/皮肤/外表/微表情/物理法则/镜头语言<br>
+        <strong>活人感导演框架</strong> — 视角身份+镜头物理参数+时空坐标+感官细节+光影方向+构图+运镜+调色+缺陷细节<br>
+        <strong>去 AI 感 3 关键词</strong> — ①光源层次（侧逆光/伦勃朗光/冷暖混合） ②皮肤肌理（毛孔/纹理/瑕疵） ③景深虚实（前景遮挡+主体对焦+背景虚化）<br>
+        <strong>微表情幅度控制</strong> — 每个情绪标注百分比（30%/50%/70%）+递进时间线（不能瞬变）
       </div>
     </div>
 
   </div>
 
-  <div class="footer">The Bill v2 · POV Interactive English · A2 Level · 19 Segments / ~140s total</div>
+  <div class="footer">The Bill v3 · POV Interactive English · A2 Level · 19 Segments / ~140s · 7-Dimension De-Fake Upgrade</div>
 </div>
 </body>
 </html>
