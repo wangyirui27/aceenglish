@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎬 Interactive Demo Builder</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0d0d0d;color:#d0d0d0;height:100vh;overflow:hidden}
+.builder{display:flex;height:100vh}
+.panel{flex:1;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.panel.left{max-width:500px;border-right:1px solid #1a1a1a;background:#0a0a0a}
+.panel-header{flex-shrink:0;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1a1a1a}
+.panel-header h2{font-size:0.95rem;color:#fff}
+.btn{font-size:0.7rem;padding:6px 14px;border-radius:99px;border:1px solid #2a2a2a;background:#141414;color:#aaa;cursor:pointer;transition:all .2s}
+.btn:hover{background:#222;color:#fff}
+.btn.primary{background:#2a4a6a;border-color:#3a6a8a;color:#fff}
+.btn.primary:hover{background:#3a6a8a}
+.editor{flex:1;overflow-y:auto;padding:14px 18px}
+.editor label{display:block;font-size:0.68rem;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+.editor input,.editor textarea{width:100%;padding:8px 10px;border-radius:6px;border:1px solid #1a1a1a;background:#111;color:#ccc;font-size:0.75rem;font-family:"SF Mono",Menlo,Consolas,monospace;resize:vertical;margin-bottom:12px}
+.editor textarea{min-height:120px;line-height:1.5}
+.editor .section{margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #111}
+.editor .section:last-child{border-bottom:none}
+.editor .help{font-size:0.6rem;color:#555;margin-top:-8px;margin-bottom:12px;line-height:1.5}
+.preview-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.preview-frame{flex:1;border:none;background:#0d0d0d}
+.toast{position:fixed;top:12px;right:12px;z-index:99;padding:10px 18px;border-radius:8px;background:#1a2a1a;color:#6fcf6f;font-size:0.75rem;animation:toast-in .3s ease-out;border:1px solid #2a4a2a}
+@keyframes toast-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:800px){.builder{flex-direction:column}.panel.left{max-width:none;height:45vh}.panel-header h2{font-size:0.8rem}}
+</style>
+</head>
+<body>
+<div class="builder">
+  <div class="panel left">
+    <div class="panel-header">
+      <h2>🎬 Demo Builder</h2>
+      <button class="btn primary" onclick="generate()">▶ Generate</button>
+    </div>
+    <div class="editor" id="editor">
+      <div class="section">
+        <label>Project Title</label>
+        <input id="cfgTitle" value="Wrong Coffee">
+        <label>Video Path</label>
+        <input id="cfgVideo" value="video/">
+        <div class="help">Relative path to .mp4 files, e.g. "video/" → video/1.mp4</div>
+      </div>
+      <div class="section">
+        <label>Intro (HTML)</label>
+        <textarea id="cfgIntro">&lt;div class="intro-emoji"&gt;☕&lt;/div&gt;
+&lt;div class="intro-title"&gt;Wrong Coffee&lt;/div&gt;
+&lt;div class="intro-mission"&gt;You ordered a small coffee.&lt;br&gt;The barista gave you a large one.&lt;/div&gt;
+&lt;button class="intro-start" onclick="startGame()"&gt;Start&lt;/button&gt;</textarea>
+        <div class="help">Shown before game starts. Use the classes from the demo template.</div>
+      </div>
+      <div class="section">
+        <label>Scenes (JSON)</label>
+        <textarea id="cfgScenes">{
+  "1": {"speaker":"Barista","sub":"Good morning! What can I get you?"},
+  "2": {"speaker":"Customer","sub":"A small coffee, please."},
+  "3": {"speaker":"Barista","sub":"Here you go!"},
+  "4": {"speaker":"Customer","sub":"Sorry, this is large. I want small."},
+  "5": {"speaker":"Barista","sub":"Oh! I'm sorry. Let me fix it."},
+  "6": {"speaker":"Barista","sub":"Here. Small coffee."},
+  "7": {"speaker":"Customer","sub":"Thank you. Have a good day!"},
+  "8": {"speaker":"Barista","sub":"You too! Bye!"},
+  "9": {"speaker":"Customer","sub":"Coffee. Small."},
+  "10":{"speaker":"Barista","sub":"Here."},
+  "11":{"speaker":"Customer","sub":"No! This is wrong!"},
+  "12":{"speaker":"Barista","sub":"You said coffee. This is coffee."},
+  "13":{"speaker":"Customer","sub":"I want small! Not this! Are you stupid?"},
+  "14":{"speaker":"Manager","sub":"Stop. Please leave. Now."}
+}</textarea>
+        <div class="help">Key=scene number. speaker + sub (dialogue) per scene. Keep "sub" short — it goes on the subtitle bar.</div>
+      </div>
+      <div class="section">
+        <label>Decisions (JSON)</label>
+        <textarea id="cfgDecisions">{
+  "d1": {
+    "q":"What do you say?",
+    "qZh":"你怎么说？",
+    "opts":[
+      {"en":"\"A small coffee, please.\"","zh":"\"一小杯咖啡，谢谢。\"","scenes":[2,3,4,5,6,7,8],"end":{"emoji":"😊","label":"You got your coffee","detail":"Polite and warm — the right way.","type":"good"}},
+      {"en":"\"Coffee. Small.\"","zh":"\"咖啡。小的。\"","scenes":[9,10,11,12,13,14],"end":{"emoji":"😞","label":"You got kicked out","detail":"Rude and cold — no coffee for you.","type":"bad"}}
+    ]
+  }
+}</textarea>
+        <div class="help">Key=decision id. opts[].scenes = array of scene numbers. opts[].end = {emoji,label,detail,type:"good"|"bad"}.</div>
+      </div>
+      <div class="section">
+        <label>Step Choices (JSON, optional)</label>
+        <textarea id="cfgSteps">{
+  "3": {"q":"Barista gave you a large. You say:","qZh":"服务生给了你大杯。你说：","opts":[
+    {"en":"\"Sorry, this is large. I want small.\"","zh":"\"不好意思，这是大杯。我要小的。\""},
+    {"en":"\"Hmm, this isn't what I ordered.\"","zh":"\"嗯，这不是我点的。\""}
+  ]},
+  "5": {"q":"She apologized. Now:","qZh":"她道歉了。现在：","opts":[
+    {"en":"\"No problem. Thank you.\"","zh":"\"没事。谢谢。\""},
+    {"en":"(Wait quietly for your coffee.)","zh":"（安静等着你的咖啡。）"}
+  ]},
+  "10": {"q":"She gave you a large, coldly. You:","qZh":"她冷冷地给了你大杯。你：","opts":[
+    {"en":"\"No! This is wrong!\"","zh":"\"不对！这是错的！\""},
+    {"en":"\"What is this? I said small.\"","zh":"\"这什么？我说了小的。\""}
+  ]},
+  "12": {"q":"She shot back. Things are tense. You:","qZh":"她回怼了。气氛紧张。你：","opts":[
+    {"en":"\"I want small! Not this!\"","zh":"\"我要小的！不是这个！\""},
+    {"en":"\"This is stupid. I'm not paying.\"","zh":"\"这太蠢了。我不付钱。\""}
+  ]}
+}</textarea>
+        <div class="help">Key=scene that just finished. These appear between linear scenes. Optional — leave {} to skip.</div>
+      </div>
+    </div>
+  </div>
+  <div class="preview-wrap">
+    <div class="panel-header">
+      <h2>📺 Preview</h2>
+      <button class="btn" onclick="download()">⬇ Download HTML</button>
+    </div>
+    <iframe class="preview-frame" id="preview"></iframe>
+  </div>
+</div>
+<div id="toast" class="toast" style="display:none"></div>
+<script>
+// ==================== TEMPLATE ====================
+function buildHTML(cfg) {
+  const scenesJSON = JSON.stringify(cfg.scenes, null, 2).replace(/</g,'\\u003c');
+  const decJSON = JSON.stringify(cfg.decisions, null, 2).replace(/</g,'\\u003c');
+  const stepsJSON = JSON.stringify(cfg.steps, null, 2).replace(/</g,'\\u003c');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${cfg.title}</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0d0d0d;color:#d0d0d0;height:100vh;overflow:hidden}
+.app{width:100%;max-width:720px;margin:0 auto;display:flex;flex-direction:column;height:100vh}
+.top-bar{flex-shrink:0;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.top-bar .title{font-size:1.05rem;color:#fff;font-weight:600}
+.btn-sm{font-size:.68rem;padding:5px 10px;border-radius:99px;border:1px solid #2a2a2a;background:#141414;color:#999;cursor:pointer;transition:all .2s}
+.btn-sm:hover{background:#222;color:#fff}
+.btn-sm.active{background:#1a2a3a;color:#5fa3e0;border-color:#2a4a6a}
+.breadcrumb{flex-shrink:0;display:flex;gap:4px;align-items:center;flex-wrap:wrap;font-size:.65rem;color:#555;padding:0 20px 6px;min-height:20px}
+.breadcrumb .crumb{padding:2px 7px;border-radius:99px;background:#1a1a1a}
+.breadcrumb .crumb.played{background:#1a2a2a;color:#6a8a6a}
+.breadcrumb .sep{color:#333}
+.video-wrap{flex-shrink:0;width:100%;aspect-ratio:16/9;max-height:55vh;margin:0 20px;background:#111;border-radius:12px;overflow:hidden;position:relative;border:1px solid #222}
+.video-wrap video{width:100%;height:100%;object-fit:contain;display:none}
+.video-wrap video.show{display:block}
+.ph{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.ph .ph-scene{font-size:2.8rem;font-weight:700;color:#2a2a2a}
+.ph .ph-speaker{font-size:.8rem;color:#e0a060;margin-top:4px;text-transform:uppercase;letter-spacing:.1em}
+.ph .ph-action{font-size:.7rem;color:#444;margin-top:6px;max-width:260px;line-height:1.4}
+.ph .ph-line{font-size:.95rem;color:#ccc;font-style:italic;margin-top:12px;max-width:280px;line-height:1.5}
+.ph .ph-loading{font-size:.6rem;color:#333;margin-top:10px}
+.ph.hidden{display:none}
+.hidden{display:none!important}
+.sub-btn{position:absolute;bottom:12px;right:12px;z-index:2;font-size:.6rem;padding:5px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.55);color:#aaa;cursor:pointer}
+.sub-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.sub-btn.on{border-color:#5fa3e0;color:#5fa3e0}
+.sub-bar{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:6px 20px;min-height:22px}
+.sub-bar .sub-text{flex:1;font-size:.9rem;color:#ccc;font-style:italic;text-align:center}
+.replay-btn{flex-shrink:0;font-size:.65rem;padding:3px 9px;border-radius:99px;border:1px solid #333;background:#141414;color:#888;cursor:pointer;transition:all .2s}
+.replay-btn:hover{background:#222;color:#fff}
+.prompt-when{flex-shrink:0;width:100%;padding:14px 20px;background:#0a0a0a;border-top:1px solid #1a1a1a;max-height:42vh;overflow-y:auto;margin-top:auto}
+.q-box{background:#14141e;border:1px solid #22224a;border-radius:10px;padding:12px 16px;margin-bottom:10px;text-align:center}
+.q-box .q-badge{font-size:.6rem;color:#6a6aff;text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
+.q-box .q-text{font-size:.9rem;color:#b8b8e8}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt-btn{width:100%;padding:12px 16px;border-radius:10px;border:1px solid #2a2a2a;background:#141414;color:#bbb;cursor:pointer;font-size:.82rem;text-align:left;transition:all .2s;line-height:1.5}
+.opt-btn:hover{background:#1a2432;border-color:#2a4a6a;color:#a0c8f0}
+.opt-btn .opt-en{font-style:italic;font-size:1rem}
+.opt-btn .opt-zh{font-size:.7rem;color:#555;margin-top:3px;display:none}
+.opt-btn.show-zh .opt-zh{display:block}
+.intro-overlay{position:fixed;inset:0;z-index:10;background:#0a0a0a;display:flex;align-items:center;justify-content:center;padding:30px}
+.intro-card{max-width:420px;text-align:center}
+.intro-card .intro-emoji{font-size:4rem}
+.intro-card .intro-title{font-size:2.2rem;color:#fff;font-weight:700;margin-top:14px}
+.intro-card .intro-mission{font-size:1.05rem;color:#ccc;margin-top:12px;line-height:1.6}
+.intro-card .intro-start{margin-top:28px;padding:16px 56px;border-radius:99px;border:none;background:#2a4a6a;color:#fff;font-size:1.3rem;font-weight:700;cursor:pointer;transition:all .2s}
+.intro-card .intro-start:hover{background:#3a6a8a;transform:scale(1.03)}
+.confetti-container{position:fixed;inset:0;z-index:20;pointer-events:none;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:14px;top:-30px;animation:confetti-fall linear forwards}
+@keyframes confetti-fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+.ending-overlay{position:fixed;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;padding:30px}
+.ending-overlay.good{background:rgba(6,20,10,.95)}
+.ending-overlay.bad{background:rgba(20,6,6,.95)}
+.ending-overlay .end-big{text-align:center;animation:pop-in .5s ease-out}
+@keyframes pop-in{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+.ending-overlay .end-big .eb-emoji{font-size:4rem}
+.ending-overlay .end-big .eb-label{font-size:1.5rem;color:#fff;font-weight:700;margin-top:10px}
+.ending-overlay .end-big .eb-detail{font-size:.9rem;color:#aaa;margin-top:6px}
+.ending-overlay .end-big .eb-again{margin-top:20px;padding:12px 30px;border-radius:99px;border:1px solid #444;background:transparent;color:#ccc;font-size:.85rem;cursor:pointer}
+.ending-overlay .end-big .eb-again:hover{background:#222;color:#fff}
+</style>
+</head>
+<body>
+<div class="intro-overlay" id="intro">
+  <div class="intro-card">${cfg.intro}</div>
+</div>
+<div class="app">
+  <div class="top-bar"><span class="title">${cfg.title}</span><div><button class="btn-sm" id="btnZh" onclick="toggleZh()">中</button> <button class="btn-sm" onclick="restart()">↺</button></div></div>
+  <div class="breadcrumb" id="bread"></div>
+  <div class="video-wrap" onclick="manualPlay()">
+    <video id="video" playsinline preload="auto" onended="onVideoEnded()" onerror="onVideoError()" oncanplay="onVideoReady()"></video>
+    <div class="ph" id="ph"><div class="ph-scene" id="phScene"></div><div class="ph-speaker" id="phSpeaker"></div><div class="ph-action" id="phAction"></div><div class="ph-line" id="phLine"></div><div class="ph-loading" id="phLoading"></div></div>
+    <button class="sub-btn on" id="subBtn" onclick="toggleSub()">CC ON</button>
+  </div>
+  <div class="sub-bar" id="subBar"><div class="sub-text" id="subText"></div><button class="replay-btn" onclick="replayScene()">↺ Replay</button></div>
+  <div class="prompt-when" id="promptWhen"></div>
+</div>
+<script>
+const SCENES = ${scenesJSON};
+const DECISIONS = ${decJSON};
+const STEP_CHOICES = ${stepsJSON};
+const VIDEO = '${cfg.video}';
+let subOn=true,zhOn=true,queue=[],lastScene=0,playedScenes=[],ending=null;
+
+function videoSrc(n){return VIDEO+n+'.mp4'}
+function manualPlay(){const v=document.getElementById('video');if(v.paused&&v.readyState>=2&&!v.ended){document.querySelector('.ph').classList.add('hidden');v.classList.add('show');v.play().catch(()=>{})}}
+function replayScene(){if(!lastScene)return;document.querySelector('.ph').classList.remove('hidden');const v=document.getElementById('video');v.classList.remove('show');v.src=videoSrc(lastScene);v.load()}
+function toggleSub(){subOn=!subOn;const b=document.getElementById('subBtn');b.textContent=subOn?'CC ON':'CC';b.classList.toggle('on',subOn);document.getElementById('subBar').classList.toggle('hidden',!subOn)}
+function toggleZh(){zhOn=!zhOn;const b=document.getElementById('btnZh');b.textContent=zhOn?'EN':'中';b.classList.toggle('active',zhOn);document.querySelectorAll('.opt-btn').forEach(x=>x.classList.toggle('show-zh',zhOn));const qt=document.querySelector('.q-text');if(qt){const next=queue[0];if(typeof next==='number')showStepChoices(next);else if(typeof next==='string')showDecision(next)}}
+function continueNext(){const item=queue.shift();playScene(item)}
+function playScene(n){lastScene=n;document.getElementById('promptWhen').innerHTML='';playedScenes.push(n);updateBread();const s=SCENES[n]||{speaker:'?',action:'Scene '+n,sub:''};document.getElementById('phScene').textContent=n;document.getElementById('phSpeaker').textContent=s.speaker;document.getElementById('phAction').textContent=s.action||'';document.getElementById('phLine').textContent='\\"'+s.sub+'\\"';document.getElementById('phLoading').textContent='';document.getElementById('subText').innerHTML='<strong>'+s.speaker+'</strong> &nbsp;<em>'+s.sub+'</em>';document.getElementById('subBar').classList.toggle('hidden',!subOn);document.querySelector('.ph').classList.remove('hidden');const v=document.getElementById('video');v.classList.remove('show');v.src=videoSrc(n);v.load()}
+function onVideoReady(){document.querySelector('.ph').classList.add('hidden');const v=document.getElementById('video');v.classList.add('show');const p=v.play();if(p)p.catch(()=>{document.getElementById('phLoading').textContent='▶ Tap video to play';document.querySelector('.ph').classList.remove('hidden')})}
+function onVideoEnded(){onVideoFinished()}
+function onVideoError(){document.getElementById('phLoading').textContent='(no video — 2s)';document.querySelector('.ph').classList.remove('hidden');document.getElementById('video').classList.remove('show');setTimeout(()=>{document.querySelector('.ph').classList.add('hidden');onVideoFinished()},2000)}
+function onVideoFinished(){document.querySelector('.ph').classList.add('hidden');if(queue.length===0){showEnding();return}showNextPrompt()}
+function showNextPrompt(){const next=queue[0];if(typeof next==='number')showStepChoices(next);else if(typeof next==='string')showDecision(next)}
+function showStepChoices(nextScene){const def=STEP_CHOICES[lastScene]||{q:'What next?',qZh:'下一步？',opts:[{en:'Keep going',zh:'继续'},{en:'Let\\'s go',zh:'走'}]};let h='<div class="q-box"><div class="q-badge">❓ Your Choice</div><div class="q-text">'+(zhOn?def.qZh:def.q)+'</div></div><div class="opts">';def.opts.forEach(o=>{h+='<button class="opt-btn'+(zhOn?' show-zh':'')+'" onclick="doStepChoice()"><div class="opt-en">'+o.en+'</div><div class="opt-zh">'+o.zh+'</div></button>'})h+='</div>';document.getElementById('promptWhen').innerHTML=h}
+function doStepChoice(){queue.shift();playScene(queue[0])}
+function showDecision(id){const dec=DECISIONS[id];playedScenes.push(id);updateBread();let h='<div class="q-box"><div class="q-badge">❓ Your Choice</div><div class="q-text">'+(zhOn?dec.qZh:dec.q)+'</div></div><div class="opts">';dec.opts.forEach((o,i)=>{h+='<button class="opt-btn'+(zhOn?' show-zh':'')+'" onclick="choose(\\''+id+'\\','+i+')"><div class="opt-en">'+o.en+'</div><div class="opt-zh">'+o.zh+'</div></button>'})h+='</div>';document.getElementById('promptWhen').innerHTML=h}
+function choose(decId,idx){const o=DECISIONS[decId].opts[idx];queue=[...o.scenes];ending=o.end;continueNext()}
+function showEnding(){const e=ending||{};document.getElementById('promptWhen').innerHTML='';if(e.type==='good')launchConfetti();const ov=document.createElement('div');ov.className='ending-overlay '+(e.type||'good');ov.id='endingOverlay';ov.innerHTML='<div class="end-big"><div class="eb-emoji">'+(e.emoji||'?')+'</div><div class="eb-label">'+(e.label||'')+'</div><div class="eb-detail">'+(e.detail||'')+'</div><button class="eb-again" onclick="closeEnding()">↻ Play Again</button></div>';document.body.appendChild(ov)}
+function closeEnding(){const ov=document.getElementById('endingOverlay');if(ov)ov.remove();const cc=document.getElementById('confettiBox');if(cc)cc.remove();restart()}
+function launchConfetti(){const box=document.createElement('div');box.className='confetti-container';box.id='confettiBox';const colors=['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff8fe8','#ffb830','#5ce0e0','#c084fc'];for(let i=0;i<80;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.left=Math.random()*100+'%';p.style.background=colors[Math.floor(Math.random()*colors.length)];p.style.animationDuration=(2+Math.random()*3)+'s';p.style.animationDelay=Math.random()*1.5+'s';p.style.width=(6+Math.random()*10)+'px';p.style.height=(8+Math.random()*12)+'px';p.style.borderRadius=Math.random()>.5?'50%':'2px';box.appendChild(p)}document.body.appendChild(box);setTimeout(()=>{const cb=document.getElementById('confettiBox');if(cb)cb.remove()},5000)}
+function updateBread(){let h='';playedScenes.forEach((s,i)=>{if(i>0)h+='<span class="sep">›</span>';if(typeof s==='string')h+='<span class="crumb">⚡ Decision</span>';else h+='<span class="crumb played">Scene '+s+'</span>'});document.getElementById('bread').innerHTML=h}
+function restart(){const ov=document.getElementById('endingOverlay');if(ov)ov.remove();const cc=document.getElementById('confettiBox');if(cc)cc.remove();queue=[1,'d1'];playedScenes=[];ending=null;document.getElementById('promptWhen').innerHTML='';document.getElementById('bread').innerHTML='';continueNext()}
+function startGame(){document.getElementById('intro').classList.add('hidden');queue=[1,'d1'];continueNext()}
+<\/script>
+</body>
+</html>`;
+}
+
+// ==================== BUILDER UI ====================
+function readCfg() {
+  let scenes={}, decisions={}, steps={};
+  try{scenes=JSON.parse(document.getElementById('cfgScenes').value)}catch(e){alert('Scenes JSON error: '+e.message);return null}
+  try{decisions=JSON.parse(document.getElementById('cfgDecisions').value)}catch(e){alert('Decisions JSON error: '+e.message);return null}
+  try{steps=JSON.parse(document.getElementById('cfgSteps').value)}catch(e){steps={}}
+  return {
+    title: document.getElementById('cfgTitle').value||'Demo',
+    video: document.getElementById('cfgVideo').value||'video/',
+    intro: document.getElementById('cfgIntro').value||'',
+    scenes: scenes,
+    decisions: decisions,
+    steps: steps
+  };
+}
+
+function generate() {
+  const cfg = readCfg();
+  if (!cfg) return;
+  const html = buildHTML(cfg);
+  const frame = document.getElementById('preview');
+  frame.srcdoc = html;
+  showToast('Generated ✓');
+}
+
+function download() {
+  const cfg = readCfg();
+  if (!cfg) return;
+  const html = buildHTML(cfg);
+  const blob = new Blob([html], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (cfg.title||'demo').replace(/\\s+/g,'-').toLowerCase()+'.html';
+  a.click();
+  showToast('Downloaded ✓');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2000);
+}
+
+// Auto-generate on load
+generate();
+</script>
+</body>
+</html>
