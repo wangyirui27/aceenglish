@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>头号听力 · 闯关</title>
+<style>
+  :root {
+    /* 主色 */
+    --accent: #FF600F;
+    --accent-hover: #E85500;
+    --accent-light: #FF7A33;
+    --accent-dark: #CC4D0C;
+    --accent-glow: rgba(255, 96, 15, 0.3);
+    --accent-subtle: rgba(255, 96, 15, 0.1);
+    --accent-gradient: linear-gradient(135deg, #FF600F, #FF7A33);
+    --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
+
+    /* 背景 */
+    --bg-0: #000000;
+    --bg-1: #111111;
+    --bg-2: #1A1A1A;
+    --bg-3: #222222;
+    --bg-accent: #2A1508;
+
+    /* 辅助色 */
+    --secondary: #FFB800;
+    --secondary-glow: rgba(255, 184, 0, 0.35);
+    --success: #00C853;
+    --info: #448AFF;
+    --error: #FF3B30;
+
+    /* 文字 */
+    --text-1: #FFFFFF;
+    --text-2: #AAAAAA;
+    --text-3: #666666;
+    --text-accent: #FF600F;
+
+    /* 间距 */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+
+    /* 圆角 */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 999px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg-0);
+    color: var(--text-1);
+    font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont,
+                 "SF Pro Display", "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .font-number {
+    font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+  /* ====== Page Container ====== */
+  .page {
+    max-width: 402px;
+    margin: 0 auto;
+    background: var(--bg-0);
+    min-height: 100vh;
+    position: relative;
+    padding-bottom: 110px; /* 底部 CTA 占位 */
+  }
+
+  /* ====== Top HUD ====== */
+  .hud {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding: 12px 16px calc(12px + env(safe-area-inset-top));
+    padding-top: calc(12px + env(safe-area-inset-top));
+    background: linear-gradient(180deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.75) 80%, rgba(0,0,0,0) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hud-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px;
+    background: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-full);
+  }
+  .hud-stat .icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .hud-stat .num {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-1);
+    line-height: 1;
+  }
+  .hud-stat .num .total { color: var(--text-3); font-weight: 500; }
+  .hud-stat.energy .icon { color: var(--secondary); }
+  .hud-stat.coin .icon { color: var(--accent); }
+  .hud-stat.streak .icon { color: var(--error); }
+  .hud-recharge {
+    margin-left: auto;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: var(--accent-subtle);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  .hud-recharge:active { transform: scale(0.92); background: var(--accent); color: #fff; }
+
+  /* ====== Hero (当前关卡) ====== */
+  .hero {
+    margin: 4px 16px 28px;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    animation: slide-up 0.4s ease-out 0.05s both;
+  }
+  .hero-bg {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+  }
+  .hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255, 96, 15, 0.45), transparent 55%),
+      radial-gradient(circle at 75% 80%, rgba(255, 184, 0, 0.25), transparent 50%),
+      linear-gradient(135deg, #1a0d05 0%, #2a1508 60%, #0a0a0a 100%);
+  }
+  .hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.85) 100%);
+  }
+  .hero-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-md);
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    z-index: 1;
+  }
+  .hero-tag {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    background: var(--bg-accent);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .hero-tag .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+  .hero-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 16px 20px 20px;
+    z-index: 1;
+  }
+  .hero-pack {
+    font-size: 12px;
+    color: var(--text-2);
+    margin-bottom: 4px;
+  }
+  .hero-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-1);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--text-2);
+  }
+  .hero-meta .stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--secondary);
+  }
+  .hero-meta .stars .star-empty { color: var(--text-3); }
+  .hero-meta .divider { color: var(--text-3); }
+
+  .hero-cta {
+    padding: 16px 20px 20px;
+    background: var(--bg-1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-cta-btn {
+    flex: 1;
+    height: 52px;
+    border-radius: var(--radius-md);
+    background: var(--accent-gradient);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+    animation: pulse-glow 2.5s ease-in-out infinite;
+  }
+  .hero-cta-btn:active { transform: scale(0.97); }
+  .hero-cta-cost {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 14px;
+    height: 52px;
+    border-radius: var(--radius-md);
+    background: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 600;
+  }
+  .hero-cta-cost .icon { width: 14px; height: 14px; color: var(--secondary); }
+
+  /* ====== Difficulty Tabs ====== */
+  .difficulty-tabs {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+    margin-bottom: 24px;
+    animation: slide-up 0.4s ease-out 0.1s both;
+  }
+  .diff-tab {
+    flex: 1;
+    height: 44px;
+    border-radius: var(--radius-md);
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .diff-tab .name { font-size: 13px; font-weight: 700; color: var(--text-1); }
+  .diff-tab .desc { font-size: 10px; color: var(--text-3); }
+  .diff-tab.active {
+    background: var(--bg-accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 16px var(--accent-subtle);
+  }
+  .diff-tab.active .name { color: var(--accent); }
+  .diff-tab.active .desc { color: var(--accent); opacity: 0.8; }
+  .diff-tab.locked { opacity: 0.45; }
+  .diff-tab.locked .lock-ic {
+    width: 12px;
+    height: 12px;
+    color: var(--text-3);
+  }
+  .diff-tab:active:not(.locked) { transform: scale(0.97); }
+
+  /* ====== Section ====== */
+  .section { margin-bottom: 28px; padding: 0 16px; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-link {
+    font-size: 12px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .section-link svg { width: 12px; height: 12px; }
+
+  /* ====== Pack Card (主题包) ====== */
+  .pack {
+    margin-bottom: 16px;
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    animation: slide-up 0.4s ease-out both;
+  }
+  .pack:nth-child(2) { animation-delay: 0.15s; }
+  .pack:nth-child(3) { animation-delay: 0.2s; }
+  .pack:nth-child(4) { animation-delay: 0.25s; }
+  .pack:nth-child(5) { animation-delay: 0.3s; }
+
+  .pack-header {
+    padding: 14px 16px 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .pack-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    background: var(--bg-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .pack-icon.locked { background: var(--bg-2); filter: grayscale(1); opacity: 0.4; }
+  .pack-info { flex: 1; min-width: 0; }
+  .pack-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pack-title.locked { color: var(--text-3); }
+  .pack-subtitle {
+    font-size: 11px;
+    color: var(--text-2);
+    margin-top: 2px;
+  }
+  .pack-progress {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .pack-progress .num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-1);
+  }
+  .pack-progress .num .total { color: var(--text-3); font-weight: 500; }
+  .pack-progress.locked .num { color: var(--text-3); font-weight: 500; }
+
+  .pack-bar-wrap { padding: 10px 16px 0; }
+  .pack-bar {
+    height: 4px;
+    background: var(--bg-3);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+  .pack-bar-fill {
+    height: 100%;
+    background: var(--accent-gradient-h);
+    border-radius: var(--radius-full);
+    transition: width 0.6s ease-out;
+  }
+
+  /* ====== Snake Path (蛇形关卡路径) ====== */
+  .path {
+    position: relative;
+    padding: 24px 16px 16px;
+    height: 280px;
+  }
+  .path-svg {
+    position: absolute;
+    inset: 24px 16px 16px;
+    width: calc(100% - 32px);
+    height: calc(100% - 40px);
+    pointer-events: none;
+  }
+  .path-svg path { stroke: var(--bg-3); stroke-width: 2; fill: none; stroke-dasharray: 4 4; stroke-linecap: round; }
+  .path-svg path.done { stroke: var(--accent); stroke-dasharray: none; }
+
+  .node {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+  .node-btn {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .node-btn:active { transform: scale(0.92); }
+
+  /* 状态：已三星通关 */
+  .node.three-star .node-btn {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+    box-shadow: 0 0 20px var(--secondary-glow);
+  }
+  .node.three-star .node-btn::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--bg-1);
+  }
+  .node.three-star .node-icon { z-index: 1; color: var(--secondary); }
+
+  /* 状态：已通关（少于三星） */
+  .node.passed .node-btn {
+    background: var(--bg-1);
+    border: 2px solid var(--accent);
+  }
+  .node.passed .node-icon { color: var(--accent); }
+
+  /* 状态：当前关 */
+  .node.current .node-btn {
+    background: var(--accent-gradient);
+    box-shadow: 0 0 24px var(--accent-glow);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+  .node.current .node-icon { color: #fff; }
+  .node.current::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    opacity: 0.5;
+    animation: ring-pulse 2s ease-out infinite;
+  }
+
+  /* 状态：未解锁 */
+  .node.locked .node-btn {
+    background: var(--bg-2);
+    border: 1px dashed var(--bg-3);
+  }
+  .node.locked .node-icon { color: var(--text-3); }
+
+  /* 状态：BOSS 关 */
+  .node.boss .node-btn {
+    background: linear-gradient(135deg, var(--error) 0%, var(--accent) 100%);
+    box-shadow: 0 0 20px rgba(255, 59, 48, 0.4);
+  }
+  .node.boss .node-icon { color: #fff; }
+
+  .node-icon { width: 22px; height: 22px; z-index: 1; }
+  .node-stars {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1px;
+    background: var(--bg-1);
+    padding: 2px 5px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--bg-3);
+  }
+  .node-stars svg { width: 8px; height: 8px; color: var(--secondary); }
+  .node-stars svg.empty { color: var(--text-3); }
+
+  .node-label {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 6px;
+    font-size: 10px;
+    color: var(--text-2);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .node.current .node-label { color: var(--accent); font-weight: 700; }
+  .node.locked .node-label { color: var(--text-3); }
+
+  .node-tag-boss {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: var(--error);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .pack-locked-overlay {
+    padding: 24px 16px;
+    text-align: center;
+  }
+  .pack-locked-overlay .lock-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--text-3);
+    margin: 0 auto 8px;
+    display: block;
+  }
+  .pack-locked-overlay .lock-text {
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .pack-locked-overlay .lock-text strong { color: var(--text-2); }
+
+  /* ====== Daily Tasks ====== */
+  .tasks {
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--bg-2);
+    transition: background 0.15s;
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-item:active { background: var(--bg-2); }
+
+  .task-check {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--bg-3);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .task-check svg { width: 12px; height: 12px; opacity: 0; transition: opacity 0.15s; }
+  .task-item.done .task-check {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .task-item.done .task-check svg { opacity: 1; color: #fff; }
+
+  .task-info { flex: 1; min-width: 0; }
+  .task-title {
+    font-size: 14px;
+    color: var(--text-1);
+    font-weight: 500;
+  }
+  .task-item.done .task-title {
+    color: var(--text-3);
+    text-decoration: line-through;
+    text-decoration-color: var(--text-3);
+  }
+  .task-progress {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 2px;
+  }
+  .task-reward {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 8px;
+    background: var(--bg-accent);
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .task-reward .icon { width: 11px; height: 11px; }
+  .task-item.done .task-reward {
+    background: rgba(0, 200, 83, 0.12);
+    color: var(--success);
+  }
+
+  /* ====== Daily Sign-in ====== */
+  .signin {
+    background: linear-gradient(135deg, var(--bg-accent) 0%, var(--bg-1) 100%);
+    border: 1px solid var(--accent-subtle);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+  }
+  .signin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .signin-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .signin-title .day {
+    color: var(--accent);
+  }
+  .signin-claim {
+    height: 32px;
+    padding: 0 14px;
+    background: var(--accent-gradient);
+    border-radius: var(--radius-full);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 12px var(--accent-glow);
+    transition: all 0.2s;
+  }
+  .signin-claim:active { transform: scale(0.95); }
+  .signin-claim .icon { width: 12px; height: 12px; }
+
+  .signin-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .signin-day {
+    aspect-ratio: 1;
+    background: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    position: relative;
+  }
+  .signin-day .d-num {
+    font-size: 10px;
+    color: var(--text-3);
+    font-weight: 600;
+  }
+  .signin-day .d-rew {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-2);
+  }
+  .signin-day.checked {
+    background: var(--accent-subtle);
+    border-color: var(--accent);
+  }
+  .signin-day.checked .d-num { color: var(--accent); }
+  .signin-day.checked .d-rew { color: var(--accent); }
+  .signin-day.checked::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .signin-day.today {
+    background: var(--accent-gradient);
+    border-color: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+  .signin-day.today .d-num,
+  .signin-day.today .d-rew { color: #fff; }
+  .signin-day.bonus {
+    grid-column: span 1;
+  }
+  .signin-day.bonus .d-rew { color: var(--secondary); font-size: 10px; }
+
+  /* ====== Bottom CTA ====== */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 402px;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--bg-3);
+    padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bottom-info { flex: 1; min-width: 0; }
+  .bottom-info .l1 { font-size: 12px; color: var(--text-2); }
+  .bottom-info .l1 strong { color: var(--text-1); font-weight: 700; }
+  .bottom-info .l2 { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+  .bottom-cta {
+    height: 48px;
+    padding: 0 24px;
+    background: var(--accent-gradient);
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    transition: all 0.2s;
+  }
+  .bottom-cta:active { transform: scale(0.97); }
+  .bottom-cta .icon { width: 16px; height: 16px; }
+
+  /* ====== Modal: 体力不足 ====== */
+  .modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-mask.show { display: flex; animation: fade-in 0.25s ease-out; }
+  .modal {
+    width: 100%;
+    max-width: 402px;
+    background: var(--bg-1);
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
+    border-top: 1px solid var(--bg-3);
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    animation: modal-up 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+  }
+  .modal-grip {
+    width: 36px;
+    height: 4px;
+    background: var(--bg-3);
+    border-radius: var(--radius-full);
+    margin: 0 auto 16px;
+  }
+  .modal-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: var(--bg-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary);
+  }
+  .modal-icon svg { width: 32px; height: 32px; }
+  .modal-title {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  .modal-sub {
+    font-size: 12px;
+    color: var(--text-2);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .modal-energy-bar {
+    background: var(--bg-2);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .modal-energy-bar .big-num {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--secondary);
+    line-height: 1;
+  }
+  .modal-energy-bar .big-num .slash { color: var(--text-3); font-weight: 600; font-size: 22px; }
+  .modal-energy-bar .countdown {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-2);
+  }
+  .modal-energy-bar .countdown .timer {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .modal-action {
+    height: 48px;
+    background: var(--bg-2);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    transition: all 0.2s;
+  }
+  .modal-action:active { transform: scale(0.97); border-color: var(--accent); }
+  .modal-action .l1 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-1);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .modal-action .l1 svg { width: 12px; height: 12px; }
+  .modal-action .l2 {
+    font-size: 10px;
+    color: var(--text-3);
+  }
+  .modal-action.coin .l1 svg { color: var(--accent); }
+  .modal-action.ad .l1 svg { color: var(--info); }
+  .modal-vip {
+    width: 100%;
+    height: 52px;
+    background: linear-gradient(135deg, #FF600F 0%, #FFB800 100%);
+    border-radius: var(--radius-md);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 20px rgba(255, 184, 0, 0.35);
+    margin-top: 12px;
+    transition: all 0.2s;
+  }
+  .modal-vip:active { transform: scale(0.97); }
+  .modal-vip svg { width: 16px; height: 16px; }
+  .modal-suggestions {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--bg-2);
+    border-radius: var(--radius-md);
+  }
+  .modal-suggestions .label {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-bottom: 8px;
+  }
+  .modal-suggest-row { display: flex; gap: 8px; }
+  .modal-suggest-item {
+    flex: 1;
+    padding: 10px;
+    background: var(--bg-1);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-2);
+  }
+  .modal-suggest-item svg { width: 14px; height: 14px; color: var(--text-2); }
+  .modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-2);
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-close svg { width: 16px; height: 16px; }
+
+  /* ====== 占位的小区域：footer 提示 ====== */
+  .design-note {
+    margin: 0 16px 16px;
+    padding: 12px 14px;
+    background: var(--bg-1);
+    border: 1px dashed var(--bg-3);
+    border-radius: var(--radius-md);
+    font-size: 11px;
+    color: var(--text-3);
+    line-height: 1.6;
+  }
+  .design-note strong { color: var(--text-2); }
+
+  /* ====== Animations ====== */
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes modal-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 4px 20px var(--accent-glow); }
+    50% { box-shadow: 0 6px 32px rgba(255, 96, 15, 0.55); }
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  @keyframes ring-pulse {
+    0% { opacity: 0.6; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.3); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ===== Top HUD ===== -->
+  <div class="hud">
+    <!-- 体力 -->
+    <div class="hud-stat energy" data-action="energy">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+      </svg>
+      <span class="num font-number">4<span class="total">/5</span></span>
+    </div>
+    <!-- 金币 -->
+    <div class="hud-stat coin">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3h4"/>
+      </svg>
+      <span class="num font-number">320</span>
+    </div>
+    <!-- 连续天数 -->
+    <div class="hud-stat streak">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13.5 0.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/>
+      </svg>
+      <span class="num font-number">7</span>
+    </div>
+    <!-- 充值入口 -->
+    <button class="hud-recharge" aria-label="充值">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ===== Hero（当前推荐关卡） ===== -->
+  <div class="hero">
+    <div class="hero-bg">
+      <div class="hero-tag">
+        <span class="dot"></span>
+        <span>继续挑战</span>
+      </div>
+      <div class="hero-icon">🍽️</div>
+      <div class="hero-content">
+        <div class="hero-pack">餐厅生存 · Pack 1</div>
+        <div class="hero-title">第 3 关 · 餐厅对账</div>
+        <div class="hero-meta">
+          <span class="stars">
+            <!-- 当前 2 星 -->
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="star-empty" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </span>
+          <span class="divider">·</span>
+          <span>5 个选择点</span>
+          <span class="divider">·</span>
+          <span>预计 2 分钟</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <button class="hero-cta-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        开始挑战
+      </button>
+      <div class="hero-cta-cost">
+        <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+        </svg>
+        <span class="font-number">-1</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Difficulty Tabs ===== -->
+  <div class="difficulty-tabs">
+    <button class="diff-tab active">
+      <span class="name">A1 基础</span>
+      <span class="desc">5/26 关</span>
+    </button>
+    <button class="diff-tab">
+      <span class="name">A2 进阶</span>
+      <span class="desc">0/28 关</span>
+    </button>
+    <button class="diff-tab locked">
+      <span class="name">
+        <svg class="lock-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        B1 挑战
+      </span>
+      <span class="desc">完成 A2 解锁</span>
+    </button>
+  </div>
+
+  <!-- ===== Section: 主题包 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">A1 主题包</h2>
+      <a class="section-link" href="#">
+        全部
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+
+    <!-- Pack 1 — 餐厅生存（进行中） -->
+    <div class="pack">
+      <div class="pack-header">
+        <div class="pack-icon">🍽️</div>
+        <div class="pack-info">
+          <div class="pack-title">餐厅生存</div>
+          <div class="pack-subtitle">点餐、对账、抱怨——会吃才是真本事</div>
+        </div>
+        <div class="pack-progress">
+          <span class="num font-number">3<span class="total">/5</span></span>
+        </div>
+      </div>
+      <div class="pack-bar-wrap">
+        <div class="pack-bar"><div class="pack-bar-fill" style="width:60%"></div></div>
+      </div>
+
+      <!-- 蛇形路径 -->
+      <div class="path">
+        <svg class="path-svg" viewBox="0 0 320 220" preserveAspectRatio="none">
+          <!-- 已通关：实线 -->
+          <path class="done" d="M 50 30 Q 110 30 160 60 T 270 90"/>
+          <!-- 未通关：虚线 -->
+          <path d="M 270 90 Q 230 130 160 130 T 50 160 Q 110 200 270 190"/>
+        </svg>
+
+        <!-- Lvl 1: 三星通关 -->
+        <div class="node three-star" style="left: 16%; top: 14%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </button>
+          <div class="node-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="node-label">第 1 关</div>
+        </div>
+
+        <!-- Lvl 2: 二星通关 -->
+        <div class="node passed" style="left: 50%; top: 30%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </button>
+          <div class="node-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="empty" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="node-label">第 2 关</div>
+        </div>
+
+        <!-- Lvl 3: 当前关 -->
+        <div class="node current" style="left: 84%; top: 40%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <div class="node-label">第 3 关</div>
+        </div>
+
+        <!-- Lvl 4: 未解锁 -->
+        <div class="node locked" style="left: 50%; top: 60%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="11" width="14" height="9" rx="2" ry="2"/>
+              <path d="M8 11V8a4 4 0 018 0v3"/>
+            </svg>
+          </button>
+          <div class="node-label">第 4 关</div>
+        </div>
+
+        <!-- Lvl 5: BOSS 关 -->
+        <div class="node boss locked" style="left: 84%; top: 88%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5 4l1.5 13h11L19 4l-4 4-3-5-3 5-4-4z"/>
+            </svg>
+          </button>
+          <div class="node-label">第 5 关</div>
+          <div class="node-tag-boss">BOSS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pack 2 — 购物日常（已开始） -->
+    <div class="pack">
+      <div class="pack-header">
+        <div class="pack-icon">🛒</div>
+        <div class="pack-info">
+          <div class="pack-title">购物日常</div>
+          <div class="pack-subtitle">问价、试穿、退换货——日用语料</div>
+        </div>
+        <div class="pack-progress">
+          <span class="num font-number">1<span class="total">/5</span></span>
+        </div>
+      </div>
+      <div class="pack-bar-wrap">
+        <div class="pack-bar"><div class="pack-bar-fill" style="width:20%"></div></div>
+      </div>
+      <div class="path">
+        <svg class="path-svg" viewBox="0 0 320 220" preserveAspectRatio="none">
+          <path class="done" d="M 50 30 Q 110 30 160 60"/>
+          <path d="M 160 60 Q 220 80 270 90 Q 230 130 160 130 T 50 160 Q 110 200 270 190"/>
+        </svg>
+
+        <div class="node three-star" style="left: 16%; top: 14%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          </button>
+          <div class="node-stars">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div class="node-label">第 1 关</div>
+        </div>
+
+        <div class="node current" style="left: 50%; top: 30%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <div class="node-label">第 2 关</div>
+        </div>
+
+        <div class="node locked" style="left: 84%; top: 40%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="11" width="14" height="9" rx="2" ry="2"/>
+              <path d="M8 11V8a4 4 0 018 0v3"/>
+            </svg>
+          </button>
+          <div class="node-label">第 3 关</div>
+        </div>
+
+        <div class="node locked" style="left: 50%; top: 60%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="11" width="14" height="9" rx="2" ry="2"/>
+              <path d="M8 11V8a4 4 0 018 0v3"/>
+            </svg>
+          </button>
+          <div class="node-label">第 4 关</div>
+        </div>
+
+        <div class="node boss locked" style="left: 84%; top: 88%">
+          <button class="node-btn">
+            <svg class="node-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M5 4l1.5 13h11L19 4l-4 4-3-5-3 5-4-4z"/>
+            </svg>
+          </button>
+          <div class="node-label">第 5 关</div>
+          <div class="node-tag-boss">BOSS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pack 3 — 机场出行（未解锁） -->
+    <div class="pack">
+      <div class="pack-header">
+        <div class="pack-icon locked">✈️</div>
+        <div class="pack-info">
+          <div class="pack-title locked">机场出行</div>
+          <div class="pack-subtitle">值机、安检、转机——出行第一道坎</div>
+        </div>
+        <div class="pack-progress locked">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-3)">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0110 0v4"/>
+          </svg>
+          <span class="num font-number">0<span class="total">/5</span></span>
+        </div>
+      </div>
+      <div class="pack-locked-overlay">
+        <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        <div class="lock-text">完成 <strong>购物日常</strong> 任意 3 关后解锁</div>
+      </div>
+    </div>
+
+    <!-- Pack 4 — 酒店入住（未解锁，含本周新增） -->
+    <div class="pack">
+      <div class="pack-header">
+        <div class="pack-icon locked">🏨</div>
+        <div class="pack-info">
+          <div class="pack-title locked">
+            酒店入住
+          </div>
+          <div class="pack-subtitle">入住、投诉、退房——别被服务生听懂错</div>
+        </div>
+        <div class="pack-progress locked">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-3)">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0110 0v4"/>
+          </svg>
+          <span class="num font-number">0<span class="total">/5</span></span>
+        </div>
+      </div>
+      <div class="pack-locked-overlay">
+        <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+        <div class="lock-text">完成 <strong>机场出行</strong> 后解锁</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Daily Tasks ===== -->
+  <div class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent)">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+        </svg>
+        每日任务
+      </h2>
+      <span class="section-link font-number" style="color: var(--text-3)">12:34:56 后刷新</span>
+    </div>
+    <div class="tasks">
+      <div class="task-item">
+        <div class="task-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="task-info">
+          <div class="task-title">通关 3 关</div>
+          <div class="task-progress font-number">2 / 3</div>
+        </div>
+        <div class="task-reward">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3h4"/></svg>
+          <span class="font-number">+50</span>
+        </div>
+      </div>
+      <div class="task-item done">
+        <div class="task-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="task-info">
+          <div class="task-title">跟读 10 句评分 ≥ 70</div>
+          <div class="task-progress font-number">10 / 10</div>
+        </div>
+        <div class="task-reward">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3h4"/></svg>
+          <span class="font-number">+30</span>
+        </div>
+      </div>
+      <div class="task-item">
+        <div class="task-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="task-info">
+          <div class="task-title">三星通关 1 关</div>
+          <div class="task-progress font-number">0 / 1</div>
+        </div>
+        <div class="task-reward">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3h4"/></svg>
+          <span class="font-number">+100</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Daily Sign-in ===== -->
+  <div class="section">
+    <div class="signin">
+      <div class="signin-header">
+        <div class="signin-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent)">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          连续签到 <span class="day font-number">Day&nbsp;7</span>
+        </div>
+        <button class="signin-claim">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          领取 100
+        </button>
+      </div>
+      <div class="signin-days">
+        <div class="signin-day checked">
+          <span class="d-num font-number">D1</span>
+          <span class="d-rew font-number">+10</span>
+        </div>
+        <div class="signin-day checked">
+          <span class="d-num font-number">D2</span>
+          <span class="d-rew font-number">+10</span>
+        </div>
+        <div class="signin-day checked">
+          <span class="d-num font-number">D3</span>
+          <span class="d-rew font-number">+20</span>
+        </div>
+        <div class="signin-day checked">
+          <span class="d-num font-number">D4</span>
+          <span class="d-rew font-number">+20</span>
+        </div>
+        <div class="signin-day checked">
+          <span class="d-num font-number">D5</span>
+          <span class="d-rew font-number">+30</span>
+        </div>
+        <div class="signin-day checked">
+          <span class="d-num font-number">D6</span>
+          <span class="d-rew font-number">+50</span>
+        </div>
+        <div class="signin-day today">
+          <span class="d-num font-number">D7</span>
+          <span class="d-rew font-number">+100</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Design Note (开发交付说明，可删除) ===== -->
+  <div class="design-note">
+    <strong>📐 开发说明</strong> · 蛇形路径节点状态共 5 种：<br>
+    ① <span style="color: var(--secondary)">三星通关</span> ② <span style="color: var(--accent)">已通关</span> ③ <span style="color: var(--accent)">当前关</span> ④ <span style="color: var(--text-3)">未解锁</span> ⑤ <span style="color: var(--error)">BOSS 关</span>。
+    单关进入消耗 <strong>1 体力</strong>，BOSS 关消耗 <strong>2 体力</strong>，三星关复玩免体力。
+    体力恢复速率：免费 30 分/点，会员 20 分/点。点击 HUD 体力可触发不足弹窗演示 ↓
+  </div>
+
+</div>
+
+<!-- ===== Bottom CTA ===== -->
+<div class="bottom-bar">
+  <div class="bottom-info">
+    <div class="l1">下一关 · <strong>第 3 关 · 餐厅对账</strong></div>
+    <div class="l2">消耗 1 体力 · 通关奖励 +20 金币</div>
+  </div>
+  <button class="bottom-cta">
+    <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    开始
+  </button>
+</div>
+
+<!-- ===== Modal: 体力不足 ===== -->
+<div class="modal-mask" id="energyModal">
+  <div class="modal" style="position: relative;">
+    <button class="modal-close" onclick="closeModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <div class="modal-grip"></div>
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+      </svg>
+    </div>
+    <div class="modal-title">体力不够啦</div>
+    <div class="modal-sub">每 30 分钟自动恢复 1 点</div>
+
+    <div class="modal-energy-bar">
+      <div class="big-num font-number">0<span class="slash">/5</span></div>
+      <div class="countdown">
+        下一点恢复 <span class="timer font-number">17:32</span>
+        &nbsp;·&nbsp;
+        全部恢复 <span class="timer font-number">02:17:32</span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-action coin">
+        <span class="l1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h4a1.5 1.5 0 010 3h-3a1.5 1.5 0 000 3h4"/></svg>
+          50 金币
+        </span>
+        <span class="l2">立即恢复 1 点</span>
+      </button>
+      <button class="modal-action ad">
+        <span class="l1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          看广告
+        </span>
+        <span class="l2">15 秒 +1 点</span>
+      </button>
+    </div>
+
+    <button class="modal-vip">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M5 3h14l-2 9-5 8-5-8L5 3zm2.5 2L9 11l3-5 3 5 1.5-6h-9z"/>
+      </svg>
+      升级会员 · 体力上限 8 + 永不间断
+    </button>
+
+    <div class="modal-suggestions">
+      <div class="label">或者先做点别的</div>
+      <div class="modal-suggest-row">
+        <div class="modal-suggest-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          刷短视频
+        </div>
+        <div class="modal-suggest-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          复习收藏词
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 难度切换
+  document.querySelectorAll('.diff-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      if (tab.classList.contains('locked')) return;
+      document.querySelectorAll('.diff-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // 任务勾选切换（演示用）
+  document.querySelectorAll('.task-item').forEach(item => {
+    item.addEventListener('click', () => {
+      // demo only — 实际由后端状态驱动
+    });
+  });
+
+  // 点击 HUD 体力 → 体力不足弹窗演示
+  document.querySelector('.hud-stat.energy').addEventListener('click', () => {
+    document.getElementById('energyModal').classList.add('show');
+  });
+
+  // 关闭弹窗
+  function closeModal() {
+    document.getElementById('energyModal').classList.remove('show');
+  }
+  document.getElementById('energyModal').addEventListener('click', (e) => {
+    if (e.target.id === 'energyModal') closeModal();
+  });
+
+  // 节点点击（示意）
+  document.querySelectorAll('.node-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const node = btn.closest('.node');
+      if (node.classList.contains('locked') && !node.classList.contains('current')) {
+        // 锁定节点反馈：轻微抖动
+        node.animate(
+          [{ transform: 'translate(-50%,-50%) translateX(0)' },
+           { transform: 'translate(-50%,-50%) translateX(-4px)' },
+           { transform: 'translate(-50%,-50%) translateX(4px)' },
+           { transform: 'translate(-50%,-50%) translateX(0)' }],
+          { duration: 240 }
+        );
+      }
+    });
+  });
+</script>
+</body>
+</html>

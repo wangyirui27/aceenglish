@@ -1,0 +1,11 @@
+Source: /Users/yr/ACE/切图/2487eba0aeccc6ec271b94aebea82602218d3082de48d1bce13e37849bb03346.png
+Grid: 2x3 (6 panels)
+Panel size: 512x512
+
+Panels:
+  Panel 1: panel_01.png
+  Panel 2: panel_02.png
+  Panel 3: panel_03.png
+  Panel 4: panel_04.png
+  Panel 5: panel_05.png
+  Panel 6: panel_06.png
