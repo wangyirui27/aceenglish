@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏢 Good Morning! — Interactive Demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0d0d0d; color: #d0d0d0; min-height: 100vh; height: 100vh; display: flex; justify-content: center; overflow: hidden; }
+  .app { width: 100%; max-width: 720px; display: flex; flex-direction: column; height: 100vh; }
+
+  .top-bar { flex-shrink: 0; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+  .top-bar .title { font-size: 1.05rem; color: #fff; font-weight: 600; }
+  .top-ctrls { display: flex; gap: 6px; }
+  .btn-sm { font-size: 0.68rem; padding: 5px 10px; border-radius: 99px; border: 1px solid #2a2a2a; background: #141414; color: #999; cursor: pointer; transition: all 0.2s; }
+  .btn-sm:hover { background: #222; color: #fff; }
+  .btn-sm.active { background: #1a2a3a; color: #5fa3e0; border-color: #2a4a6a; }
+
+  .breadcrumb { flex-shrink: 0; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; font-size: 0.65rem; color: #555; min-height: 20px; padding: 0 20px 6px; }
+  .breadcrumb .crumb { padding: 2px 7px; border-radius: 99px; background: #1a1a1a; }
+  .breadcrumb .crumb.played { background: #1a2a2a; color: #6a8a6a; }
+  .breadcrumb .crumb.decision { background: #1a2a3a; color: #5fa3e0; }
+  .breadcrumb .sep { color: #333; }
+
+  .video-wrap { flex-shrink: 0; width: 100%; aspect-ratio: 16/9; max-height: 55vh; margin: 0 20px; background: #111; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #222; }
+  .video-wrap video { width: 100%; height: 100%; object-fit: contain; display: none; }
+  .video-wrap video.show { display: block; }
+  .ph { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+  .ph .ph-scene { font-size: 2.8rem; font-weight: 700; color: #2a2a2a; }
+  .ph .ph-speaker { font-size: 0.8rem; color: #e0a060; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .ph .ph-line { font-size: 0.95rem; color: #ccc; font-style: italic; margin-top: 12px; max-width: 280px; line-height: 1.5; }
+  .ph .ph-loading { font-size: 0.6rem; color: #333; margin-top: 10px; }
+  .ph.hidden { display: none; }
+  .hidden { display: none !important; }
+
+  .sub-bar { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 6px 20px; min-height: 22px; }
+  .sub-bar .sub-text { flex: 1; font-size: 0.9rem; color: #ccc; font-style: italic; text-align: center; }
+  .replay-btn { flex-shrink: 0; font-size: 0.65rem; padding: 3px 9px; border-radius: 99px; border: 1px solid #333; background: #141414; color: #888; cursor: pointer; transition: all 0.2s; }
+  .replay-btn:hover { background: #222; color: #fff; }
+
+  .prompt-when { flex-shrink: 0; width: 100%; padding: 14px 20px; background: #0a0a0a; border-top: 1px solid #1a1a1a; max-height: 42vh; overflow-y: auto; margin-top: auto; }
+  .q-box { background: #14141e; border: 1px solid #22224a; border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; text-align: center; }
+  .q-box .q-badge { font-size: 0.6rem; color: #6a6aff; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 4px; }
+  .q-box .q-text { font-size: 0.9rem; color: #b8b8e8; }
+
+  .opts { display: flex; flex-direction: column; gap: 8px; }
+  .opt-btn { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid #2a2a2a; background: #141414; color: #bbb; cursor: pointer; font-size: 0.82rem; text-align: left; transition: all 0.2s; line-height: 1.5; }
+  .opt-btn:hover { background: #1a2432; border-color: #2a4a6a; color: #a0c8f0; }
+  .opt-btn .opt-label { font-size: 0.6rem; color: #444; letter-spacing: 0.1em; margin-bottom: 3px; }
+  .opt-btn.label-a .opt-label { color: #6a8a6a; }
+  .opt-btn.label-b .opt-label { color: #8a8a8a; }
+  .opt-btn.label-c .opt-label { color: #8a6a6a; }
+  .opt-btn .opt-en { font-style: italic; font-size: 1rem; }
+  .opt-btn .opt-zh { font-size: 0.7rem; color: #555; margin-top: 3px; display: none; }
+  .opt-btn.show-zh .opt-zh { display: block; }
+
+  .end-card { width: 100%; padding: 22px; border-radius: 12px; text-align: center; border: 2px solid; }
+  .end-card.success { background: #1a2a1a; border-color: #3a6a3a; }
+  .end-card.neutral { background: #1a1a2a; border-color: #3a3a5a; }
+  .end-card.failure { background: #2a1a1a; border-color: #5a3a3a; }
+  .end-card .e-emoji { font-size: 2.5rem; }
+  .end-card .e-label { font-size: 1.1rem; font-weight: 600; margin-top: 6px; }
+  .end-card .e-detail { font-size: 0.78rem; color: #999; margin-top: 3px; }
+  .end-card .e-again { margin-top: 14px; font-size: 0.72rem; padding: 7px 18px; border-radius: 99px; border: 1px solid #333; background: transparent; color: #999; cursor: pointer; }
+  .end-card .e-again:hover { background: #222; color: #fff; }
+
+  .intro-overlay { position: fixed; inset: 0; z-index: 10; background: #0a0a0a; display: flex; align-items: center; justify-content: center; padding: 30px; }
+  .intro-card { max-width: 420px; text-align: center; }
+  .intro-card .intro-emoji { font-size: 4rem; }
+  .intro-card .intro-title { font-size: 2.2rem; color: #fff; font-weight: 700; margin-top: 14px; }
+  .intro-card .intro-start { margin-top: 28px; padding: 16px 56px; border-radius: 99px; border: none; background: #2a4a6a; color: #fff; font-size: 1.3rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .intro-card .intro-start:hover { background: #3a6a8a; transform: scale(1.03); }
+
+  .confetti-container { position: fixed; inset: 0; z-index: 20; pointer-events: none; overflow: hidden; }
+  .confetti-piece { position: absolute; width: 10px; height: 14px; top: -30px; animation: confetti-fall linear forwards; }
+  @keyframes confetti-fall { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(105vh) rotate(720deg); opacity: 0; } }
+
+  .ending-overlay { position: fixed; inset: 0; z-index: 15; display: flex; align-items: center; justify-content: center; padding: 30px; }
+  .ending-overlay.success { background: rgba(6,20,10,0.95); }
+  .ending-overlay.neutral { background: rgba(10,10,20,0.95); }
+  .ending-overlay.failure { background: rgba(20,6,6,0.95); }
+  .ending-overlay .end-big { text-align: center; animation: pop-in 0.5s ease-out; }
+  @keyframes pop-in { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+  .ending-overlay .end-big .eb-emoji { font-size: 4rem; }
+  .ending-overlay .end-big .eb-label { font-size: 1.5rem; color: #fff; font-weight: 700; margin-top: 10px; }
+  .ending-overlay .end-big .eb-detail { font-size: 0.9rem; color: #aaa; margin-top: 6px; }
+  .ending-overlay .end-big .eb-again { margin-top: 20px; padding: 12px 30px; border-radius: 99px; border: 1px solid #444; background: transparent; color: #ccc; font-size: 0.85rem; cursor: pointer; }
+  .ending-overlay .end-big .eb-again:hover { background: #222; color: #fff; }
+
+  .route-map { flex-shrink: 0; padding: 8px 20px; border-top: 1px solid #1a1a1a; font-size: 0.6rem; color: #444; text-align: center; }
+  .route-map span { margin: 0 4px; padding: 2px 6px; border-radius: 99px; background: #1a1a1a; }
+  .route-map span.played { background: #1a2a2a; color: #6a8a6a; }
+  .route-map span.current { background: #1a2a3a; color: #5fa3e0; }
+</style>
+</head>
+<body>
+<div class="intro-overlay" id="intro">
+  <div class="intro-card">
+    <div class="intro-emoji">🏢</div>
+    <div class="intro-title">Good Morning!</div>
+    <div class="intro-mission" style="font-size:1.05rem; color:#ccc;">共享办公楼前台<br>你刚走进大厅<br>前台 Jessica 笑容灿烂地迎上来——<br><strong style="color:#e0a060;">她把你当成了会议嘉宾</strong></div>
+    <button class="intro-start" onclick="startGame()">开始</button>
+  </div>
+</div>
+
+<div class="app">
+  <div class="top-bar">
+    <span class="title">🏢 Good Morning!</span>
+    <div class="top-ctrls">
+      <button class="btn-sm" id="btnZh" onclick="toggleZh()">中</button>
+      <button class="btn-sm" onclick="restart()">↺ Restart</button>
+    </div>
+  </div>
+
+  <div class="breadcrumb" id="bread"></div>
+
+  <div class="video-wrap" id="videoWrap" onclick="manualPlay()">
+    <video id="video" playsinline preload="auto" onended="onVideoEnded()" onerror="onVideoError()" oncanplay="onVideoReady()" onpause="onVideoPause()"></video>
+    <div class="ph" id="ph">
+      <div class="ph-scene" id="phScene">1</div>
+      <div class="ph-speaker" id="phSpeaker">Jessica</div>
+      <div class="ph-line" id="phLine">"Good morning! Hello! Are you here for the meeting?"</div>
+      <div class="ph-loading" id="phLoading"></div>
+    </div>
+  </div>
+
+  <div class="sub-bar" id="subBar">
+    <div class="sub-text" id="subText"></div>
+    <button class="replay-btn" onclick="replayScene()">↺ Replay</button>
+  </div>
+
+  <div class="prompt-when" id="promptWhen"></div>
+
+  <div class="route-map" id="routeMap"></div>
+</div>
+
+<script>
+// ==================== SCENE DATA ====================
+// Each scene = one SHOT video. Speaker + subtitle for reference.
+const SCENES = {
+  1:  { speaker:'Jessica', sub:'Good morning! Hello! Are you here for the meeting?' },
+
+  // Route A — 温暖（SHOTs 2-5）
+  2:  { speaker:'Male', sub:'Good morning. I\'m here. I\'m not here for the meeting.' },
+  3:  { speaker:'Jessica', sub:'Oh! I\'m sorry. Let me see.' },
+  4:  { speaker:'Male', sub:'I\'m here for a friend.' },
+  5:  { speaker:'Jessica', sub:'A friend. OK. I see it here.' },
+  6:  { speaker:'Male', sub:'Thank you. Where is my friend?' },
+  7:  { speaker:'Jessica', sub:'Your friend is in room 3. Room 3 is over there.' },
+  8:  { speaker:'Male', sub:'Nice to meet you. Have a good day!' },
+  9:  { speaker:'Jessica', sub:'You too! Bye! Have a good day!' },
+
+  // Route B — 冷淡（SHOTs 1-4）
+  10: { speaker:'Male', sub:'Hi. No.' },
+  11: { speaker:'Jessica', sub:'Oh. OK. Let me see.' },
+  12: { speaker:'Male', sub:'I\'m here to meet a friend.' },
+  13: { speaker:'Jessica', sub:'A friend. OK. I see it here.' },
+  14: { speaker:'Male', sub:'Where is my friend?' },
+  15: { speaker:'Jessica', sub:'Room 3. Over there.' },
+  16: { speaker:'Male', sub:'OK. Bye.' },
+  17: { speaker:'Jessica', sub:'Bye.' },
+
+  // Route C — 误入（SHOTs 1-6）
+  18: { speaker:'Male', sub:'Um... hi. I...' },
+  19: { speaker:'Jessica', sub:'Hello! Good! Here. This is for you.' },
+  20: { speaker:'Male', sub:'My friend is here.' },
+  21: { speaker:'Jessica', sub:'A friend. OK. I see it here.' },
+  22: { speaker:'Male', sub:'Where?' },
+  23: { speaker:'Jessica', sub:'Room 3.' },
+  24: { speaker:'Male', sub:'But I...' },
+  25: { speaker:'Jessica', sub:'Go, go! It is time! The meeting is in there.' },
+  26: { speaker:'Male', sub:'I\'m not here for the meeting.' },
+  27: { speaker:'Jessica', sub:'See you in there! Bye!' },
+  28: { speaker:'Male', sub:'...' },
+  29: { speaker:'Jessica', sub:'Have a good day!' }
+};
+
+// ── Video files: Route-based naming — A1~A5, B1~B4, C1~C6
+// For Route A, A1 = shared SHOT 1 (Jessica opening), A2-A5 = Route A journey
+// For Route B/C, numbering starts from their first SHOT
+const VIDEO_MAP = {
+  // SHOT 1: Jessica opening — stored as A1 (shared, Route A's first SHOT)
+  'S1': { file:'A1', speaker:'Jessica', sub:'Good morning! Hello! Are you here for the meeting?' },
+
+  // Route A — warm (A1=shared opening, A2~A5=route journey)
+  '2A': { file:'A2', speaker:'Jessica', sub:'Oh! I\'m sorry. Let me see.' },
+  '3A': { file:'A3', speaker:'Jessica', sub:'A friend. OK. I see it here.' },
+  '4A': { file:'A4', speaker:'Jessica', sub:'Your friend is in room 3. Room 3 is over there.' },
+  '5A': { file:'A5', speaker:'Jessica', sub:'You too! Bye! Have a good day!' },
+
+  // Route B — cold (B1~B4)
+  '1B': { file:'B1', speaker:'Jessica', sub:'Oh. OK. Let me see.' },
+  '2B': { file:'B2', speaker:'Jessica', sub:'A friend. OK. I see it here.' },
+  '3B': { file:'B3', speaker:'Jessica', sub:'Room 3. Over there.' },
+  '4B': { file:'B4', speaker:'Jessica', sub:'Bye.' },
+
+  // Route C — wrong (C1~C6)
+  '1C': { file:'C1', speaker:'Jessica', sub:'Hello! Good! Here. This is for you.' },
+  '2C': { file:'C2', speaker:'Jessica', sub:'A friend. OK. I see it here.' },
+  '3C': { file:'C3', speaker:'Jessica', sub:'Room 3.' },
+  '4C': { file:'C4', speaker:'Jessica', sub:'Go, go! It is time! The meeting is in there.' },
+  '5C': { file:'C5', speaker:'Jessica', sub:'See you in there! Bye!' },
+  '6C': { file:'C6', speaker:'Jessica', sub:'Have a good day!' }
+};
+
+// ==================== ROUTE SEQUENCES ====================
+// Each route: array of video keys
+const ROUTE_A = ['2A', 'd3a'];
+const ROUTE_B = ['1B', 'd3b'];
+const ROUTE_C = ['1C', '2C', '3C', 'd4c'];
+
+// After round 3A (convergent): auto-continue
+const ROUTE_A_CONT = ['3A', '4A', 'd5a'];
+const ROUTE_B_CONT = ['2B', '3B', 'd5b'];
+const ROUTE_C_CONT = ['4C', '5C', '6C'];
+
+// ==================== DECISION DATA ====================
+const D1 = {
+  q: 'Jessica thinks you\'re here for the meeting. What do you say?',
+  qZh: 'Jessica 以为你是来开会的。你怎么说？',
+  opts: [
+    {
+      cls:'label-a',
+      en:'"Good morning. I\'m here. I\'m not here for the meeting."',
+      zh:'礼貌纠正：完整句子，友好微笑',
+      queue: ROUTE_A,
+      end: null
+    },
+    {
+      cls:'label-b',
+      en:'"Hi. No."',
+      zh:'冷淡否认：两个词打发',
+      queue: ROUTE_B,
+      end: null
+    },
+    {
+      cls:'label-c',
+      en:'"Um... hi. I..."',
+      zh:'犹豫支吾：说不出完整句子',
+      queue: ROUTE_C,
+      end: null
+    }
+  ]
+};
+
+// Round 3a: after Jessica says "I see it here", Route A — where's the friend?
+const D3A = {
+  q: '"I see your friend." — How do you ask where?',
+  qZh: '"我看到你朋友了。"——你怎么问他在哪？',
+  opts: [
+    {
+      cls:'label-a',
+      en:'"Thank you. Where is my friend?"',
+      zh:'礼貌询问：加 Thank you',
+      queue: ROUTE_A_CONT,
+      end: null
+    },
+    {
+      cls:'label-b',
+      en:'"Where is my friend?"',
+      zh:'直接询问：不加多余的话',
+      queue: ROUTE_A_CONT,
+      end: null
+    },
+    {
+      cls:'label-c',
+      en:'"Where?"',
+      zh:'极简询问：一个字',
+      queue: ROUTE_A_CONT,
+      end: null
+    }
+  ]
+};
+
+// Round 3b: same for Route B
+const D3B = {
+  q: '"I see your friend." — How do you ask where?',
+  qZh: '"我看到你朋友了。"——你怎么问他在哪？',
+  opts: [
+    {
+      cls:'label-b',
+      en:'"Where is my friend?"',
+      zh:'直接询问：不加多余的话',
+      queue: ROUTE_B_CONT,
+      end: null
+    },
+    {
+      cls:'label-c',
+      en:'"Where?"',
+      zh:'极简询问：一个字',
+      queue: ROUTE_B_CONT,
+      end: null
+    }
+  ]
+};
+
+// Round 4c: Route C fork point
+const D4C = {
+  q: '"Room 3." — You\'re holding the wrong badge. What do you do?',
+  qZh: '"Room 3。"——你拿着错误的胸牌。怎么办？',
+  opts: [
+    {
+      cls:'label-a',
+      en:'"But I..." (try to explain)',
+      zh:'试图解释：但还是说不出口',
+      queue: ROUTE_C_CONT,
+      end: null
+    },
+    {
+      cls:'label-c',
+      en:'(Say nothing — just go where she points.)',
+      zh:'放弃：顺着她指的方向走',
+      queue: ROUTE_C_CONT,
+      end: null
+    }
+  ]
+};
+
+// D5a: Route A ending choice
+const D5A = {
+  q: '"Room 3 is over there." — Time to say goodbye. What do you say?',
+  qZh: '"Room 3 在那边。"——该道别了。你怎么说？',
+  opts: [
+    {
+      cls:'label-a',
+      en:'"Nice to meet you. Have a good day!"',
+      zh:'温暖道别：完整祝福',
+      queue: ['5A'],
+      end: { emoji:'😊', label:'Warm Ending · 温暖抵达', detail:'你拿到了正确的房间号，前台热情告别。', type:'success' }
+    },
+    {
+      cls:'label-b',
+      en:'"OK. Bye."',
+      zh:'干脆离开：两个词',
+      queue: ['5A'],
+      end: { emoji:'😊', label:'Warm Ending · 温暖抵达', detail:'你拿到了正确的房间号，前台热情告别。', type:'success' }
+    }
+  ]
+};
+
+// D5b: Route B ending
+const D5B = {
+  q: '"Room 3. Over there." — You have the info. Time to go?',
+  qZh: '"Room 3。那边。"——拿到了信息。走吧？',
+  opts: [
+    {
+      cls:'label-b',
+      en:'"OK. Bye."',
+      zh:'干脆离开',
+      queue: ['4B'],
+      end: { emoji:'😐', label:'Cold Ending · 冷淡通关', detail:'你拿到了房间号。全程冷得像查号码。', type:'neutral' }
+    }
+  ]
+};
+
+// ==================== STATE ====================
+let queue = [];
+let subOn = true;
+let zhOn = true;
+let playedKeys = [];
+let ending = null;
+let currentRoute = null;
+let lastFile = '';
+
+const video = document.getElementById('video');
+const ph = document.getElementById('ph');
+const phScene = document.getElementById('phScene');
+const phSpeaker = document.getElementById('phSpeaker');
+const phLine = document.getElementById('phLine');
+const phLoading = document.getElementById('phLoading');
+const subBar = document.getElementById('subBar');
+const subText = document.getElementById('subText');
+const promptWhen = document.getElementById('promptWhen');
+const bread = document.getElementById('bread');
+const btnZh = document.getElementById('btnZh');
+const routeMap = document.getElementById('routeMap');
+
+// ==================== CORE ====================
+function videoSrc(fileId) { return `video/${fileId}.mp4`; }
+
+function manualPlay() {
+  if (video.paused && video.readyState >= 2 && !video.ended) {
+    ph.classList.add('hidden');
+    video.classList.add('show');
+    video.play().catch(() => {});
+  }
+}
+
+function onVideoReady() {
+  ph.classList.add('hidden');
+  video.classList.add('show');
+  const p = video.play();
+  if (p) p.catch(() => {
+    phLoading.textContent = '▶ Tap video to play';
+    ph.classList.remove('hidden');
+  });
+}
+
+function onVideoPause() {
+  if (!video.ended && video.readyState >= 2 && ph.classList.contains('hidden') === false) {
+    phLoading.textContent = '▶ Tap video to play';
+  }
+}
+
+function onVideoEnded() {
+  ph.classList.add('hidden');
+  if (queue.length === 0) { showEnding(); return; }
+  showNext();
+}
+
+function onVideoError() {
+  phLoading.textContent = '(video not ready — auto-advancing 3s)';
+  ph.classList.remove('hidden');
+  video.classList.remove('show');
+  setTimeout(() => {
+    if (queue.length === 0) { showEnding(); return; }
+    showNext();
+  }, 3000);
+}
+
+// ==================== FLOW ====================
+function showNext() {
+  const next = queue[0];
+  if (typeof next === 'string' && next.startsWith('d')) {
+    showDecision(next);
+  } else {
+    // Auto-play next scene
+    const key = queue.shift();
+    playScene(key);
+  }
+}
+
+function playScene(key) {
+  lastKey = key;
+  promptWhen.innerHTML = '';
+  playedKeys.push(key);
+  updateBreadcrumb();
+  updateRouteMap();
+
+  const s = VIDEO_MAP[key];
+  if (!s) { console.error('Unknown key:', key); return; }
+
+  phScene.textContent = s.file;          // e.g. "A2", "B1", "C4"
+  phSpeaker.textContent = s.speaker;
+  phLine.textContent = '"' + s.sub + '"';
+  phLoading.textContent = 'Waiting for video...';
+  lastFile = s.file;
+
+  subText.innerHTML = `<strong>${s.speaker}</strong> &nbsp;<em>${s.sub}</em>`;
+  subBar.classList.toggle('hidden', !subOn);
+
+  const src = videoSrc(s.file);
+  ph.classList.remove('hidden');
+  video.classList.remove('show');
+  video.src = src;
+  video.load();
+}
+
+// ==================== DECISIONS ====================
+function showDecision(id) {
+  playedKeys.push(id);
+  updateBreadcrumb();
+
+  let dec;
+  if (id === 'd1') dec = D1;
+  else if (id === 'd3a') dec = D3A;
+  else if (id === 'd3b') dec = D3B;
+  else if (id === 'd4c') dec = D4C;
+  else if (id === 'd5a') dec = D5A;
+  else if (id === 'd5b') dec = D5B;
+  else { console.error('Unknown decision:', id); return; }
+
+  let html = `<div class="q-box"><div class="q-badge">❓ Round ${id.slice(1)} · Your Choice</div><div class="q-text">${zhOn ? dec.qZh : dec.q}</div></div><div class="opts">`;
+  dec.opts.forEach((o, i) => {
+    html += `<button class="opt-btn ${o.cls}${zhOn ? ' show-zh' : ''}" onclick="choose('${id}',${i})">
+      <div class="opt-en">${o.en}</div>
+      <div class="opt-zh">${o.zh}</div>
+    </button>`;
+  });
+  html += '</div>';
+  promptWhen.innerHTML = html;
+}
+
+function choose(decId, idx) {
+  let dec;
+  if (decId === 'd1') dec = D1;
+  else if (decId === 'd3a') dec = D3A;
+  else if (decId === 'd3b') dec = D3B;
+  else if (decId === 'd4c') dec = D4C;
+  else if (decId === 'd5a') dec = D5A;
+  else if (decId === 'd5b') dec = D5B;
+  else return;
+
+  const o = dec.opts[idx];
+  queue = [...o.queue];
+  ending = o.end;
+  if (decId === 'd1') {
+    currentRoute = idx === 0 ? 'A' : (idx === 1 ? 'B' : 'C');
+  }
+  // Advance
+  const next = queue.shift();
+  if (next) playScene(next);
+}
+
+// ==================== ENDING ====================
+function showEnding() {
+  const e = ending || { emoji:'?', label:'Unknown', detail:'', type:'neutral' };
+  promptWhen.innerHTML = '';
+  if (e.type === 'success') launchConfetti();
+  const overlay = document.createElement('div');
+  overlay.className = 'ending-overlay ' + e.type;
+  overlay.id = 'endingOverlay';
+  overlay.innerHTML = `<div class="end-big">
+    <div class="eb-emoji">${e.emoji}</div>
+    <div class="eb-label">${e.label}</div>
+    <div class="eb-detail">${e.detail}</div>
+    <button class="eb-again" onclick="closeEnding()">🔄 Play Again</button>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+function closeEnding() {
+  const ov = document.getElementById('endingOverlay'); if (ov) ov.remove();
+  const cc = document.getElementById('confettiBox'); if (cc) cc.remove();
+  restart();
+}
+
+function launchConfetti() {
+  const box = document.createElement('div');
+  box.className = 'confetti-container';
+  box.id = 'confettiBox';
+  const colors = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff8fe8','#ffb830','#5ce0e0','#c084fc'];
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (2 + Math.random() * 3) + 's';
+    p.style.animationDelay = Math.random() * 1.5 + 's';
+    p.style.width = (6 + Math.random() * 10) + 'px';
+    p.style.height = (8 + Math.random() * 12) + 'px';
+    p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    box.appendChild(p);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => { const cb = document.getElementById('confettiBox'); if (cb) cb.remove(); }, 5000);
+}
+
+// ==================== UI ====================
+function updateBreadcrumb() {
+  let html = '';
+  playedKeys.forEach((k, i) => {
+    if (i > 0) html += '<span class="sep">›</span>';
+    if (typeof k === 'string' && k.startsWith('d')) html += `<span class="crumb decision">⚡ R${k.slice(1)}</span>`;
+    else html += `<span class="crumb played">S${k}</span>`;
+  });
+  bread.innerHTML = html;
+}
+
+function updateRouteMap() {
+  routeMap.innerHTML = `<span class="${currentRoute==='A'?'current':(playedKeys.some(k=>String(k).includes('A'))?'played':'')}">A 温暖</span> <span class="${currentRoute==='B'?'current':(playedKeys.some(k=>String(k).includes('B'))?'played':'')}">B 冷淡</span> <span class="${currentRoute==='C'?'current':(playedKeys.some(k=>String(k).includes('C'))?'played':'')}">C 误入</span>`;
+}
+
+let lastKey = '';
+
+function replayScene() {
+  if (!lastFile) return;
+  ph.classList.remove('hidden');
+  video.classList.remove('show');
+  video.src = videoSrc(lastFile);
+  video.load();
+}
+
+function toggleZh() {
+  zhOn = !zhOn;
+  btnZh.textContent = zhOn ? 'EN' : '中';
+  btnZh.classList.toggle('active', zhOn);
+  document.querySelectorAll('.opt-btn').forEach(b => b.classList.toggle('show-zh', zhOn));
+  // Refresh decision area
+  const next = queue[0];
+  if (typeof next === 'string' && next.startsWith('d')) showDecision(next);
+}
+
+function restart() {
+  const ov = document.getElementById('endingOverlay'); if (ov) ov.remove();
+  const cc = document.getElementById('confettiBox'); if (cc) cc.remove();
+  queue = [];
+  playedKeys = [];
+  ending = null;
+  currentRoute = null;
+  lastFile = '';
+  promptWhen.innerHTML = '';
+  bread.innerHTML = '';
+  routeMap.innerHTML = '';
+  // Start: SHOT 1 then D1
+  queue = ['d1'];
+  playScene('S1');
+}
+
+function startGame() {
+  document.getElementById('intro').classList.add('hidden');
+  btnZh.textContent = 'EN'; btnZh.classList.add('active');
+  subBar.classList.remove('hidden');
+  queue = ['d1'];
+  playScene('S1');
+}
+</script>
+</body>
+</html>

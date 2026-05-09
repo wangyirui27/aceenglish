@@ -178,7 +178,7 @@ After each ending round, add a summary line:
 4. **6 rounds total.** Rounds 1-4 for all players; Routes A & B end at Round 4; Route C continues through Rounds 5-6.
 5. **NPC responses can converge** — multiple player choices can trigger the same NPC response. This controls branching explosion.
 6. **Endings are determined by choice patterns**, not by picking "Route A" at Round 1. A player who picks mostly 🅐 options gets ending A.
-7. **All NPCs Westerners** unless user specifies otherwise.
+7. **All NPCs AND Player Westerners** — every character in the video (NPC + Player) must be Western (Caucasian/European appearance). This includes the Player's voice and implied appearance. No exceptions unless user explicitly requests otherwise.
 8. **First-person POV** — camera IS the protagonist. Never see protagonist's face.
 9. **One NPC minimum**.
 10. **Round 4 🅒 is the fork point** — annotated with `🔀 分叉点：此选项通往 C 路线 Round 5` and a recovery note showing how to jump back to A/B ending.
@@ -187,6 +187,7 @@ After each ending round, add a summary line:
 13. **🎯 CEFR 等级感知（强制）**：当输入数据标明目标等级（如 A1 / Pre-A1 / A2 等），**所有路线的所有台词（Player + NPC）必须严格锁定在该等级词汇和语法范围内**。禁止出现超纲词、复杂时态、从句、被动语态等超出该等级的语言特征。如果不确定某词是否属于该等级，选择更简单的替代词。
 14. **🎬 批量生成输出（强制）**：在交互格式（选择回合网格 + 结局总览）之后，**必须追加「🎬 三条路线线性剧本（LibTV 批量生成用）」章节**。该章节包含三套**完整的、自包含的线性 SHOT 序列**（Route A / Route B / Route C），每条路线从 SHOT 1 一口气跑到结局。每条路线选取该结局的**最典型选择路径**（A = 全部 🅐 选项，B = 全部 🅑 选项，C = 全部 🅒 选项 + Round 5 🅐），格式为逐 SHOT 的 Player-NPC 一来一回。此章节专门用于喂给 LibTV 批量生成三条独立视频。
 15. **👤 玩家性别定义（强制）**：每个故事在 Title + Metadata 块中必须明确玩家性别（♂ 或 ♀，不能写 ♂/♀）。生成线性剧本时，将 `Player:` 替换为明确的 `Male:` 或 `Female:`，确保 LibTV 语音合成性别一致。
+16. **📹 极简视频生成（强制）**：剧本文件中的线性脚本不再包含复杂的分镜提示词。每条 SHOT 格式为：`POV 第一人称` + `场景：{地点}` + `动作：{一句话基本动作}` + 对话。视频由用户自行生成，AI 工具自行发挥画面细节。
 
 ---
 
@@ -268,7 +269,7 @@ SHOT 7: {Round 6 NPC → 😰 END}
 
 ### Formatting rules for linear scripts:
 - Each SHOT = `Player:` + dialogue + `{NPC}:` + response — **no bold, no parenthetical notes, no action descriptions**
-- ⚠️ **双人对话强制**：每条 SHOT 中 Player 和 NPC 均有台词，两人都需要出声音。Player 为第一人称 POV 画外音（不出镜），NPC 为画面中讲话角色。不可只渲染一方语音。不要写角色外貌的描述。
+- ⚠️ **极简动作描述**：每条 SHOT 只需要三样东西：① POV 第一人称视角 ② 一句话动作描述（人物在这个场景下的基本动作，不写灯光/色调/运镜/镜头类型） ③ 对话。即梦/LibTV 自行发挥画面细节，不做复杂提示词。
 - **场景摘要强制**：每条 Route 标题下一行必须加 `> 场景：{地点}。{一句话剧情描述。}`。防止 LibTV 因缺乏上下文而错误脑补场景（如把办公楼猜成酒店）。
 - SHOT numbering: plain text (no bold), e.g. `SHOT 1`
 - Character names: plain text followed by colon, e.g. `Jessica:`
