@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+131,S5｜A2下｜出状况也能处理,S5-C03｜手机与线上生活,S5E15｜验证码,S05-A2-C03-G03,A2,咖啡店移动取餐柜台｜核对 pickup code,「验证码」：验证码/登录/订单确认；A=重复确认后完成；B=猜测/乱确认翻车。,数字指令｜验证码数字｜线上订单｜消息｜账户操作,手机屏幕｜快递柜｜线上订单｜App客服｜验证码界面,"I need a verification code.（需要验证码）
+The code is six numbers.（验证码长度）
+Can you send the code again?（重发）
+I didn’t get the code.（未收到）
+Check your phone message.（查短信）
+Enter the code here.（输入）
+The code is wrong.（错误）
+Try the new code.（新码）
+It expires in five minutes.（过期时间）
+Please read the numbers slowly.（慢读数字）
+Was the number ___?（确认数字）
+I can’t see the last number.（看不清）
+Now it is accepted.（成功）
+Can I use email instead?（替代方式）
+Thank you, it worked.（完成）","Nouns: code, number, message, phone, email, app, screen, minute, box, account
+Verbs: send, get, check, enter, read, see, accept, use, expire
+Adjectives: wrong, new, last, six, accepted
+Time / Place: again, here, in five minutes, instead, now
+Chunks: verification code, six numbers, send again, enter the code, last number"

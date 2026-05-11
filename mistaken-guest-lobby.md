@@ -179,104 +179,92 @@ Player ♂ · Jessica (Receptionist) ♀ · A1 / Pre-A1 · 欧美真人出镜 ·
 
 ## 🎬 三条路线线性剧本（LibTV 批量生成用）
 
-### Route A · 温暖（5 SHOTs）— POV 第一人称
+> 以下三套剧本为完整线性 SHOT 序列——每套从 SHOT 1 到结局无分支，可直接喂入 LibTV 批量生成三条独立视频。
+> 
+> - **Route A**（😊 温暖结局）= 全部选择 🅐 选项
+> - **Route B**（😐 冷淡结局）= 全部选择 🅑 选项
+> - **Route C**（😰 误入结局）= 全部选择 🅒 选项 + Round 5 🅐
+
+### Route A · 温暖（5 SHOTs）
 > 场景：共享办公楼前台。玩家礼貌纠正被误认为会议嘉宾的误会，前台热情核实后指引正确房间。
 
-SHOT 1
-📍 POV 第一人称 · 场景：共享办公楼大堂前台
-🎬 动作：Jessica 从柜台后探身，手里举着会议胸牌，热情地看向你
+SHOT 1: 共享办公楼前台，Jessica笑容灿烂地抬起头，手里举着会议胸牌
+Male (画外音): Another morning at the lobby. She looks way too excited.
 Jessica: Good morning! Hello! Are you here for the meeting?
 
-SHOT 2
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 轻拍额头，尴尬一笑，放下胸牌去拿平板。你看不到自己，只能听到自己的声音
-🎙️ Male: Good morning. I'm here. I'm not here for the meeting.
+SHOT 2: 我友好地摇摇头，Jessica愣了一下
+Male (画外音): Good morning. I'm here. I'm not here for the meeting.
 Jessica: Oh! I'm sorry. Let me see.
 
-SHOT 3
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 低头看平板，手指在屏幕上滑动查找
-🎙️ Male: I'm here for a friend.
+SHOT 3: Jessica轻拍额头，尴尬一笑，放下胸牌去拿平板
+Male (画外音): I'm here for a friend.
 Jessica: A friend. OK. I see it here.
 
-SHOT 4
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 抬起头，温暖微笑，手指向右侧走廊
-🎙️ Male: Thank you. Where is my friend?
+SHOT 4: 她低头滑动平板屏幕，我身体微微前倾
+Male (画外音): Thank you. Where is my friend?
 Jessica: Your friend is in room 3. Room 3 is over there.
 
-SHOT 5
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 眼睛弯成月牙，热情挥手目送你离开
-🎙️ Male: Nice to meet you. Have a good day!
+SHOT 5: Jessica抬起头，温暖微笑，手指向右侧走廊
+Male (画外音): Nice to meet you. Have a good day!
 Jessica: You too! Bye! Have a good day!
+😊 温暖抵达——你用完整的礼貌句换来了同样的温度。
 
 ---
 
-### Route B · 冷淡（4 SHOTs）— POV 第一人称
+### Route B · 冷淡（5 SHOTs）
 > 场景：共享办公楼前台。玩家用最简短的句子否认误会，前台公事公办地核实并指引房间。
 
-SHOT 1
-📍 POV 第一人称 · 场景：共享办公楼大堂前台
-🎬 动作：Jessica 笑容瞬间消失，放下胸牌，公事化地拿起平板
-🎙️ Male: Hi. No.
+SHOT 1: 共享办公楼前台，Jessica笑容灿烂地抬起头，手里举着会议胸牌
+Male (画外音): Another morning at the lobby. She looks way too excited.
+Jessica: Good morning! Hello! Are you here for the meeting?
+
+SHOT 2: 我面无表情，语气干脆
+Male (画外音): Hi. No.
 Jessica: Oh. OK. Let me see.
 
-SHOT 2
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 面无表情地低头看平板，手指划过屏幕
-🎙️ Male: I'm here to meet a friend.
+SHOT 3: Jessica笑容瞬间消失，公事化地拿起平板
+Male (画外音): I'm here to meet a friend.
 Jessica: A friend. OK. I see it here.
 
-SHOT 3
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 抬手指向右侧，面无表情，目光已回到平板上
-🎙️ Male: Where is my friend?
+SHOT 4: Jessica抬手指向右侧，不带表情
+Male (画外音): Where is my friend?
 Jessica: Room 3. Over there.
 
-SHOT 4
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 眼睛已回到平板屏幕上，只抬了一下手指
-🎙️ Male: OK. Bye.
+SHOT 5: 我已经转身，不多看前台一眼
+Male (画外音): OK. Bye.
 Jessica: Bye.
+😐 冷淡通关——房间号拿到了，但全程冷得像查号码。
 
 ---
 
-### Route C · 误入（6 SHOTs）— POV 第一人称
+### Route C · 误入（7 SHOTs）
 > 场景：共享办公楼前台。玩家支支吾吾没能澄清误会，被前台塞了胸牌推进了错误的会议大厅。
 
-SHOT 1
-📍 POV 第一人称 · 场景：共享办公楼大堂前台
-🎬 动作：Jessica 完全没注意到你的犹豫，兴奋地把胸牌递到你手边
-🎙️ Male: Um... hi. I...
+SHOT 1: 共享办公楼前台，Jessica笑容灿烂地抬起头，手里举着会议胸牌
+Male (画外音): Another morning at the lobby. She looks way too excited.
+Jessica: Good morning! Hello! Are you here for the meeting?
+
+SHOT 2: 我低头不敢对视，话卡在喉咙里
+Male (画外音): Um... hi. I...
 Jessica: Hello! Good! Here. This is for you.
 
-SHOT 2
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 低头看平板，手指在屏幕上滑动——她没注意到你手中的胸牌
-🎙️ Male: My friend is here.
+SHOT 3: Jessica完全没注意到我的犹豫，兴奋地把胸牌递到我手边
+Male (画外音): My friend is here.
 Jessica: A friend. OK. I see it here.
 
-SHOT 3
-📍 POV 第一人称 · 场景：同上
-🎬 动作：Jessica 快速指了一下右侧，目光立即回到平板上
-🎙️ Male: Where?
+SHOT 4: Jessica快速指了一下右侧，目光已回到平板
+Male (画外音): Where?
 Jessica: Room 3.
 
-SHOT 4
-📍 POV 第一人称 · 场景：同上，背景可见大厅入口
-🎬 动作：Jessica 看了一眼手表，急切地指向大厅门口方向
-🎙️ Male: But I...
+SHOT 5: 我低头看着手里胸牌上不认识的名字，欲言又止
+Male (画外音): But I...
 Jessica: Go, go! It is time! The meeting is in there.
 
-SHOT 5
-📍 POV 第一人称 · 场景：同上，大厅音乐和人声渐响
-🎬 动作：Jessica 已经在招呼下一个人，朝你随意挥了挥手
-🎙️ Male: I'm not here for the meeting.
+SHOT 6: Jessica看了一眼手表，急切地指向大厅门口
+Male (画外音): I'm not here for the meeting.
 Jessica: See you in there! Bye!
 
-SHOT 6
-📍 POV 第一人称 · 场景：从柜台看向远处的大厅门口
-🎬 动作：Jessica 在远处朝你的背影灿烂挥手，完全不知道送错了人
-🎙️ Male: ...
+SHOT 7: 我站在大厅门口回头，Jessica已经在招呼下一个人，朝我随意挥了挥手
+Male (画外音): ...
 Jessica: Have a good day!
+😰 误入会场——你的每一次沉默都被热情温柔地淹没了。

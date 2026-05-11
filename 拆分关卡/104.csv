@@ -1,0 +1,19 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+104,S4｜A2上｜出门办事不慌,S4-C02｜住处与入住,S4E12｜酒店 Boss,S04-A2-C02-G06,A2,酒店前台｜综合入住、房间、早餐、退房,「酒店 Boss」：入住/房间/服务时间确认；A=重复确认后完成；B=猜测/乱确认翻车。,入住｜房间信息｜服务时间｜小问题｜礼貌请求,酒店前台｜房间｜早餐区｜机场｜旅行服务台,"I have a booking for ___ nights.（预订信息）
+Can I check in now, or should I wait?（入住/等待）
+My room is ready, but the key card doesn’t work.（房间+问题）
+What time does breakfast start tomorrow?（早餐时间）
+I need a quiet room because I have an early flight.（原因）
+There is no hot water in my room.（房间问题）
+Can someone check the Wi-Fi?（网络求助）
+Can I leave my bags after check-out?（退房后寄存）
+Please check the bill again.（核对账单）
+Could you repeat the room number?（请求重复）
+The elevator is over there, right?（确认方向）
+Can you call a taxi to the airport?（叫车）
+I left my phone in the room.（遗失物品）
+Thank you, that solves the problem.（完成）","Nouns: booking, room, key card, breakfast, Wi-Fi, bill, taxi, airport, flight, bag, phone
+Verbs: check in, check out, wait, repeat, fix, leave, call, pay
+Adjectives: quiet, ready, broken, early, included, extra
+Time / Place: tomorrow, after check-out, at the front desk, in the room, airport
+Chunks: early flight, room number, no hot water, check the bill, leave bags"

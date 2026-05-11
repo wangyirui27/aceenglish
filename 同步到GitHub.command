@@ -27,7 +27,8 @@ echo ""
 # ── 第二步：检查本地改动 ──
 if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
     echo "✅ 本地没有改动，无需推送"
-    sleep 3
+    sleep 2
+    osascript -e 'tell application "Terminal" to close front window' 2>/dev/null
     exit 0
 fi
 
@@ -46,4 +47,5 @@ git push origin main 2>&1
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━"
 echo "✅ 同步完成"
-sleep 3
+sleep 2
+osascript -e 'tell application "Terminal" to close front window' 2>/dev/null

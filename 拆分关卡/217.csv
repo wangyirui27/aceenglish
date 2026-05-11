@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+217,S8｜B2初阶｜成人世界潜台词,S8-C05｜服务投诉与谈判,S8E28｜提出要求,S08-B2-C05-G04,B2,客服柜台｜提出合理要求,「提出要求」：投诉/政策/要求/方案；A=听懂潜台词并稳住关系；B=误判立场/过度直接翻车。,投诉｜政策｜责任｜要求｜补偿｜解决方案评估,诊所前台｜银行/服务窗口｜邮局｜维修柜台｜咨询室,"I’d like to request ___.（提出要求）
+Given the situation, I think ___ is fair.（基于情况要求）
+Could you offer a refund or replacement?（要求退款/更换）
+I’m asking for this because ___.（说明理由）
+Would it be possible to waive the fee?（请求免费）
+Can you provide a clear timeline?（要求时间线）
+I’d like a written confirmation.（要求书面确认）
+Could a manager review this?（请求复核）
+I’m not asking for anything extra.（限定要求）
+I’m asking for what was agreed.（强调约定）
+Can we find a solution that works for both sides?（寻求双赢）
+I’d prefer not to wait another week.（表达时间诉求）
+Please confirm what you can do today.（当天确认）
+If that isn’t possible, what alternative can you offer?（询问替代）
+I’d appreciate a prompt response.（要求尽快回应）","Nouns: request, refund, replacement, fee, timeline, confirmation, manager, alternative
+Verbs: request, offer, waive, confirm, review, replace, agree, respond
+Adjectives / Status: fair, prompt, written, reasonable, possible, agreed
+Time / Place: today, another week, by email, at the counter, after review
+Chunks: works for both sides, waive the fee, written confirmation, prompt response, alternative offer"

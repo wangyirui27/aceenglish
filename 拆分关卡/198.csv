@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+198,S8｜B2初阶｜成人世界潜台词,S8-C02｜职场项目协作,S8E09｜风险和阻碍,S08-B2-C02-G03,B2,项目风险会议｜识别风险,「风险和阻碍」：背景/优先级/风险/行动项；A=听懂潜台词并稳住关系；B=误判立场/过度直接翻车。,优先级｜风险｜资源｜时间线｜行动项｜责任分配,办公室｜会议室｜远程会议｜走廊对话｜协作工具界面,"I see a potential risk with ___.（指出风险）
+The blocker is not the task; it’s ___.（定位阻碍）
+If we don’t address this, ___ could slip.（说明后果）
+What’s the worst-case scenario?（询问最坏情况）
+That dependency may slow us down.（依赖风险）
+We need a mitigation plan.（要求缓解方案）
+This isn’t a deal-breaker, but it needs attention.（评估风险程度）
+Who can remove this blocker?（寻找负责人）
+I’m concerned about the timing.（表达担忧）
+Can we flag this before it becomes urgent?（提前升级）
+Let’s be realistic about the risk.（现实评估）
+What backup option do we have?（备用方案）
+The issue is manageable if we ___.（条件性解决）
+I’d rather raise it early than too late.（早暴露问题）
+Let’s track the open risks.（记录风险）","Nouns: risk, blocker, dependency, issue, delay, timeline, backup plan, mitigation
+Verbs: address, flag, escalate, slow down, slip, manage, track, remove
+Adjectives / Status: high-risk, manageable, urgent, unresolved, critical, realistic
+Time / Place: early, too late, before launch, this week, in the risk log
+Chunks: worst-case scenario, deal-breaker, backup option, open risks, raise it early"

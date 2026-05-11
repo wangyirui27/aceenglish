@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+201,S8｜B2初阶｜成人世界潜台词,S8-C02｜职场项目协作,S8E12｜项目 Boss,S08-B2-C02-G06,B2,项目会议室｜综合背景、优先级、风险、资源、行动项,「项目 Boss」：背景/优先级/风险/行动项；A=听懂潜台词并稳住关系；B=误判立场/过度直接翻车。,优先级｜风险｜资源｜时间线｜行动项｜责任分配,办公室｜会议室｜远程会议｜走廊对话｜协作工具界面,"Let’s connect the background, risks, and next steps.（整合项目脉络）
+The key decision is whether to ___.（识别决策点）
+We have two realistic options.（提出选项）
+Option A is faster, but it carries more risk.（比较方案）
+Option B is safer, but it needs more resources.（权衡资源）
+What are we willing to trade off?（讨论取舍）
+The priority should match the business goal.（对齐目标）
+We can move forward if we agree on ___.（条件推进）
+Let’s make the responsibility split explicit.（明确责任）
+I don’t think the timeline is credible yet.（挑战时间线）
+We need a decision owner.（确定决策人）
+Can we lock the scope for now?（锁定范围）
+Let’s capture the risk and the mitigation.（记录风险与缓解）
+The next 48 hours are critical.（强调时间窗口）
+Does this plan feel workable to everyone?（确认可执行性）","Nouns: decision, option, risk, resource, scope, owner, timeline, mitigation
+Verbs: trade off, align, move forward, lock, capture, decide, split, validate
+Adjectives / Status: realistic, credible, workable, critical, explicit, safer
+Time / Place: next 48 hours, this sprint, before launch, in the roadmap, on the call
+Chunks: business goal, responsibility split, lock the scope, decision owner, workable plan"

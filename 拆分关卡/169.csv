@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+169,S7｜B1进阶｜规则、公告与协商,S7-C02｜新闻、公告与说明,S7E10｜交通公告,S07-B1-C02-G04,B1,车站屏幕前｜听懂延误/改线公告,「交通公告」：公告主旨/影响判断；A=抓住逻辑并总结；B=曲解/漏行动项翻车。,公告｜通知｜原因｜时间地点｜简短说明｜主旨理解,新闻短片｜播客访谈｜公共广播｜活动现场｜屏幕公告,"The train is delayed because of ___.（说明延误原因）
+Service on line ___ has been suspended.（说明停运）
+Passengers should take the replacement bus.（给出替代）
+The next bus will arrive in about ___.（说明到达时间）
+Please use the other platform.（指示地点）
+The road is closed near ___.（说明封路）
+There is heavy traffic on the main road.（描述交通）
+Can we still get there on time?（判断时间）
+We should take another route.（提出替代路线）
+Let’s check the app for updates.（核对信息）
+I heard the announcement, but I missed the details.（说明听漏）
+What was the reason for the delay?（询问原因）
+So we need to change at ___.（复述行动）
+If we leave now, we may still make it.（推断结果）
+Let’s go before it gets worse.（行动闭环）","Nouns: train, bus, line, platform, route, traffic, main road
+Verbs: delay, suspend, arrive, change, check, miss
+Adjectives / Adverbs: heavy, closed, late, on time
+Time / Place: line two, other platform, near the station, in ten minutes
+Chunks: train delay, replacement bus, other platform, heavy traffic, take another route"

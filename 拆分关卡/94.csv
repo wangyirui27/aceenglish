@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+94,S4｜A2上｜出门办事不慌,S4-C01｜出行与交通,S4E02｜票和站台,S04-A2-C01-G02,A2,车站售票口｜确认票和站台,「票和站台」：交通时间/站台/上车确认；A=重复确认后完成；B=猜测/乱确认翻车。,交通信息｜时间地点｜票务初步｜延误｜上下车指令,街道｜地铁站｜公交站｜出租车｜机场/车站,"Where can I buy a ticket?（买票）
+One ticket to ___, please.（购票请求）
+Is this the right ticket?（确认票）
+Do I need a card?（询问交通卡）
+Can I pay by card?（付款方式）
+How much is the ticket?（询价）
+The ticket machine is over there.（指示位置）
+Can you help me use the machine?（请求协助）
+Tap your card here.（刷卡指令）
+Keep your ticket.（保留票据）
+Which platform is it?（询问站台）
+The train leaves from platform ___.（站台信息）
+Let’s check the platform number.（确认信息）
+I need a return ticket.（返程票）
+This ticket is for ___.（说明票用途）","Nouns: ticket, card, platform, gate, machine, train, station, price, receipt
+Verbs: buy, pay, tap, scan, keep, check, leave
+Adjectives: right, wrong, single, return, valid
+Time / Place: platform ___, gate ___, over there, here
+Chunks: ticket machine, train ticket, platform number, by card, return ticket"

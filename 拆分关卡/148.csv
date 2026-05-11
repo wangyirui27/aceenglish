@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+148,S6｜B1初阶｜听懂来龙去脉,S6-C02｜工作沟通基础,S6E07｜任务更新,S06-B1-C02-G01,B1,办公室站会｜汇报任务进度,「任务更新」：任务/负责人/截止时间；A=抓住逻辑并总结；B=曲解/漏行动项翻车。,任务分配｜进度汇报｜截止时间｜障碍｜协作请求｜后续安排,办公室｜会议室｜远程会议｜走廊对话｜协作工具界面,"Here’s a quick update.（进度开场）
+I’m working on ___.（说明当前任务）
+I finished ___ yesterday.（已完成）
+I’m still waiting for ___.（等待信息）
+The main issue is ___.（问题）
+I’m on track.（进度正常）
+I’m a little behind.（轻微延期）
+I need more time for ___.（请求时间）
+The next step is ___.（下一步）
+Can you check ___?（请求检查）
+I’ll send it by ___.（承诺交付）
+Let’s review it together.（共同复核）
+Is there anything urgent?（确认优先级）
+Thanks for the update.（回应更新）
+Please keep me posted.（保持同步）","Nouns: task, update, project, file, report, draft, issue, deadline
+Verbs: work on, finish, wait, check, review, send
+Adjectives: urgent, clear, late, ready, behind
+Time / Place: today, yesterday, tomorrow, by Friday
+Chunks: quick update, main issue, keep me posted, next step"

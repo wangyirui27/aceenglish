@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>🏷 Dropped Papers</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f14;color:#ddd;min-height:100vh}
+header{background:#1a1a24;border-bottom:1px solid #2a2a3a;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+header h1{font-size:18px;color:#fff}
+header button{padding:6px 16px;border-radius:8px;border:1px solid #333;background:transparent;color:#aaa;cursor:pointer;font-size:12px}
+header button:hover{border-color:#555;color:#fff}
+main{max-width:720px;margin:0 auto;padding:24px 16px 80px}
+.mission{background:#0f0f1f;border:1px solid #2a2a3e;border-radius:14px;padding:18px 24px;margin-bottom:24px}
+.mission .label{font-size:10px;color:#888;letter-spacing:1px;margin-bottom:8px}
+.mission .desc{font-size:13px;color:#bbb;line-height:1.7;margin-bottom:12px}
+.mission .tags{display:flex;gap:10px;font-size:11px;flex-wrap:wrap}
+.mission .scene{font-size:13px;color:#ccc;margin-top:14px;padding-top:12px;border-top:1px solid #1f1f2e}
+.mission .scene .speaker{color:#a78bfa;font-weight:600}
+.round-group{margin-bottom:24px;opacity:.12;pointer-events:none;transition:opacity .4s}
+.round-group.active{opacity:1;pointer-events:auto}
+.round-group.played{opacity:.45}
+.round-header{text-align:center;margin-bottom:16px}
+.round-header .r-num{font-size:10px;color:#444;letter-spacing:1px;margin-bottom:4px}
+.round-header .r-npc{background:#14141c;border:1px solid #1f1f2e;border-left:3px solid #fbbf24;border-radius:8px;padding:10px 18px;font-size:14px;color:#ddd;display:inline-block;min-width:240px;margin-bottom:8px;opacity:0;transition:opacity .3s;text-align:center}
+.round-header .r-npc.on{opacity:1}
+.round-header .r-npc .npc-tag{font-size:9px;color:#fbbf24;margin-bottom:3px}
+.round-header .r-title{font-size:14px;color:#888}
+.options-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.node{background:#14141c;border:1px solid #1f1f2e;border-radius:14px;padding:14px 16px;min-width:200px;max-width:250px;display:flex;flex-direction:column;gap:6px;transition:all .25s;cursor:default;opacity:.4;pointer-events:none}
+.node.on{opacity:1;pointer-events:auto;border-color:#3a3a4a}
+.node.on:hover{border-color:#666;transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.node.pick{opacity:1;pointer-events:none;border-width:2px}
+.node.off{opacity:.04;pointer-events:none}
+.node .n-badge{font-size:9px;letter-spacing:.8px}
+.node.a{border-left:4px solid #4ade80}.node.a .n-badge{color:#4ade80}
+.node.bs{border-left:4px solid #fbbf24}.node.bs .n-badge{color:#fbbf24}
+.node.bh{border-left:4px solid #f87171}.node.bh .n-badge{color:#f87171}
+.node.pick.a{border-color:#4ade80;background:#0a1a10}
+.node.pick.bs{border-color:#fbbf24;background:#1a1a10}
+.node.pick.bh{border-color:#f87171;background:#1a0a0a}
+.node .dialogue{display:flex;flex-direction:column;gap:3px}
+.node .d-player{font-size:13px;color:#ccc;line-height:1.4;padding-left:8px;border-left:2px solid #a78bfa}
+.node .d-npc{font-size:12px;color:#999;line-height:1.4;padding-left:8px;border-left:2px solid #fbbf24}
+.node .d-npc .who{font-size:9px;color:#fbbf24;margin-right:4px}
+.end-badge{display:none;text-align:center;padding:18px 24px;margin-top:20px;border-radius:12px;font-size:15px;font-weight:600}
+.end-badge.show{display:block}
+.end-badge.a{background:#0f2a1a;border:1px solid #2a4a2a;color:#4ade80}
+.end-badge.bs{background:#2a2a0f;border:1px solid #4a4a2a;color:#fbbf24}
+.end-badge.bh{background:#2a0f0f;border:1px solid #4a2a2a;color:#f87171}
+#path-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a28;border:1px solid #333;border-radius:14px;padding:10px 18px;display:none;align-items:center;gap:8px;z-index:200;font-size:12px;color:#ccc;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+#path-bar.show{display:flex}
+#path-bar .trace{display:flex;gap:3px;align-items:center}
+#path-bar .step{width:22px;height:22px;border-radius:5px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#000}
+#path-bar .step.a{background:#4ade80}.path-bar .step.bs{background:#fbbf24}.path-bar .step.bh{background:#f87171}
+#path-bar .arr{color:#444;font-size:9px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🏷 Dropped Papers</h1>
+  <button onclick="reset()">🔄 重来</button>
+</header>
+<main>
+  <div class="mission">
+    <div class="label">🎯 核心任务</div>
+    <div class="desc">你在电梯口撞掉了一位男士的文件。<br><br><span style="color:#fff;font-weight:500;">道歉 + 帮忙捡，让他接受你的道歉。</span></div>
+    <div class="tags">
+      <span style="color:#4ade80;">✅ A · 赢了</span>
+      <span style="color:#fbbf24;">💸 B软 · 只动嘴</span>
+      <span style="color:#f87171;">🚫 B硬 · 说错话</span>
+    </div>
+    <div class="scene"><span class="speaker">Tom:</span> "Oh! My papers!"</div>
+  </div>
+
+  <div class="round-group active" id="r1">
+    <div class="round-header">
+      <div class="r-num">Round 1</div>
+      <div class="r-title">你撞掉了别人的文件</div>
+    </div>
+    <div class="options-row">
+<div class="node a" data-n="r1a" data-g="r1" data-t="a" data-to="r2a" onclick="pick(this)">
+  <div class="n-badge">🅐 · 道歉+帮忙 → 赢</div>
+  <div class="dialogue">
+    <div class="d-player">"I am so sorry! Let me help you."</div>
+    <div class="d-npc"><span class="who">Tom:</span>"Oh… Thank you."</div>
+  </div>
+</div>
+<div class="node bs" data-n="r1bs" data-g="r1" data-t="bs" data-to="r2bs" onclick="pick(this)">
+  <div class="n-badge">🅑 · 只道歉不动手 → B软</div>
+  <div class="dialogue">
+    <div class="d-player">"Sorry."</div>
+    <div class="d-npc"><span class="who">Tom:</span>"…OK."</div>
+  </div>
+</div>
+<div class="node bh" data-n="r1bh" data-g="r1" data-t="bh" data-to="r2bh" onclick="pick(this)">
+  <div class="n-badge">🅒 · 说错话 → B硬</div>
+  <div class="dialogue">
+    <div class="d-player">"It is OK."</div>
+    <div class="d-npc"><span class="who">Tom:</span>"It is OK? …Excuse me."</div>
+  </div>
+</div></div>
+  </div>
+
+  
+<div class="round-group" id="r2a" style="display:none">
+  <div class="round-header">
+    <div class="r-num">Round 2 · A 路线</div>
+    <div class="r-npc" id="npc-r2a"><div class="npc-tag">Tom</div><span class="txt"></span></div>
+    <div class="r-title">文件捡起来了——最后一句话</div>
+  </div>
+  <div class="options-row">
+<div class="node a" data-n="r2a1" data-g="r2a" data-t="a" data-end="a" onclick="pick(this)">
+  <div class="n-badge">🅐 · 递去+再道歉 → 最好</div>
+  <div class="dialogue">
+    <div class="d-player">"Here you go. Sorry about that."</div>
+    <div class="d-npc"><span class="who">Tom:</span>"Thank you. No problem. Have a good day!"</div>
+  </div>
+</div>
+<div class="node a" data-n="r2a2" data-g="r2a" data-t="a" data-end="a" onclick="pick(this)">
+  <div class="n-badge">🅐 · 递去不道歉 → 一般</div>
+  <div class="dialogue">
+    <div class="d-player">"Here you go."</div>
+    <div class="d-npc"><span class="who">Tom:</span>"Thanks."</div>
+  </div>
+</div></div>
+</div>
+<div class="round-group" id="r2bs" style="display:none">
+  <div class="round-header">
+    <div class="r-num">Round 2 · B软 路线</div>
+    <div class="r-npc" id="npc-r2bs"><div class="npc-tag">Tom</div><span class="txt"></span></div>
+    <div class="r-title">Tom 捡完了文件站起来</div>
+  </div>
+  <div class="options-row">
+<div class="node bs" data-n="r2bs1" data-g="r2bs" data-t="bs" data-end="bs" onclick="pick(this)">
+  <div class="n-badge">🅑 · 再道一次歉</div>
+  <div class="dialogue">
+    <div class="d-player">"…Sorry about that."</div>
+    <div class="d-npc"><span class="who">Tom:</span>"…OK. Bye."</div>
+  </div>
+</div>
+<div class="node bs" data-n="r2bs2" data-g="r2bs" data-t="bs" data-end="bs" onclick="pick(this)">
+  <div class="n-badge">🅑 · 不说了</div>
+  <div class="dialogue">
+    <div class="d-player">"…Bye."</div>
+    <div class="d-npc"><span class="who">Tom:</span>"Bye."</div>
+  </div>
+</div></div>
+</div>
+<div class="round-group" id="r2bh" style="display:none">
+  <div class="round-header">
+    <div class="r-num">Round 2 · B硬 路线</div>
+    <div class="r-npc" id="npc-r2bh"><div class="npc-tag">Tom</div><span class="txt"></span></div>
+    <div class="r-title">Tom 已经进了电梯</div>
+  </div>
+  <div class="options-row">
+<div class="node bh" data-n="r2bh1" data-g="r2bh" data-t="bh" data-end="bh" onclick="pick(this)">
+  <div class="n-badge">🅒 · 追上去道歉</div>
+  <div class="dialogue">
+    <div class="d-player">"Sorry!"</div>
+    <div class="d-npc"><span class="who">Tom:</span>"…OK."</div>
+  </div>
+</div>
+<div class="node bh" data-n="r2bh2" data-g="r2bh" data-t="bh" data-end="bh" onclick="pick(this)">
+  <div class="n-badge">🅒 · 放弃</div>
+  <div class="dialogue">
+    <div class="d-player">"…OK."</div>
+    <div class="d-npc"><span class="who">Tom:</span>"…Excuse me."</div>
+  </div>
+</div></div>
+</div>
+
+  <div class="end-badge" id="end"></div>
+</main>
+
+<div id="path-bar">
+  <span>🎯 路径：</span>
+  <div class="trace" id="trace"></div>
+  <button onclick="reset()" style="background:transparent;border:1px solid #333;color:#888;padding:3px 10px;border-radius:6px;font-size:11px;cursor:pointer;">重来</button>
+</div>
+
+<script>
+const D = {"r1a": {"npc": "Oh… Thank you."}, "r1bs": {"npc": "…OK."}, "r1bh": {"npc": "It is OK? …Excuse me."}, "r2a1": {"npc": "Thank you. No problem. Have a good day!", "end": "✅ 代价 $0。Tom 说了 No problem."}, "r2a2": {"npc": "Thanks.", "end": "😐 代价 $0。文件递了，但 Tom 没说 No problem。"}, "r2bs1": {"npc": "…OK. Bye.", "end": "💸 Tom 听到了。但他没说 No problem——你的道歉晚了。代价：他的好感。"}, "r2bs2": {"npc": "Bye.", "end": "💸 Tom 走进电梯。你对他来说不重要了。代价：一个印象。"}, "r2bh1": {"npc": "…OK.", "end": "🚫 电梯门关了。你道歉了 但 Tom 没原谅。代价：一句没分量的 Sorry。"}, "r2bh2": {"npc": "…Excuse me.", "end": "🚫 门关了。Tom 没有看你第二眼。代价：一段没机会修复的关系。"}};
+let P = [];
+let done = false;
+
+function reset() {
+  P = [];
+  done = false;
+  ["r1", 'r2a','r2bs','r2bh'].forEach(function(id) {
+    var e = document.getElementById(id);
+    if (e) {
+      e.classList.remove("active", "played");
+      e.style.display = id === "r1" ? "" : "none";
+    }
+  });
+  document.getElementById("r1").classList.add("active");
+  document.querySelectorAll(".node").forEach(function(n) {
+    n.classList.remove("pick", "off", "on");
+  });
+  document.querySelectorAll("#r1 .node").forEach(function(n) {
+    n.classList.add("on");
+  });
+  ['r2a','r2bs','r2bh'].forEach(function(id) {
+    var e = document.getElementById("npc-" + id);
+    if (e) {
+      e.classList.remove("on");
+      e.querySelector(".txt").textContent = "";
+    }
+  });
+  var eb = document.getElementById("end");
+  eb.className = "end-badge";
+  eb.textContent = "";
+  document.getElementById("path-bar").classList.remove("show");
+}
+
+function pick(el) {
+  if (done || !el.classList.contains("on")) return;
+  var nid = el.dataset.n;
+  var gid = el.dataset.g;
+  var rt = el.dataset.t;
+  var ed = el.dataset.end;
+  var to = el.dataset.to;
+
+  document.querySelectorAll("[data-g=\"" + gid + "\"]").forEach(function(n) {
+    if (n === el) {
+      n.classList.remove("on");
+      n.classList.add("pick");
+    } else {
+      n.classList.remove("on");
+      n.classList.add("off");
+    }
+  });
+
+  var rg = document.getElementById(gid);
+  if (rg) {
+    rg.classList.remove("active");
+    rg.classList.add("played");
+  }
+
+  P.push({g: gid, n: nid, t: rt});
+  var npc = D[nid];
+
+  if (to && npc && npc.npc) {
+    var ne = document.getElementById("npc-" + to);
+    if (ne) {
+      ne.querySelector(".txt").textContent = npc.npc;
+      ne.classList.add("on");
+    }
+  }
+
+  if (ed) {
+    finish(ed, npc);
+    return;
+  }
+
+  if (to) {
+    var ng = document.getElementById(to);
+    if (ng) {
+      ng.style.display = "";
+      ng.classList.add("active");
+      ng.querySelectorAll(".node").forEach(function(n) {
+        n.classList.add("on");
+      });
+      ng.scrollIntoView({behavior: "smooth", block: "center"});
+    }
+  }
+}
+
+function finish(t, npc) {
+  done = true;
+  document.querySelectorAll(".node.on").forEach(function(n) {
+    n.classList.remove("on");
+  });
+  var eb = document.getElementById("end");
+  eb.className = "end-badge show " + t;
+  eb.textContent = npc ? (npc.end || "") : "";
+  document.getElementById("path-bar").classList.add("show");
+  var tr = document.getElementById("trace");
+  var h = "";
+  P.forEach(function(s, i) {
+    if (i > 0) h += '<span class="arr">→</span>';
+    h += '<span class="step ' + s.t + '">' + s.t.toUpperCase() + '</span>';
+  });
+  var emoji = t === "a" ? "✅" : t === "bs" ? "💸" : "🚫";
+  h += '<span class="arr">→</span><span style="font-size:12px">' + emoji + '</span>';
+  tr.innerHTML = h;
+  eb.scrollIntoView({behavior: "smooth", block: "center"});
+}
+
+reset();
+</script>
+</body>
+</html>

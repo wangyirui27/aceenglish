@@ -1,295 +1,282 @@
 # Branching Storyboard Generator
 
-Generate interactive branching dialogue scripts with enriched multi-route storyboard prompts — purpose-built for short-form interactive video / visual novel scenarios. Output is a single `.md` file containing CHOICE-ROUND dialogue scripts AND three linear LibTV-ready scripts for batch video generation.
-
-## Trigger
-
-User gives a **theme / scenario** in plain language, e.g.:
-- "咖啡店点错单的场景"
-- "机场安检排错队的三个结局"
-- "电梯里认错人的尴尬对话"
-
-Generate the full `.md` file from scratch. Do NOT ask the user to provide structure — infer everything.
-
-## Output File
-
-Write to the user's current working directory (or wherever they specify):
-- `{theme-slug}.md` — the complete script file
+Generate short, high-contrast interactive dialogue scripts for A0-A1 English learners. Output is a single `.md` file with interactive CHOICE-ROUND dialogue AND two linear LibTV-ready scripts.
 
 ---
 
-## Core Model: Choice-Round Grid（选择回合制）
+## Core Model: 同一场景 · 三种语言策略 · 三种结局
 
-This is a **choice-based game**, not a linear branching script. The player does NOT speak freely — at every turn, the game presents **2-3 options** (like on-screen buttons), and the player picks one. The game then plays the chosen line and the NPC responds.
+不是复杂的分支树——是**同一个场景，你说的话决定了你赢了还是输了。**
 
-### Key Concepts
-
-**Choice Round（选择回合）**: One player turn = one round. Each round offers **2-3 options** for the player to choose from. Options may be different phrasings of the same communicative intent, different tones (warm/neutral/cold), or genuinely different paths.
-
-**Convergent NPC Response（NPC 收敛）**: Multiple player choices in the same round can lead to the **same or similar NPC response**. This is how we avoid combinatorial explosion — the NPC "converges" the branching back to a manageable state for the next round.
-
-**Round Count（回合总数）**: Total rounds = the count of the longest route (Route C). Shorter routes (A, B) end at an earlier round with their ending.
-
-**Ending Determination（结局判定）**: The ending (A/B/C) is determined by the **pattern of choices across all rounds**, not by picking a single "route" at the start. The player drifts toward an ending round by round.
-
-### Structure Overview
+每个场景有两件东西可以赢、也可以输：
+- **你的事**（问题）：你的杯子对不对、你的账单对不对、你找到朋友了没有
+- **你的资源**（代价）：你花了多少时间、跑了多少路、拿到了什么
 
 ```
-SHOT 1: NPC opening [NO CHOICE — standalone, NPC only]
-    │
-ROUND 1: [2-3 choices] → NPC responds (may diverge by tone)
-    │
-ROUND 2: [2-3 choices] → NPC responds (may converge — same response to all choices)
-    │
-ROUND 3: [2-3 choices] → NPC responds
-    │
-ROUND 4: [2-3 choices] → NPC responds → Route A/B reach their ending here
-    │
-ROUND 5: [2 choices, C-path only] → NPC responds
-    │
-ROUND 6: [2 choices, C-path only] → NPC responds → Route C ending
+Route A    = 用信息+尊重+清晰度表达 → 问题解决，你拿到了你要的。
+Route B软  = 没说清 / 不敢说 → 对方没理解你，事情走向错误方向。你吃了哑巴亏。
+Route B硬  = 只给否定 / 态度攻击 / 没信息 → 对方拒绝服务你 → 吵架 / 被赶出去 / 什么都没拿到。
 ```
 
-- **Routes A & B end after Round 4** (4 player choices + SHOT 1 opening)
-- **Route C ends after Round 6** (6 player choices + SHOT 1 opening)
-- Each round's options are labeled with the ending they lean toward: `🅐` / `🅑` / `🅒`
-- A player who picks mostly `🅐` choices reaches the A ending. Mixing and matching is possible — the ending label is suggestive, not rigid.
+**语言策略就是因，结局就是果。** 学习者必须能从结局回溯到"我哪句话说错了"。
+- A 结局：你说了什么 → 对方理解了 → 问题解决 → 你拿到了你要的
+- B软结局：你没说清什么 → 对方误解了 → 事情走向错误方向 → 你拿了不想要的 / 白跑了
+- B硬结局：你说错了什么 → 对方拒绝帮你 → 吵架 / 被赶走 / 空手离开
+
+**结局反差必须绝对。** A 和 B 的结局不是「多等了 5 分钟」的温差——是你拿到了拿铁 vs Mike 把你赶出咖啡店。学习者看到 B 硬结局应该有「天哪我不会这样说话」的冲击感。
+
+### 四个核心原则
+
+**1. 语言策略决定结局。** 每个结局必须能回溯到玩家的具体台词。不是"你选了 B 所以输了"——是"你说了 'Wrong.' 又不说哪里错，所以 Mike 猜了 flat white"。台词→反应→后果，因果链完整。
+
+**2. 不止一种输法——而且输法必须有冲击力。** B 路线必须包含两种完全不同的"输"：
+- **输法一（太软）**：你不敢说、不会说、说了一半——对方没理解你的真正意思，事情按错误方向发展。你吃了哑巴亏。
+- **输法二（太硬 / 没信息）**：你只说否定、不给信息、态度攻击——对方**拒绝服务你**。不是「跳过你」这种温和的结果，是**明确的拒绝**：Mike 说 "Next customer"、Jessica 叫保安、司机把你放在路边。你被赶出去了、被吵架了、什么都没拿到。
+
+**3. NPC 也有错的时候。** 错误的是杯型、账单、指路——NPC 是搞错的一方。玩家不是在"纠正自己"，是在**主张合理权利**。这让语言策略从"承认错误"升级为"说服对方"——完全不同的心理状态。
+
+**4. 结局必须是绝对反差，不是温差。** 每个结局必须有**明确的、不可逆转的、戏剧性的**结果差异：
+- 🟢 **A 最好**：问题解决，你拿到了你要的。Mike 说 "See you tomorrow!"，Sarah 从电梯出来。
+- 🟡 **A 一般**：问题解决了但多花了时间或多要了东西。
+- 🟡 **B软挣扎**：对方误解了，你拿到了不想要的（flat white 而不是 latte），或者白跑了一趟。
+- 🔴 **B硬拒绝**：**对方明确拒绝你、跟你吵架、把你赶走。** Mike 说 "Next customer, please." 不是「跳过你」——是他**不想再跟你说话了**。Jessica 叫经理。司机说 "Get out of my car." 这才是 B 硬的代价。
+
+**B硬结局的三个层次（递进）：**
+1. **被跳过**：NPC 不理你了，你站在原地什么都没拿到。
+2. **被拒绝**：NPC 明确说 "No" / "I can't help you" / "Next customer"。
+3. **被赶走**：NPC 叫保安、叫经理、跟你说 "Get out" / "Leave"。最严重的后果。
 
 ---
 
-## File Structure (Mandatory Sections)
+## 场景选择原则
+
+### ✅ 可选场景
+日常生活中有**冲突/代价**的场景——这类场景中，NPC 可能也有错，玩家需要主张合理权利。
+
+推荐：账单多收钱、杯型/饮品给错、司机走错路、包裹错投、会议安排冲突。
+
+**最佳示例（一键生成范式）：**
+> 你在餐厅吃完饭，账单上多了一瓶 $45 的红酒。你没点。
+> - A：和服务员沟通 → 她发现是隔壁桌的，道歉划掉。
+> - B软：你没说 → 付了 $45。服务员不知道你付错了。
+> - B硬：你大喊大叫 → 经理来了，让你把钱付了走人。
+
+### 🚫 误会设计禁止项
+- **禁止依赖玩家身份/名字的误会**：玩家在游戏里没有"名字"——他们就是"我"。不要设计"Mike 叫错了你的名字"这类误会。玩家无从确认自己叫什么。
+- ✅ 正确：饮品种类错了（latte vs cappuccino）、杯型错了（small vs medium）、价格错了、房间号错了、车牌号错了
+- ❌ 错误：叫错名字（"One latte for Amy! you're not Amy"）、认错身份（玩家没有预设身份）
+
+### ❌ 避雷场景
+- 需要复杂情感表达的（道歉、投诉升级）——A0 词汇不足以支撑
+- 需要多轮维持误会的（被认错但不说话）——不符合"一句说清"原则
+- 超越学习者日常经验的（法庭、就医）——缺乏真实感
+
+### 可持续性检查
+```
+这个场景——
+A 路线：一句正确表达 → 问题解决 → ✅
+B 路线：一句错误表达 → 问题恶化 → ✅
+```
+检查的不是回合数——是**每轮是否有新信息进入**。如果一轮没有新信息，只是在等，说明这轮该删。
+
+---
+
+## 回合结构
+
+**轮次数随难度缩放。** 不是一刀切——A0 场景简单回合少，B1 场景复杂回合多。
+
+| CEFR 等级 | 推荐回合数 | 场景复杂度 | 示例 |
+|-----------|-----------|-----------|------|
+| A0 / Pre-A1 | 3 回合 | 一句话说清 or 没说清 | 前台认错人、杯型给错 |
+| A1 | 3-4 回合 | 两次机会纠正，多一层误会 | 账单错一项、司机走错路口 |
+| A2 | 4-5 回合 | 多轮协商，需要补充信息 | 包裹送错楼、会议时间冲突 |
+| B1+ | 5-6 回合 | 情绪管理 + 事实纠正双线 | 餐厅投诉、房东协商 |
+
+**核心原则：每个场景有它的「自然回合数」。** 不是越多越好——是误会展开需要的回合数。A0 场景一句话就能纠正的事不需要 5 轮；B1 场景涉及金额和时间协商，3 轮说不完。
+
+**基础 3 轮模板（A0-A1）：**
+```
+ROUND 1: 3 个选项（A / B软 / B硬）→ NPC 回应，剧情分叉
+ROUND 2: 情境展开——NPC 自然回应引出新信息（每路 2 选项）
+ROUND 3: 最终决策 → 6 个不同的结局场景
+```
+
+**扩展至 4-5 轮（A2-B1）：**
+```
+ROUND 1: 3 选项 → 分叉
+ROUND 2: NPC 回应，首次尝试解决 → 每路 2 选项（怎么回应）
+ROUND 3: 信息升级——新信息进来（价格明细、地图导航、经理介入）
+ROUND 4: 每路 2 选项 → 最终决策
+（ROUND 5: 若需要情绪化收尾或第三方介入）
+```
+
+**B硬路线的回合设计原则：**
+- B硬的每一回合，NPC 的态度都在**递进恶化**：从困惑 → 不耐烦 → 明确拒绝 → 赶走
+- 最终回合 B硬② 的 NPC 台词必须是**拒绝/吵架/赶人**——不是温和的"OK"，是"Next customer" / "Get out" / "I'm calling security"
+- B硬① 可以是"被拒绝但还站在原地"，B硬② 必须是"被赶走 / 空手离开"
+
+**扩展原则：**
+- 奇数轮（R1/R3/R5）= 玩家选择轮：每路 2 个选项
+- 偶数轮（R2/R4）= NPC 回应轮：可无选项，NPC 推动剧情到下一轮
+- 每增加一级难度，增加 1-2 轮。不是加废话——是加**新的信息层**（金额明细、时间窗口、第三方介入）
+- R2 情境展开不是再来一次选择——是新的情境信息进来了
+
+---
+
+## 文件结构
 
 ### 1. Title + Metadata Block
 ```markdown
 # 🏷 {English Title}
-{Chinese one-liner describing the scenario}
-Player ♂/♀ · {NPC role} ♀/♂ · {CEFR level} · {casting notes} · POV 第一人称
+{一句话中文场景描述}
+Player ♂/♀ · {NPC 角色} ♀/♂ · {CEFR 等级} · POV 第一人称
 ```
 
-### 2. Choice-Round Rules (Mandatory)
+### 2. 核心任务（强制）
 ```markdown
----
+## 🎯 核心任务
 
-## 🎬 镜头与选择规则（强制）
-- ⚠️ **SHOT 1 为独立镜头**（仅 NPC 开场白），无玩家选择，文件中仅出现一次。
-- ⚠️ **SHOT 1 之后，每一轮 = 2-3 个玩家选项 → 玩家选一个 → NPC 回应。一轮为一个选择回合。**
-- ⚠️ **每个选择回合必须有 2-3 个选项。** 选项可以是同一交际意图的不同措辞、不同语气、或真正不同的路径。
-- ⚠️ **NPC 可以"收敛"**：同一回合的多个选项可以触发相同或相似的 NPC 回应，以此控制分支爆炸。
-- ⚠️ **回合总数 = 最长路线回合数（C 路线 = 6 回合）**。A/B 路线在第 4 回合结束。
-- LIBTV 分镜时：每个选择回合 = 1 个镜头（选项差异通过 UI 按钮体现，不计入镜头数）。
+{一句话：玩家在什么场景、面对什么问题。}
 
----
+{一句话：目标是正确表达什么。}
+
+- ✅ **A 路线**：赢了对方/这件事
+- ❌ **B 路线**：输了对方/这件事
 ```
-This section goes immediately after the title block.
 
-### 3. Choice Grid Overview
-A table explaining the round structure:
+### 3. 镜头与选择规则（强制）
+```markdown
+## 🎬 镜头与选择规则
+- ⚠️ **NPC 开场白仅在 Route A 线性剧本的 SHOT 1 中。** 互动区直接从 Round 1 开始。
+- ⚠️ **每轮 2-3 个选项。** Round 1 用 3 个（A/B软/B硬），后续每轮 2 个。A = 能赢的策略，B = 会输的策略。
+- ⚠️ **A/B 选项台词必须文字上可区分**——不是同义词，而是完全不同的措辞。
+- ⚠️ **全部台词锁定目标 CEFR 等级词汇与句型。**
+- ⚠️ **所有角色（Player + NPC）必须说真实口语词汇。** 禁止无声对白、填充词作为完整对白。
+```
 
+### 4. 选择回合总览（表格）
 ```markdown
 ## 🎮 选择回合总览
-| 回合 | 选项数 | NPC 收敛 | 说明 |
-|------|--------|---------|------|
-| SHOT 1 | 0（无选择） | — | Jessica 前台热情开场，误认为会议嘉宾 |
-| Round 1 | 3 | 否（分叉） | 玩家的第一次选择——礼貌纠正 / 冷淡否认 / 犹豫支吾 |
-| Round 2 | 3 | 是（收敛） | 告知来找朋友——三种措辞，NPC 统一回应 |
-| Round 3 | 3 | 半收敛 | 询问朋友在哪——措辞影响 NPC 情绪但信息相同 |
-| Round 4 | 3 | 否（终点） | A/B 路线在此结束；选 🅒 选项则进入 Round 5 |
-| Round 5 | 2 | 否 | C 路线专有——加深误解 |
-| Round 6 | 2 | 是（收敛） | C 路线专有——无力回天，统一走向坏结局 |
+| 回合 | 选项数 | 说明 |
+|------|--------|------|
+| Round 1 | 3 | 场景展开——A 正确回应 / B软 太软 / B硬 太硬 |
+| Round 2 | 2 per route | 情境展开——NPC 回应 / 新信息进入 |
+| Round 3 | 1-2 per route | 收尾 / 决策（A0-A1 在此结束） |
+| Round 4-5 | 2 per route | [A2+] 信息升级 / 第三方介入 / 最终协商 |
 ```
 
-### 4. SHOT 1 · Shared Opening (Appears ONCE)
-```markdown
----
-
-## 🎬 SHOT 1 · 共享开场（无选择）
-
-**{NPC}:** {Opening line}
-*（{parenthetical action/emotion note in Chinese}）*
-
----
-```
-This standalone SHOT appears exactly ONCE. It has no player choice — it's the NPC's opening line that sets the scene.
-
-### 5. Choice Rounds (Rounds 1-N)
-
-Each round follows this template:
+### 5. Choice Rounds
+每个回合 2 个选项：标注 `🅐` 和 `🅑`。
 
 ```markdown
----
+## 🎮 Round 1 · {场景描述}
 
-## 🎮 Round {N} · {Round description in Chinese}
+### 选项 🅐 · {标签} → 对的说法
+**Player:** {正确台词}
+**{NPC}:** {NPC 回应}
+*（{动作注记}）*
+😊 END: {A 结局一句话}
 
-### 选项 🅐 · {brief choice label} → 倾向 A 路线
-**Player:** {Dialogue line}
-**{NPC}:** {Response}
-*（{parenthetical action/emotion note in Chinese}）*
-
-### 选项 🅑 · {brief choice label} → 倾向 B 路线
-**Player:** {Dialogue line}
-**{NPC}:** {Response}
-*（{parenthetical action/emotion note}）*
-
-### 选项 🅒 · {brief choice label} → 倾向 C 路线
-**Player:** {Dialogue line}
-**{NPC}:** {Response}
-*（{parenthetical action/emotion note}）*
+### 选项 🅑 · {标签} → 错的说法
+**Player:** {错误台词}
+**{NPC}:** {NPC 回应}
+*（{动作注记}）*
+❌ 此选项通往 B 路线后续
 ```
 
-**Choice Round formatting rules:**
-- **Round number + Chinese description** as heading
-- Each option labeled with the route it leans toward: `🅐` / `🅑` / `🅒`
-- **NPC convergence**: When NPC response is the same for multiple options, write it **identically** — character for character — and add a note: `*（NPC 回应与选项 🅐 相同）*`
-- **Dialogue format**: `**{Character}:** Dialogue text` with bold character name
-- Each option includes one parenthetical action/emotion note in Chinese italicized
-- Round 4 options 🅐 and 🅑 are **ending rounds** — after NPC responds, the game ends (A or B ending)
-- Round 4 option 🅒 leads to Round 5 (C path continues)
-- Round 6 is the final round — all options lead to ending C
-
-**Ending:**
-After each ending round, add a summary line:
+### 6. Ending Summaries
 ```markdown
-{emoji} {one-line outcome summary}
+## 🏁 结局对比
+
+### ✅ 路线 A① · 零等待零损失
+你说了"{A 路线关键台词}" → {NPC 理解了什么} → {问题立刻解决了} → {几点了，你在哪里，拿到了什么}
+结果：{具体时间/位置/物品}
+代价：$0
+
+### 😐 路线 A② · 事办成了但有损耗
+你说了"{A② 关键台词}" → {NPC 怎么执行的} → {问题还是解决了} → {但多等了/多跑了}
+结果：{最终还是达到了目的}
+代价：{多花的时间或路程}
+
+### 💸 路线 B软① · 损耗但最终挽回
+你说了"{B软① 关键台词}" → {NPC 怎么反应的} → {中间发生了什么} → {最终结果}
+结果：{最终结局，具体事实}
+代价：{具体时间/物品}
+
+### 💸 路线 B软② · 全沉
+你说了"{B软② 关键台词}" → {NPC 怎么执行的} → {你去了哪里} → {错过了什么}
+结果：{没办成的事}
+代价：{往返路程 + 时间}
+
+### 🚫 路线 B硬① · 被拒绝
+你说了"{B硬① 关键台词}" → {NPC 怎么拒绝的} → {NPC 说了什么拒绝的话} → {你被怎么对待了}
+结果：{NPC 明确拒绝你——不服务、叫保安、叫经理}
+代价：{你什么都没拿到 + 被拒绝的场景}
+
+### 🚫 路线 B硬② · 被赶走 / 被吵架
+你说了"{B硬② 关键台词}" → {NPC 怎么爆发的} → {NPC 说了什么赶人的话} → {你被赶到了哪里}
+结果：{NPC 跟你吵架 / 把你赶出去 / 叫了保安}
+代价：{空手离开 + 被赶走的场景——最严重的后果}
 ```
 
-### 6. Ending Summaries (One per Ending)
+**结局对比格式规则：**
+- 每个结局必须写出 **"你说了什么 → NPC 怎么反应 → 结果怎样"** 的完整因果链
+- B 软和 B 硬的因果链必须完全不同——一个是因为"没说清"，一个是因为"说错了方式"
+- 赢了什么 / 输了什么必须具体——是钱、是房间号、是胸牌、是对方的笑容，不是抽象的"输了"
+
+### 7. Two Linear Scripts (LibTV)
 ```markdown
----
+## 🎬 两条路线线性剧本
 
-## 🏁 结局总览
+> - **Route A**（结果）= Round 1 🅐
+> - **Route B**（结果）= Round 1 🅑
 
-### 😊 结局 A · {Chinese name}
-{description of what happens, what tone choices led here}
+### 🎬 Route A · {标题}（{SHOT 数} SHOTs）
+SHOT 1: {场景}
+{NPC}: {SHOT 1 NPC 开场白}
+SHOT 2: {场景}
+{画外音}: {Round 1 🅐 玩家台词}
+{NPC}: {NPC 回应}
+😊 END
 
-### 😐 结局 B · {Chinese name}
-{description}
-
-### 😰 结局 C · {Chinese name}
-{description}
+### 🎬 Route B · {标题}（{SHOT 数} SHOTs）
+SHOT 1: {场景}
+{NPC}: {SHOT 1 NPC 开场白}
+SHOT 2: {场景}
+{画外音}: {Round 1 🅑 玩家台词}
+{NPC}: {NPC 回应}
+😰 END
 ```
 
----
-
-## Design Constraints
-
-1. **⚠️ THREE ENDINGS, ALWAYS. Ending A, Ending B, Ending C. Never two.** This is the single most important rule. Any file with only 2 endings is INCOMPLETE and MUST be rejected.
-2. **SHOT 1 is standalone** — NPC only, no player choice. Appears ONCE before all rounds.
-3. **Every player round has 2-3 choices** — never a single option. Options are labeled 🅐/🅑/🅒 with route affinity.
-4. **6 rounds total.** Rounds 1-4 for all players; Routes A & B end at Round 4; Route C continues through Rounds 5-6.
-5. **NPC responses can converge** — multiple player choices can trigger the same NPC response. This controls branching explosion.
-6. **Endings are determined by choice patterns**, not by picking "Route A" at Round 1. A player who picks mostly 🅐 options gets ending A.
-7. **All NPCs AND Player Westerners** — every character in the video (NPC + Player) must be Western (Caucasian/European appearance). This includes the Player's voice and implied appearance. No exceptions unless user explicitly requests otherwise.
-8. **First-person POV** — camera IS the protagonist. Never see protagonist's face.
-9. **One NPC minimum**.
-10. **Round 4 🅒 is the fork point** — annotated with `🔀 分叉点：此选项通往 C 路线 Round 5` and a recovery note showing how to jump back to A/B ending.
-11. **Chinese + English mixed** — dialogue English, annotations/titles Chinese.
-12. **No explanatory text inside rounds** — pure option-by-option. Only ending summary after final NPC response.
-13. **🎯 CEFR 等级感知（强制）**：当输入数据标明目标等级（如 A1 / Pre-A1 / A2 等），**所有路线的所有台词（Player + NPC）必须严格锁定在该等级词汇和语法范围内**。禁止出现超纲词、复杂时态、从句、被动语态等超出该等级的语言特征。如果不确定某词是否属于该等级，选择更简单的替代词。
-14. **🎬 批量生成输出（强制）**：在交互格式（选择回合网格 + 结局总览）之后，**必须追加「🎬 三条路线线性剧本（LibTV 批量生成用）」章节**。该章节包含三套**完整的、自包含的线性 SHOT 序列**（Route A / Route B / Route C），每条路线从 SHOT 1 一口气跑到结局。每条路线选取该结局的**最典型选择路径**（A = 全部 🅐 选项，B = 全部 🅑 选项，C = 全部 🅒 选项 + Round 5 🅐），格式为逐 SHOT 的 Player-NPC 一来一回。此章节专门用于喂给 LibTV 批量生成三条独立视频。
-15. **👤 玩家性别定义（强制）**：每个故事在 Title + Metadata 块中必须明确玩家性别（♂ 或 ♀，不能写 ♂/♀）。生成线性剧本时，将 `Player:` 替换为明确的 `Male:` 或 `Female:`，确保 LibTV 语音合成性别一致。
-16. **📹 极简视频生成（强制）**：剧本文件中的线性脚本不再包含复杂的分镜提示词。每条 SHOT 格式为：`POV 第一人称` + `场景：{地点}` + `动作：{一句话基本动作}` + 对话。视频由用户自行生成，AI 工具自行发挥画面细节。
+**线性剧本格式化规则：**
+- Route A SHOT 1 = 纯 NPC 开场（无画外音）
+- Route B 及 Route A 后续 SHOT = 画外音 + NPC 双人对话
+- 每个 SHOT 必须有场景+动作描述（一句话）
+- 画外音性别由 Metadata 中 ♂/♀ 判定，使用 `Male (画外音):` 或 `Female (画外音):`
+- 不可用 `Player` 占位符
 
 ---
 
-## Quick Reference: Choice Round Template
+## 设计约束（强制）
 
-```
-## 🎮 Round {N} · {中文描述}
-
-### 选项 🅐 · {标签} → A
-**Player:** {Dialogue}
-**{NPC}:** {Response}
-*（{中文注记}）*
-
-### 选项 🅑 · {标签} → B
-**Player:** {Dialogue}
-**{NPC}:** {Response}
-*（{中文注记}）*
-
-### 选项 🅒 · {标签} → C
-**Player:** {Dialogue}
-**{NPC}:** {Response}
-*（{中文注记}）*
-```
-
-When NPC converges (same response as option 🅐):
-```
-### 选项 🅑 · {标签} → B
-**Player:** {Dialogue}
-**{NPC}:** {Response, identical to option 🅐}
-*（NPC 回应与选项 🅐 相同）*
-```
-
----
-
-## Batch Production: Three Linear Scripts (LibTV) — 强制章节
-
-This section **MUST** appear at the end of every generated `.md` file, after the ending summaries. It contains three complete, self-contained linear SHOT sequences — one per ending — designed to be fed directly into LibTV for batch video generation.
-
-### Structure
-
-```markdown
----
-
-## 🎬 三条路线线性剧本（LibTV 批量生成用）
-
-> 以下三套剧本为**完整线性 SHOT 序列**——每套从 SHOT 1 到结局无分支，可直接喂入 LibTV 批量生成三条独立视频。
-> 
-> - **Route A**（😊 温暖结局）= 全部选择 🅐 选项
-> - **Route B**（😐 冷淡结局）= 全部选择 🅑 选项
-> - **Route C**（😰 误入结局）= 全部选择 🅒 选项 + Round 5 🅐
-
-### 🎬 Route A · 温暖结局（5 SHOTs）
-> 场景：{地点}。{一句话剧情描述。}
-
-SHOT 1: {SHOT 1 NPC opening, identical to interactive version}
-SHOT 2: {Round 1 🅐 Player → NPC}
-SHOT 3: {Round 2 🅐 Player → NPC}
-SHOT 4: {Round 3 🅐 Player → NPC}
-SHOT 5: {Round 4 🅐 Player → NPC → 😊 END}
-
-### 🎬 Route B · 冷淡结局（5 SHOTs）
-
-SHOT 1: {identical to Route A SHOT 1}
-SHOT 2: {Round 1 🅑 Player → NPC}
-SHOT 3: {Round 2 🅑 Player → NPC}
-SHOT 4: {Round 3 🅑 Player → NPC}
-SHOT 5: {Round 4 🅑 Player → NPC → 😐 END}
-
-### 🎬 Route C · 误入结局（7 SHOTs）
-
-SHOT 1: {identical to Route A SHOT 1}
-SHOT 2: {Round 1 🅒 Player → NPC}
-SHOT 3: {Round 2 🅒 Player → NPC}
-SHOT 4: {Round 3 🅒 Player → NPC}
-SHOT 5: {Round 4 🅒 Player → NPC}
-SHOT 6: {Round 5 🅐 Player → NPC}
-SHOT 7: {Round 6 NPC → 😰 END}
-```
-
-### Formatting rules for linear scripts:
-- Each SHOT = `Player:` + dialogue + `{NPC}:` + response — **no bold, no parenthetical notes, no action descriptions**
-- ⚠️ **极简动作描述**：每条 SHOT 只需要三样东西：① POV 第一人称视角 ② 一句话动作描述（人物在这个场景下的基本动作，不写灯光/色调/运镜/镜头类型） ③ 对话。即梦/LibTV 自行发挥画面细节，不做复杂提示词。
-- **场景摘要强制**：每条 Route 标题下一行必须加 `> 场景：{地点}。{一句话剧情描述。}`。防止 LibTV 因缺乏上下文而错误脑补场景（如把办公楼猜成酒店）。
-- SHOT numbering: plain text (no bold), e.g. `SHOT 1`
-- Character names: plain text followed by colon, e.g. `Jessica:`
-- Player lines are copied verbatim from the corresponding choice option
-- NPC responses are copied verbatim from the interactive version
-- SHOT numbering: Route A/B use SHOT 1-5; Route C uses SHOT 1-7
-- After the last SHOT's NPC response, append the ending emoji + one-line summary
-- **No convergence notes, no choice labels, no 🅐/🅑/🅒 markers** — this is pure linear script
-
----
-
-## Example Entry
-
-User says: "咖啡店点错单，被当成了另一个人"
-
-Generate `wrong-order-coffee.md` with:
-- SHOT 1: Barista calls out wrong name (standalone, NPC only, no choice)
-- Round 1: 3 choices — polite correction (🅐) / blunt "not mine" (🅑) / hesitation (🅒)
-- Round 2: 3 choices — what to say when barista checks order screen (NPC converges)
-- Round 3: 3 choices — how to ask about the drink (NPC semi-converges)
-- Round 4: 3 choices — 🅐 warm goodbye (A ending) / 🅑 cold bye (B ending) / 🅒 confused silence (→ Round 5)
-- Rounds 5-6: C-path only — wrong drink, wrong person, bad ending
-- 3 linear LibTV scripts appended at the end for batch video generation
+1. **三条路线，结局必须是绝对反差。** A = 问题解决，你拿到了你要的。B软 = 对方误解了，你吃了哑巴亏（拿了不想要的 / 白跑了）。B硬 = 对方拒绝你 / 跟你吵架 / 把你赶走（空手离开）。不搞别的。B 硬的代价不是「多等了 5 分钟」——是**被拒绝、被赶走**。
+2. **回合数随 CEFR 等级缩放（不锁死 3 轮）。** A0 = 3 轮，A1 = 3-4 轮，A2 = 4-5 轮，B1+ = 5-6 轮。唯一禁止的是**空洞轮**——如果一轮里没有新信息进入（新对话、新位置、新物品），那轮就是在注水，该删。
+3. **A/B 选项台词必须文字可区分。** 不能只是一个词不同（"Yes" vs "Yes…"），要整句不同。
+4. **NPC 开场白仅出现在 Route A SHOT 1。** 互动区无独立 SHOT 1 节点。
+5. **台词承载剧情，动作注记只做补充（强制）。** 学生的英语输入来自**台词**，不是来自中文注记。剧情的转折、NPC 的情绪变化、误会升级——**所有关键信息必须通过英语台词传达**。动作注记仅用于补充画面细节（位置、动作），不做剧情叙述。
+   - ❌ 坏例子：`**Jessica:** Great! Come in. *（Jessica 侧身让你进去——你明明不是来开会的，却没纠正）*` —— 剧情全在括号里
+   - ✅ 好例子：`**Jessica:** Great! The meeting is down the hall. Right this way.` —— 剧情在台词里，学习者一听就知道坏了
+   - ❌ 坏例子：`**Player:** OK. *（你没说出口。算了，喝吧。）*` —— 内心的放弃没有体现在语言上
+   - ✅ 好例子：`**Player:** OK. *（低头喝了一口——不是自己的味道。但没再说任何话）*` —— 动作注记辅助画面，不替代对白
+6. **所有台词包含实际口语词汇。** 禁止无声对白、禁止填充词作为完整对白。
+7. **禁止通过手机消息/短信/屏幕文字传递 NPC 台词（强制）。** 这是一个**对话游戏**——NPC 必须**开口说话**。任何剧情信息必须通过角色面对面的口语台词传达，不得用 "Sarah 的消息：xxx"、"手机响了：xxx"、纸条、屏幕文字等方式替代 NPC 说出对白。如果 NPC 不在场，让另一个在场的人说出来。
+   - ❌ 坏例子：`手机响了。Sarah 的消息：**"Hey, are you still coming?"**` —— NPC 台词变成了文字
+   - ✅ 好例子：`**Jessica:** Your friend Sarah was waiting. She just left.` —— 让在场的 NPC 亲口说出来
+8. **绑定 CEFR 等级词汇。** 超纲的词不可以用。
+9. **玩家性别明确定义（♂ 或 ♀），画外音直接取用。**
+10. **西方 NPC 设定。**
+11. **第一人称 POV，镜头即主角面部，永不出镜。**
+12. **结局因果链强制。** 每个结局必须能回溯到玩家的具体台词——"你说了什么 → NPC 怎么反应 → 结果怎样"。学习者看完结局，必须能一眼知道"那句话不该那么说"或"那句话说得对"。禁止没有因果关系的随机结局。
+13. **结局必须是绝对反差（强制）。** A 和 B 的结局不是「多等了 5 分钟」的温差——是你拿到了拿铁 vs Mike 把你赶出咖啡店。学习者看到 B 硬结局应该有「天哪我不会这样说话」的冲击感。
+14. **B硬结局必须有明确拒绝（强制）。** NPC 的最后一句不是温和的「跳过你」——是**明确的拒绝**：Mike 说 "Next customer"（不服务你了）、Jessica 叫保安（"I'm calling security"）、司机说 "Get out of my car"。B硬的代价是**被拒绝、被吵架、被赶走**——不是「多等了 5 分钟」。
+15. **A 结局 NPC 最后一句确认你拿到了你要的。** "Here's your latte."（拿铁到手）、"Sarah will be right here."（人马上到）、"See you tomorrow!"（下次还会来）。A 结局的核心是**你成功了**。

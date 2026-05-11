@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+197,S8｜B2初阶｜成人世界潜台词,S8-C02｜职场项目协作,S8E08｜优先级,S08-B2-C02-G02,B2,团队站会｜确认优先级,「优先级」：背景/优先级/风险/行动项；A=听懂潜台词并稳住关系；B=误判立场/过度直接翻车。,优先级｜风险｜资源｜时间线｜行动项｜责任分配,办公室｜会议室｜远程会议｜走廊对话｜协作工具界面,"Which task should we prioritize?（询问优先级）
+This is urgent, but is it important?（区分紧急与重要）
+I’d put ___ at the top of the list.（排序）
+We may need to deprioritize ___.（降优先级）
+What can wait until next week?（延后任务）
+If we do this first, ___ may slip.（指出代价）
+The deadline makes ___ more pressing.（解释紧迫性）
+Let’s rank these by impact and effort.（按影响与投入排序）
+I don’t think everything can be a priority.（挑战泛化优先级）
+What’s the trade-off here?（询问取舍）
+We need a clear decision on priority.（要求决策）
+Can we agree on the top three?（确认前三）
+This matters more because ___.（说明理由）
+Let’s focus on what unblocks the team.（聚焦解阻）
+I’ll update the plan based on that.（执行更新）","Nouns: priority, deadline, impact, effort, trade-off, task, backlog, dependency
+Verbs: prioritize, rank, delay, focus, unblock, update, decide, escalate
+Adjectives / Status: urgent, important, low-impact, high-risk, realistic, pressing
+Time / Place: today, next week, by end of day, this sprint, in the tracker
+Chunks: top of the list, can wait, trade-off, impact and effort, clear decision"

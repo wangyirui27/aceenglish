@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+130,S5｜A2下｜出状况也能处理,S5-C03｜手机与线上生活,S5E14｜登录和密码,S05-A2-C03-G02,A2,共享办公前台｜登录账号/重置密码,「登录和密码」：验证码/登录/订单确认；A=重复确认后完成；B=猜测/乱确认翻车。,数字指令｜验证码数字｜线上订单｜消息｜账户操作,手机屏幕｜快递柜｜线上订单｜App客服｜验证码界面,"I can’t log in.（无法登录）
+What is my password?（询问密码）
+I forgot my password.（忘记密码）
+Can I reset it?（重置）
+Enter your email.（输入邮箱）
+Type your password.（输入密码）
+The password is wrong.（密码错误）
+Try again, please.（重试）
+Check your email.（查邮件）
+I need a new code.（新验证码）
+Do you have an account?（账号）
+I made an account yesterday.（过去创建）
+Please don’t share your password.（安全提醒）
+Now I can log in.（解决）
+Thank you, it worked.（感谢）","Nouns: password, email, account, code, app, login, phone, message, screen, form
+Verbs: log in, reset, enter, type, check, try, make, share, work
+Adjectives: wrong, new, old, safe, private
+Time / Place: yesterday, now, again, in the app
+Chunks: forgot my password, reset it, check your email, try again, log in"

@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+135,S5｜A2下｜出状况也能处理,S5-C04｜A2出门综合周,S5E19｜出发前,S05-A2-C04-G01,A2,公寓门口｜确认票、时间和行李,「出发前」：A2出门信息综合；A=重复确认后完成；B=猜测/乱确认翻车。,A2场景综合｜多信息抓取｜简单故事｜任务迁移,酒店前台｜房间｜早餐区｜机场｜综合服务台,"What time do we leave tomorrow?（出发时间）
+I need to pack my bag.（打包）
+Do you have your passport?（证件确认）
+Let’s check the tickets.（检查票）
+The taxi comes at ___.（叫车时间）
+We should leave early.（提前出发）
+The weather may be bad.（天气风险）
+I booked the hotel yesterday.（预订）
+Can you send me the address?（地址）
+First, check the passport.（顺序一）
+Then check the ticket.（顺序二）
+I can’t find my charger.（小问题）
+Did you pack it?（确认物品）
+We need to be at the airport by ___.（截止时间）
+Everything is ready.（完成）","Nouns: passport, ticket, bag, charger, taxi, hotel, address, airport, weather, tomorrow
+Verbs: leave, pack, check, book, send, find, arrive, need
+Adjectives: ready, early, late, bad, important
+Time / Place: tomorrow, by six, yesterday, first, then, at the airport
+Chunks: pack my bag, check the tickets, hotel address, leave early, everything is ready"

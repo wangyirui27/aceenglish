@@ -1,0 +1,986 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloom · 女性社区设计规范 v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Playfair+Display:ital,wght@0,400;0,600;1,400&amp;family=Noto+Serif+SC:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+  :root{
+    /* Brand */
+    --rose-50:#FFF4F5;
+    --rose-100:#FFE4E8;
+    --rose-200:#FFCBD3;
+    --rose-300:#FFA5B4;
+    --rose-400:#FF7A8F;
+    --rose-500:#F15A73;   /* Primary */
+    --rose-600:#D63E58;
+    --rose-700:#A92940;
+
+    --plum-900:#2A1C26;   /* Ink */
+    --plum-800:#3D2A38;
+    --plum-700:#5A3F52;
+
+    --peach:#FFB89A;
+    --apricot:#F5A663;
+    --honey:#F5C56A;
+    --sage:#A8BFA1;
+    --mist:#B8C4D6;
+    --lilac:#C9B6D9;
+
+    --cream-50:#FEFBF8;
+    --cream-100:#FAF5F0;
+    --cream-200:#F2EAE2;
+
+    --n-0:#FFFFFF;
+    --n-50:#FAFAFA;
+    --n-100:#F4F2F2;
+    --n-200:#E8E4E4;
+    --n-300:#CFC8C8;
+    --n-400:#9C9393;
+    --n-500:#6E6466;
+    --n-700:#3A3234;
+    --n-900:#1A1315;
+
+    --success:#5CB88B;
+    --warning:#E8A94A;
+    --error:#E5626F;
+    --info:#7CA5D6;
+
+    /* Radius */
+    --r-xs:6px; --r-sm:10px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-full:999px;
+
+    /* Shadow */
+    --sh-1:0 1px 2px rgba(42,28,38,.06);
+    --sh-2:0 4px 12px rgba(42,28,38,.06), 0 1px 2px rgba(42,28,38,.04);
+    --sh-3:0 12px 32px rgba(241,90,115,.12), 0 2px 6px rgba(42,28,38,.04);
+    --sh-soft:0 20px 48px rgba(241,90,115,.14);
+  }
+
+  html,body{background:var(--cream-50);color:var(--plum-900);font-family:'Inter','Noto Serif SC',-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;line-height:1.6}
+  .serif{font-family:'Playfair Display','Noto Serif SC',serif}
+  
+  /* Layout */
+  .wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+  @media(max-width:720px){.wrap{padding:0 20px}}
+
+  /* Top bar */
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(254,251,248,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--n-100)}
+  .topbar-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo-mark{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em}
+  .logo-mark .dot{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--rose-400),var(--rose-600));position:relative}
+  .logo-mark .dot::after{content:"";position:absolute;top:6px;left:7px;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(2px)}
+  .logo-mark span{font-size:18px;font-family:'Playfair Display',serif}
+  .nav-chips{display:flex;gap:6px}
+  .nav-chips a{font-size:13px;color:var(--n-500);padding:6px 12px;border-radius:var(--r-full);text-decoration:none;transition:.2s}
+  .nav-chips a:hover{color:var(--rose-600);background:var(--rose-50)}
+  .nav-chips a.active{background:var(--plum-900);color:#fff}
+  @media(max-width:720px){.nav-chips{display:none}}
+
+  /* Hero / Cover */
+  .hero{padding:88px 0 72px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-120px;right:-120px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,164,180,.35),rgba(255,255,255,0) 70%);pointer-events:none}
+  .hero::after{content:"";position:absolute;bottom:-160px;left:-120px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(201,182,217,.3),rgba(255,255,255,0) 70%);pointer-events:none}
+  .hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:56px;align-items:center;position:relative;z-index:1}
+  @media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+  .kicker{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--rose-600);font-weight:600;margin-bottom:24px}
+  .kicker::before{content:"";width:28px;height:1px;background:var(--rose-400)}
+  h1.hero-title{font-family:'Playfair Display',serif;font-size:clamp(44px,7vw,84px);line-height:1;letter-spacing:-.03em;color:var(--plum-900);font-weight:600}
+  h1.hero-title em{font-style:italic;color:var(--rose-500);font-weight:400}
+  .hero-sub{margin-top:24px;font-size:17px;color:var(--n-500);max-width:520px}
+  .hero-meta{margin-top:40px;display:flex;gap:32px;flex-wrap:wrap}
+  .hero-meta div{border-left:2px solid var(--rose-300);padding-left:14px}
+  .hero-meta .k{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--n-400);font-weight:600}
+  .hero-meta .v{font-size:15px;color:var(--plum-900);font-weight:500;margin-top:2px}
+
+  /* Phone mock (cover) */
+  .phone{width:260px;aspect-ratio:9/19;background:var(--plum-900);border-radius:40px;padding:10px;margin:0 auto;box-shadow:var(--sh-soft);position:relative}
+  .phone-screen{background:linear-gradient(180deg,#FFE4E8 0%,#FFF4F5 40%,#FEFBF8 100%);border-radius:32px;height:100%;overflow:hidden;position:relative;padding:20px 14px}
+  .phone-notch{position:absolute;top:16px;left:50%;transform:translateX(-50%);width:90px;height:22px;background:var(--plum-900);border-radius:12px;z-index:3}
+  .phone-head{padding-top:28px;display:flex;justify-content:space-between;align-items:center}
+  .phone-head .t{font-family:'Playfair Display',serif;font-size:18px;color:var(--plum-900);font-weight:600}
+  .phone-head .ava{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--peach),var(--rose-400))}
+  .mini-cards{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .mc{background:#fff;border-radius:12px;padding:10px;box-shadow:var(--sh-1)}
+  .mc .img{width:100%;height:76px;border-radius:8px;margin-bottom:8px}
+  .mc:nth-child(1) .img{background:linear-gradient(135deg,#FFCBD3,#F5A663)}
+  .mc:nth-child(2) .img{background:linear-gradient(135deg,#C9B6D9,#7CA5D6)}
+  .mc:nth-child(3) .img{background:linear-gradient(135deg,#A8BFA1,#F5C56A);height:100px}
+  .mc:nth-child(4) .img{background:linear-gradient(135deg,#FFB89A,#F15A73);height:100px}
+  .mc .tt{font-size:9px;color:var(--plum-900);font-weight:600;line-height:1.4}
+  .mc .mt{display:flex;align-items:center;gap:4px;margin-top:6px}
+  .mc .mt .a{width:12px;height:12px;border-radius:50%;background:var(--rose-300)}
+  .mc .mt .n{font-size:8px;color:var(--n-500)}
+
+  /* Section base */
+  section{padding:96px 0;position:relative}
+  @media(max-width:720px){section{padding:72px 0}}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px;gap:24px;flex-wrap:wrap}
+  .sec-num{font-family:'Playfair Display',serif;font-style:italic;color:var(--rose-500);font-size:14px;font-weight:400}
+  .sec-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4.5vw,52px);font-weight:600;letter-spacing:-.02em;color:var(--plum-900);line-height:1.1;margin-top:8px}
+  .sec-desc{color:var(--n-500);font-size:15px;max-width:420px;line-height:1.7}
+
+  /* Brand */
+  .brand-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:24px}
+  @media(max-width:860px){.brand-grid{grid-template-columns:1fr}}
+  .brand-card{background:#fff;border-radius:var(--r-lg);padding:48px;box-shadow:var(--sh-2);border:1px solid var(--n-100)}
+  .brand-card.dark{background:var(--plum-900);color:#fff}
+  .brand-card.rose{background:linear-gradient(135deg,var(--rose-100),var(--rose-200))}
+  .brand-logo-big{display:flex;align-items:center;gap:18px;margin-bottom:32px}
+  .brand-logo-big .dot{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--rose-400),var(--rose-600));position:relative;box-shadow:0 8px 24px rgba(241,90,115,.3)}
+  .brand-logo-big .dot::after{content:"";position:absolute;top:10px;left:12px;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(4px)}
+  .brand-logo-big .txt{font-family:'Playfair Display',serif;font-size:40px;font-weight:600;letter-spacing:-.02em}
+  .brand-slogan{font-family:'Playfair Display',serif;font-style:italic;font-size:22px;line-height:1.4;color:var(--plum-800);margin-bottom:16px}
+  .brand-card.dark .brand-slogan{color:var(--rose-200)}
+  .brand-desc{color:var(--n-500);font-size:14px;line-height:1.8}
+  .brand-card.dark .brand-desc{color:rgba(255,255,255,.65)}
+  .brand-values{margin-top:28px;display:flex;flex-wrap:wrap;gap:8px}
+  .val-chip{padding:6px 14px;border-radius:var(--r-full);background:var(--cream-100);font-size:12px;color:var(--plum-800);font-weight:500}
+  .brand-card.dark .val-chip{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
+
+  /* Color */
+  .color-row{display:grid;gap:32px}
+  .palette{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+  .swatch{border-radius:var(--r-md);overflow:hidden;box-shadow:var(--sh-1);background:#fff}
+  .swatch .chip{height:120px;position:relative}
+  .swatch .info{padding:14px 16px}
+  .swatch .name{font-size:13px;font-weight:600;color:var(--plum-900)}
+  .swatch .hex{font-size:11px;color:var(--n-400);font-family:'Inter',monospace;margin-top:2px;letter-spacing:.04em}
+  .swatch .tag{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.9);padding:3px 8px;border-radius:var(--r-full);font-size:10px;font-weight:600;color:var(--plum-900);letter-spacing:.08em}
+  .palette-title{font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--n-500);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--n-100)}
+  .palette-title span{color:var(--rose-500);font-weight:400;font-style:italic;font-family:'Playfair Display',serif;text-transform:none;letter-spacing:0;margin-left:8px}
+
+  /* Typography */
+  .type-stack{background:#fff;border-radius:var(--r-lg);padding:48px;box-shadow:var(--sh-2);border:1px solid var(--n-100)}
+  .type-row{display:grid;grid-template-columns:180px 1fr 140px;gap:32px;align-items:baseline;padding:24px 0;border-bottom:1px dashed var(--n-200)}
+  .type-row:last-child{border-bottom:0}
+  @media(max-width:720px){.type-row{grid-template-columns:1fr;gap:8px}}
+  .type-row .label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--n-400);font-weight:600}
+  .type-row .meta{font-size:11px;color:var(--n-400);font-family:'Inter',monospace;text-align:right}
+  @media(max-width:720px){.type-row .meta{text-align:left}}
+  .t-display{font-family:'Playfair Display',serif;font-size:56px;font-weight:600;letter-spacing:-.03em;line-height:1;color:var(--plum-900)}
+  .t-h1{font-family:'Playfair Display',serif;font-size:36px;font-weight:600;letter-spacing:-.02em;color:var(--plum-900)}
+  .t-h2{font-size:24px;font-weight:700;letter-spacing:-.01em;color:var(--plum-900)}
+  .t-h3{font-size:18px;font-weight:600;color:var(--plum-900)}
+  .t-body{font-size:15px;color:var(--plum-900)}
+  .t-cap{font-size:12px;color:var(--n-500)}
+  .t-overline{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--rose-600);font-weight:600}
+
+  /* Spacing / Radius */
+  .util-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media(max-width:720px){.util-grid{grid-template-columns:1fr}}
+  .util-card{background:#fff;border-radius:var(--r-lg);padding:32px;box-shadow:var(--sh-2);border:1px solid var(--n-100)}
+  .util-card h4{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--n-500);font-weight:600;margin-bottom:24px;display:flex;justify-content:space-between}
+  .util-card h4 span{color:var(--rose-500);text-transform:none;letter-spacing:0;font-family:'Playfair Display',serif;font-style:italic;font-weight:400}
+  .sp-row{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+  .sp-bar{background:linear-gradient(90deg,var(--rose-400),var(--rose-200));height:14px;border-radius:var(--r-xs)}
+  .sp-label{font-size:12px;color:var(--n-500);min-width:100px;font-family:monospace}
+  .sp-label b{color:var(--plum-900);font-weight:600;margin-right:8px}
+
+  .radius-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .rd{aspect-ratio:1;background:linear-gradient(135deg,var(--rose-100),var(--rose-200));display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--rose-200)}
+  .rd b{font-size:13px;color:var(--plum-900)}
+  .rd span{font-size:10px;color:var(--n-500);font-family:monospace;margin-top:2px}
+
+  .shadow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:720px){.shadow-grid{grid-template-columns:repeat(2,1fr)}}
+  .sh-box{aspect-ratio:1;background:#fff;border-radius:var(--r-md);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center}
+  .sh-box b{font-size:12px;color:var(--plum-900)}
+  .sh-box span{font-size:10px;color:var(--n-400);font-family:monospace;margin-top:2px}
+
+  /* Icons */
+  .icon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;background:#fff;border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh-2);border:1px solid var(--n-100)}
+  .icon-cell{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 8px;border-radius:var(--r-md);transition:.2s}
+  .icon-cell:hover{background:var(--rose-50)}
+  .icon-cell svg{width:24px;height:24px;stroke:var(--plum-800);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .icon-cell span{font-size:11px;color:var(--n-500)}
+
+  /* Components */
+  .comp-card{background:#fff;border-radius:var(--r-lg);padding:40px;box-shadow:var(--sh-2);border:1px solid var(--n-100);margin-bottom:24px}
+  .comp-title{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--n-500);font-weight:600;margin-bottom:8px}
+  .comp-sub{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--plum-900);margin-bottom:28px}
+  .comp-sub em{color:var(--rose-500);font-style:italic;font-weight:400}
+  .comp-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:20px}
+  .comp-row:last-child{margin-bottom:0}
+
+  /* Buttons */
+  .btn{padding:12px 24px;border-radius:var(--r-full);border:none;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px;letter-spacing:.01em}
+  .btn-primary{background:var(--rose-500);color:#fff;box-shadow:0 6px 16px rgba(241,90,115,.28)}
+  .btn-primary:hover{background:var(--rose-600);transform:translateY(-1px);box-shadow:0 10px 24px rgba(241,90,115,.36)}
+  .btn-dark{background:var(--plum-900);color:#fff}
+  .btn-dark:hover{background:var(--plum-800)}
+  .btn-outline{background:transparent;color:var(--plum-900);border:1.5px solid var(--plum-900)}
+  .btn-outline:hover{background:var(--plum-900);color:#fff}
+  .btn-ghost{background:var(--rose-50);color:var(--rose-600)}
+  .btn-ghost:hover{background:var(--rose-100)}
+  .btn-sm{padding:8px 16px;font-size:12px}
+  .btn-lg{padding:16px 32px;font-size:15px}
+  .btn-icon{width:44px;height:44px;padding:0;justify-content:center;border-radius:50%}
+
+  /* Inputs */
+  .field{display:flex;flex-direction:column;gap:6px;max-width:420px;width:100%}
+  .field label{font-size:12px;font-weight:600;color:var(--plum-800);letter-spacing:.02em}
+  .input{padding:14px 18px;border:1.5px solid var(--n-200);border-radius:var(--r-md);font-family:inherit;font-size:14px;color:var(--plum-900);background:#fff;transition:.2s;outline:none}
+  .input:focus{border-color:var(--rose-400);box-shadow:0 0 0 4px var(--rose-50)}
+  .input::placeholder{color:var(--n-400)}
+  .search-box{position:relative;max-width:420px}
+  .search-box .input{padding-left:44px;border-radius:var(--r-full);background:var(--cream-100);border-color:transparent}
+  .search-box svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--n-400);fill:none;stroke-width:1.8}
+
+  /* Tags */
+  .tag{padding:6px 12px;border-radius:var(--r-full);font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+  .tag-primary{background:var(--rose-100);color:var(--rose-700)}
+  .tag-plum{background:var(--plum-900);color:#fff}
+  .tag-sage{background:#E8EFE6;color:#5B7A55}
+  .tag-honey{background:#FBEDC9;color:#8A6B23}
+  .tag-lilac{background:#EDE4F2;color:#7A5A94}
+  .tag-outline{border:1px solid var(--n-200);color:var(--plum-800);background:#fff}
+
+  /* Badge */
+  .badge{padding:3px 8px;border-radius:var(--r-xs);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:inline-block}
+  .b-new{background:var(--rose-500);color:#fff}
+  .b-hot{background:linear-gradient(135deg,var(--apricot),var(--rose-500));color:#fff}
+  .b-vip{background:var(--plum-900);color:var(--honey)}
+  .b-verified{background:#E3EEF7;color:#2E6BAA}
+
+  /* Avatars */
+  .ava{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--peach),var(--rose-400));display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:16px;border:2px solid #fff;box-shadow:var(--sh-1)}
+  .ava-sm{width:32px;height:32px;font-size:12px}
+  .ava-lg{width:64px;height:64px;font-size:22px}
+  .ava-2{background:linear-gradient(135deg,var(--lilac),var(--mist))}
+  .ava-3{background:linear-gradient(135deg,var(--sage),var(--honey))}
+  .ava-4{background:linear-gradient(135deg,var(--rose-300),var(--apricot))}
+  .ava-group{display:flex}
+  .ava-group .ava+.ava{margin-left:-12px}
+
+  /* Content Cards (feed) */
+  .feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+  .post{background:#fff;border-radius:var(--r-md);overflow:hidden;box-shadow:var(--sh-1);transition:.25s;cursor:pointer;border:1px solid var(--n-100)}
+  .post:hover{transform:translateY(-4px);box-shadow:var(--sh-3)}
+  .post .cover{width:100%;position:relative}
+  .post:nth-child(1) .cover{aspect-ratio:3/4;background:linear-gradient(135deg,#FFCBD3 0%,#F15A73 100%)}
+  .post:nth-child(2) .cover{aspect-ratio:1/1;background:linear-gradient(135deg,#C9B6D9 0%,#7CA5D6 100%)}
+  .post:nth-child(3) .cover{aspect-ratio:3/4;background:linear-gradient(135deg,#FFB89A 0%,#F5C56A 100%)}
+  .post:nth-child(4) .cover{aspect-ratio:4/5;background:linear-gradient(135deg,#A8BFA1 0%,#5B7A55 100%)}
+  .post .cover-badge{position:absolute;top:10px;left:10px}
+  .post .body{padding:12px 14px 14px}
+  .post .ttl{font-size:14px;font-weight:600;color:var(--plum-900);line-height:1.4;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .post .meta{display:flex;align-items:center;justify-content:space-between}
+  .post .au{display:flex;align-items:center;gap:6px}
+  .post .au .ava{width:20px;height:20px;border:none;box-shadow:none;font-size:10px}
+  .post .au span{font-size:11px;color:var(--n-500)}
+  .post .lk{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--n-500)}
+  .post .lk svg{width:12px;height:12px;fill:none;stroke:var(--n-500);stroke-width:1.8}
+
+  /* Profile card */
+  .profile-card{background:#fff;border-radius:var(--r-lg);padding:28px;box-shadow:var(--sh-2);border:1px solid var(--n-100);max-width:360px;position:relative;overflow:hidden}
+  .profile-card::before{content:"";position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(135deg,var(--rose-200),var(--lilac))}
+  .profile-card .ava{width:72px;height:72px;font-size:24px;position:relative;z-index:1;margin-top:40px;border:3px solid #fff}
+  .profile-card .name{font-size:18px;font-weight:700;color:var(--plum-900);margin-top:14px;display:flex;align-items:center;gap:6px}
+  .profile-card .name svg{width:16px;height:16px;fill:var(--rose-500)}
+  .profile-card .bio{font-size:13px;color:var(--n-500);margin-top:6px;line-height:1.6}
+  .profile-card .stats{display:flex;gap:24px;margin-top:18px;padding-top:18px;border-top:1px solid var(--n-100)}
+  .profile-card .stats div b{display:block;font-size:18px;font-weight:700;color:var(--plum-900);font-family:'Playfair Display',serif}
+  .profile-card .stats div span{font-size:11px;color:var(--n-400);letter-spacing:.08em;text-transform:uppercase}
+
+  /* Nav tabs */
+  .tabbar{background:#fff;border-radius:var(--r-xl);box-shadow:var(--sh-3);padding:10px;display:flex;gap:4px;max-width:380px;margin:0 auto;border:1px solid var(--n-100)}
+  .tab{flex:1;padding:12px 8px;border-radius:var(--r-lg);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:.2s;color:var(--n-400)}
+  .tab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.6}
+  .tab span{font-size:10px;font-weight:500;letter-spacing:.04em}
+  .tab:hover{color:var(--plum-800)}
+  .tab.active{background:var(--plum-900);color:#fff}
+  .tab.active svg{stroke-width:2}
+  .tab.post-btn{background:linear-gradient(135deg,var(--rose-400),var(--rose-600));color:#fff;box-shadow:0 8px 20px rgba(241,90,115,.4)}
+  .tab.post-btn svg{stroke:#fff;stroke-width:2.4}
+
+  /* Mockup */
+  .mockup{background:linear-gradient(180deg,var(--cream-100) 0%,var(--rose-50) 100%);border-radius:var(--r-xl);padding:60px 20px;display:flex;justify-content:center;gap:40px;flex-wrap:wrap}
+  .phone-lg{width:320px;aspect-ratio:9/19.5;background:var(--plum-900);border-radius:48px;padding:12px;box-shadow:var(--sh-soft)}
+  .phone-lg-screen{background:#fff;border-radius:38px;height:100%;overflow:hidden;position:relative}
+  .app-header{padding:52px 20px 12px;background:linear-gradient(180deg,var(--rose-50) 0%,#fff 100%)}
+  .app-notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:110px;height:26px;background:var(--plum-900);border-radius:14px;z-index:4}
+  .app-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .app-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--plum-900);display:flex;align-items:center;gap:8px}
+  .app-logo .dot{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--rose-400),var(--rose-600))}
+  .app-icons{display:flex;gap:8px}
+  .app-icon-btn{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--sh-1)}
+  .app-icon-btn svg{width:16px;height:16px;stroke:var(--plum-800);fill:none;stroke-width:1.8}
+  .app-search{background:#fff;border-radius:var(--r-full);padding:10px 14px;display:flex;align-items:center;gap:8px;box-shadow:var(--sh-1)}
+  .app-search svg{width:14px;height:14px;stroke:var(--n-400);fill:none;stroke-width:2}
+  .app-search span{font-size:12px;color:var(--n-400)}
+  .app-chips{display:flex;gap:6px;padding:14px 20px 12px;overflow-x:auto}
+  .app-chip{padding:6px 12px;border-radius:var(--r-full);font-size:11px;white-space:nowrap;background:#fff;color:var(--n-500);border:1px solid var(--n-100)}
+  .app-chip.on{background:var(--plum-900);color:#fff;border-color:var(--plum-900)}
+  .app-feed{padding:4px 14px 14px;column-count:2;column-gap:8px}
+  .af{break-inside:avoid;margin-bottom:8px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--sh-1)}
+  .af .c{width:100%}
+  .af:nth-child(1) .c{height:120px;background:linear-gradient(135deg,#FFCBD3,#F15A73)}
+  .af:nth-child(2) .c{height:150px;background:linear-gradient(135deg,#C9B6D9,#7CA5D6)}
+  .af:nth-child(3) .c{height:150px;background:linear-gradient(135deg,#FFB89A,#F5C56A)}
+  .af:nth-child(4) .c{height:120px;background:linear-gradient(135deg,#A8BFA1,#5B7A55)}
+  .af:nth-child(5) .c{height:140px;background:linear-gradient(135deg,#F5C56A,#F15A73)}
+  .af:nth-child(6) .c{height:110px;background:linear-gradient(135deg,#E3EEF7,#C9B6D9)}
+  .af .b{padding:8px 10px}
+  .af .b .t{font-size:10px;font-weight:600;color:var(--plum-900);line-height:1.35;margin-bottom:6px}
+  .af .b .m{display:flex;align-items:center;justify-content:space-between}
+  .af .b .m .l{display:flex;align-items:center;gap:4px}
+  .af .b .m .a{width:14px;height:14px;border-radius:50%;background:var(--rose-300)}
+  .af .b .m .n{font-size:8px;color:var(--n-500)}
+  .af .b .m .k{display:flex;align-items:center;gap:2px;font-size:8px;color:var(--n-500)}
+
+  .phone-lg .bottom-nav{position:absolute;bottom:10px;left:10px;right:10px;background:#fff;border-radius:20px;box-shadow:0 -4px 16px rgba(0,0,0,.06);padding:8px;display:flex;gap:2px}
+  .bn-tab{flex:1;padding:8px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--n-400)}
+  .bn-tab svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+  .bn-tab span{font-size:8px}
+  .bn-tab.on{background:var(--plum-900);color:#fff}
+  .bn-tab.pt{background:linear-gradient(135deg,var(--rose-400),var(--rose-600));color:#fff}
+
+  /* Post detail mock */
+  .phone-lg-screen.detail{background:var(--cream-50)}
+  .detail-head{padding:48px 16px 10px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--n-100)}
+  .dh-left{display:flex;align-items:center;gap:10px}
+  .dh-left .ava{width:32px;height:32px;font-size:12px;border:none;box-shadow:none}
+  .dh-info b{display:block;font-size:12px;color:var(--plum-900);font-weight:600}
+  .dh-info span{font-size:10px;color:var(--n-400)}
+  .dh-foll{padding:5px 12px;background:var(--rose-500);color:#fff;border-radius:var(--r-full);font-size:10px;font-weight:600}
+  .detail-cov{height:240px;background:linear-gradient(135deg,#FFCBD3 0%,#F15A73 100%);position:relative}
+  .detail-body{padding:14px 16px}
+  .detail-ttl{font-size:14px;font-weight:700;color:var(--plum-900);line-height:1.5;margin-bottom:8px}
+  .detail-txt{font-size:11px;color:var(--n-500);line-height:1.7}
+  .detail-tags{display:flex;gap:4px;margin-top:10px;flex-wrap:wrap}
+  .dtag{font-size:9px;padding:3px 8px;border-radius:var(--r-full);background:var(--rose-50);color:var(--rose-600)}
+  .detail-act{position:absolute;bottom:70px;left:10px;right:10px;background:#fff;border-radius:20px;padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh-3)}
+  .da-input{flex:1;background:var(--cream-100);border-radius:var(--r-full);padding:6px 12px;font-size:10px;color:var(--n-400)}
+  .da-act{display:flex;align-items:center;gap:2px;font-size:10px;color:var(--plum-900);font-weight:600}
+  .da-act svg{width:16px;height:16px;fill:none;stroke:var(--plum-900);stroke-width:1.8}
+
+  /* Principles */
+  .principles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .pr{background:#fff;border-radius:var(--r-lg);padding:28px;border:1px solid var(--n-100);transition:.2s}
+  .pr:hover{border-color:var(--rose-300);box-shadow:var(--sh-3)}
+  .pr .num{font-family:'Playfair Display',serif;font-size:36px;font-style:italic;color:var(--rose-400);font-weight:400;line-height:1}
+  .pr h4{font-size:16px;font-weight:700;color:var(--plum-900);margin:16px 0 8px}
+  .pr p{font-size:13px;color:var(--n-500);line-height:1.7}
+
+  /* Footer */
+  footer{background:var(--plum-900);color:#fff;padding:72px 0 40px;margin-top:48px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin-bottom:48px}
+  @media(max-width:720px){.foot-grid{grid-template-columns:1fr;gap:28px}}
+  footer h5{font-family:'Playfair Display',serif;font-size:28px;font-weight:600;margin-bottom:12px}
+  footer p{color:rgba(255,255,255,.55);font-size:14px;line-height:1.7;max-width:320px}
+  footer .col-title{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--rose-300);font-weight:600;margin-bottom:16px}
+  footer li{list-style:none;font-size:13px;color:rgba(255,255,255,.75);margin-bottom:10px}
+  .foot-bot{padding-top:28px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:rgba(255,255,255,.4)}
+  
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="logo-mark"><div class="dot"></div><span>Bloom</span></div>
+    <div class="nav-chips">
+      <a class="active" href="#brand">Brand</a>
+      <a href="#color">Color</a>
+      <a href="#type">Typography</a>
+      <a href="#component">Components</a>
+      <a href="#preview">Preview</a>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker">Design System · v1.0</div>
+        <h1 class="hero-title">Bloom.<br><em>She speaks,</em><br>she blossoms.</h1>
+        <p class="hero-sub">一套为女性社区量身打造的设计语言。在温柔与力量之间，保留少女感，更强调独立、真诚与审美。</p>
+        <div class="hero-meta">
+          <div><div class="k">Target</div><div class="v">18–35 女性社区</div></div>
+          <div><div class="k">Tone</div><div class="v">温柔 · 独立 · 高级</div></div>
+          <div><div class="k">Release</div><div class="v">May 2026</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-head">
+              <div class="t">Bloom</div>
+              <div class="ava"></div>
+            </div>
+            <div class="mini-cards">
+              <div class="mc"><div class="img"></div><div class="tt">春日野餐穿搭指南</div><div class="mt"><div class="a"></div><div class="n">林漫 · 1.2w</div></div></div>
+              <div class="mc"><div class="img"></div><div class="tt">一人住的小房间</div><div class="mt"><div class="a"></div><div class="n">安妮 · 834</div></div></div>
+              <div class="mc"><div class="img"></div><div class="tt">周末手冲咖啡日记</div><div class="mt"><div class="a"></div><div class="n">小满 · 2.3w</div></div></div>
+              <div class="mc"><div class="img"></div><div class="tt">她的独处时刻</div><div class="mt"><div class="a"></div><div class="n">Yuki · 567</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRAND -->
+<section id="brand">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="sec-num">— 01 / Brand</div>
+        <h2 class="sec-title">Brand Identity</h2>
+      </div>
+      <p class="sec-desc">在"少女心"与"高级感"之间取得平衡。玫瑰不甜腻，柔软也有锋芒。</p>
+    </div>
+
+    <div class="brand-grid">
+      <div class="brand-card">
+        <div class="brand-logo-big">
+          <div class="dot"></div>
+          <div class="txt">Bloom</div>
+        </div>
+        <p class="brand-slogan">"She speaks, she blossoms."</p>
+        <p class="brand-desc">Bloom 是一个属于她的内容社区。我们记录真实的生活切片、独立的审美主张，和女性之间温柔而坚定的互相托举。品牌以盛放的花苞为视觉原型，寓意每一个她都拥有自己的花期。</p>
+        <div class="brand-values">
+          <span class="val-chip">真诚记录</span>
+          <span class="val-chip">独立审美</span>
+          <span class="val-chip">温柔有力</span>
+          <span class="val-chip">彼此托举</span>
+        </div>
+      </div>
+      <div class="brand-card dark">
+        <div class="brand-logo-big">
+          <div class="dot"></div>
+          <div class="txt" style="color:#fff">Bloom</div>
+        </div>
+        <p class="brand-slogan">品牌主张</p>
+        <p class="brand-desc">区别于小红书的"种草 + 生活方式"广域心智，Bloom 聚焦"她视角"的深度内容：独处、成长、情绪、审美、身体与选择。视觉上以玫瑰粉（Rose 500）为主色，搭配深莓紫（Plum 900）作为文字与强调色，形成既少女又克制的反差感。</p>
+        <div class="brand-values">
+          <span class="val-chip">Primary · Rose</span>
+          <span class="val-chip">Ink · Plum</span>
+          <span class="val-chip">Accent · Honey</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:48px" class="principles">
+      <div class="pr"><div class="num">01</div><h4>温柔但不甜腻</h4><p>以低饱和的玫瑰粉代替荧光粉，避免过度"可爱化"；通过留白与衬线字体带来优雅质感。</p></div>
+      <div class="pr"><div class="num">02</div><h4>审美先于信息</h4><p>每一张卡片先成为一张"画"，再成为一条信息。瀑布流优先保证构图与色彩和谐。</p></div>
+      <div class="pr"><div class="num">03</div><h4>她的视角</h4><p>文案、插画、头像色系均以女性视角出发，去除性别刻板与物化暗示。</p></div>
+      <div class="pr"><div class="num">04</div><h4>克制的装饰</h4><p>避免大面积心形/蝴蝶结/装饰花边；通过圆角、渐变与字体对比表达情绪。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR -->
+<section id="color" style="background:var(--cream-100)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="sec-num">— 02 / Color</div>
+        <h2 class="sec-title">Color System</h2>
+      </div>
+      <p class="sec-desc">一套主色 + 四组辅助色 + 中性灰阶。主色保留少女气质，辅助色延展高级情绪。</p>
+    </div>
+
+    <!-- Primary -->
+    <div class="palette-title">Primary Rose <span>— 品牌主色，用于 CTA、强调与品牌标识</span></div>
+    <div class="palette" style="margin-bottom:40px">
+      <div class="swatch"><div class="chip" style="background:var(--rose-50)"></div><div class="info"><div class="name">Rose 50</div><div class="hex">#FFF4F5</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--rose-100)"></div><div class="info"><div class="name">Rose 100</div><div class="hex">#FFE4E8</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--rose-200)"></div><div class="info"><div class="name">Rose 200</div><div class="hex">#FFCBD3</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--rose-300)"></div><div class="info"><div class="name">Rose 300</div><div class="hex">#FFA5B4</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--rose-400)"></div><div class="info"><div class="name">Rose 400</div><div class="hex">#FF7A8F</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--rose-500)"><span class="tag">BRAND</span></div><div class="info"><div class="name">Rose 500</div><div class="hex">#F15A73</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--rose-600)"></div><div class="info"><div class="name">Rose 600</div><div class="hex">#D63E58</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--rose-700)"></div><div class="info"><div class="name">Rose 700</div><div class="hex">#A92940</div></div></div>
+    </div>
+
+    <!-- Ink -->
+    <div class="palette-title">Ink Plum <span>— 文本主色 / 深色底 / 品牌稳重感</span></div>
+    <div class="palette" style="margin-bottom:40px">
+      <div class="swatch"><div class="chip" style="background:var(--plum-900)"><span class="tag">INK</span></div><div class="info"><div class="name">Plum 900</div><div class="hex">#2A1C26</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--plum-800)"></div><div class="info"><div class="name">Plum 800</div><div class="hex">#3D2A38</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--plum-700)"></div><div class="info"><div class="name">Plum 700</div><div class="hex">#5A3F52</div></div></div>
+    </div>
+
+    <!-- Accent -->
+    <div class="palette-title">Accent <span>— 用于分类标签、情绪强调、插画辅助</span></div>
+    <div class="palette" style="margin-bottom:40px">
+      <div class="swatch"><div class="chip" style="background:var(--peach)"></div><div class="info"><div class="name">Peach</div><div class="hex">#FFB89A</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--apricot)"></div><div class="info"><div class="name">Apricot</div><div class="hex">#F5A663</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--honey)"></div><div class="info"><div class="name">Honey</div><div class="hex">#F5C56A</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--sage)"></div><div class="info"><div class="name">Sage</div><div class="hex">#A8BFA1</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--mist)"></div><div class="info"><div class="name">Mist</div><div class="hex">#B8C4D6</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--lilac)"></div><div class="info"><div class="name">Lilac</div><div class="hex">#C9B6D9</div></div></div>
+    </div>
+
+    <!-- Neutral -->
+    <div class="palette-title">Neutral &amp; Cream <span>— 背景 / 文本次级 / 分割线</span></div>
+    <div class="palette" style="margin-bottom:40px">
+      <div class="swatch"><div class="chip" style="background:var(--cream-50);border:1px solid var(--n-100)"></div><div class="info"><div class="name">Cream 50</div><div class="hex">#FEFBF8</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--cream-100)"></div><div class="info"><div class="name">Cream 100</div><div class="hex">#FAF5F0</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--cream-200)"></div><div class="info"><div class="name">Cream 200</div><div class="hex">#F2EAE2</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--n-200)"></div><div class="info"><div class="name">Neutral 200</div><div class="hex">#E8E4E4</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--n-400)"></div><div class="info"><div class="name">Neutral 400</div><div class="hex">#9C9393</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--n-700)"></div><div class="info"><div class="name">Neutral 700</div><div class="hex">#3A3234</div></div></div>
+    </div>
+
+    <!-- Semantic -->
+    <div class="palette-title">Semantic <span>— 状态色，用于提示、反馈、验证</span></div>
+    <div class="palette">
+      <div class="swatch"><div class="chip" style="background:var(--success)"></div><div class="info"><div class="name">Success</div><div class="hex">#5CB88B</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--warning)"></div><div class="info"><div class="name">Warning</div><div class="hex">#E8A94A</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--error)"></div><div class="info"><div class="name">Error</div><div class="hex">#E5626F</div></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--info)"></div><div class="info"><div class="name">Info</div><div class="hex">#7CA5D6</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section id="type">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="sec-num">— 03 / Typography</div>
+        <h2 class="sec-title">Typography</h2>
+      </div>
+      <p class="sec-desc">中文采用"思源宋体 Semibold"作为标题，搭配"PingFang SC"作为正文；英文标题使用 Playfair Display 斜体，形成优雅的编辑调性。</p>
+    </div>
+
+    <div class="type-stack">
+      <div class="type-row">
+        <div class="label">Display · 封面</div>
+        <div><div class="t-display serif">Bloom <em style="color:var(--rose-500);font-style:italic">quietly.</em></div></div>
+        <div class="meta">Playfair 56 / 600<br>L.H 1.0 · -3%</div>
+      </div>
+      <div class="type-row">
+        <div class="label">H1 · 一级标题</div>
+        <div><div class="t-h1 serif">在她的花期里绽放</div></div>
+        <div class="meta">36 / 600 · -2%</div>
+      </div>
+      <div class="type-row">
+        <div class="label">H2 · 二级标题</div>
+        <div><div class="t-h2">今天也要好好爱自己</div></div>
+        <div class="meta">24 / 700 · -1%</div>
+      </div>
+      <div class="type-row">
+        <div class="label">H3 · 卡片标题</div>
+        <div><div class="t-h3">一人住的小房间｜周末手冲咖啡日记</div></div>
+        <div class="meta">18 / 600</div>
+      </div>
+      <div class="type-row">
+        <div class="label">Body · 正文</div>
+        <div><div class="t-body">我开始学着记录自己的情绪。那些被压下的、没说出口的，在文字里重新变得柔软。</div></div>
+        <div class="meta">15 / 400 · L.H 1.7</div>
+      </div>
+      <div class="type-row">
+        <div class="label">Caption · 辅助</div>
+        <div><div class="t-cap">林漫 · 关注 1.2w · 2 小时前</div></div>
+        <div class="meta">12 / 400</div>
+      </div>
+      <div class="type-row">
+        <div class="label">Overline · 分区</div>
+        <div><div class="t-overline">TODAY ESSENTIALS</div></div>
+        <div class="meta">11 / 600 · +18%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPACING / RADIUS / SHADOW -->
+<section style="background:var(--cream-100)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="sec-num">— 04 / Foundation</div>
+        <h2 class="sec-title">Spacing · Radius · Shadow</h2>
+      </div>
+      <p class="sec-desc">基于 4pt 栅格的原子化系统，所有组件与布局间距遵循此规范。</p>
+    </div>
+
+    <div class="util-grid">
+      <div class="util-card">
+        <h4>Spacing Scale <span>4pt grid</span></h4>
+        <div class="sp-row"><div class="sp-label"><b>2</b>8px</div><div class="sp-bar" style="width:8px"></div></div>
+        <div class="sp-row"><div class="sp-label"><b>3</b>12px</div><div class="sp-bar" style="width:12px"></div></div>
+        <div class="sp-row"><div class="sp-label"><b>4</b>16px</div><div class="sp-bar" style="width:16px"></div></div>
+        <div class="sp-row"><div class="sp-label"><b>5</b>20px</div><div class="sp-bar" style="width:20px"></div></div>
+        <div class="sp-row"><div class="sp-label"><b>6</b>24px</div><div class="sp-bar" style="width:24px"></div></div>
+        <div class="sp-row"><div class="sp-label"><b>8</b>32px</div><div class="sp-bar" style="width:32px"></div></div>
+        <div class="sp-row"><div class="sp-label"><b>10</b>40px</div><div class="sp-bar" style="width:40px"></div></div>
+        <div class="sp-row"><div class="sp-label"><b>12</b>48px</div><div class="sp-bar" style="width:48px"></div></div>
+        <div class="sp-row" style="margin-bottom:0"><div class="sp-label"><b>16</b>64px</div><div class="sp-bar" style="width:64px"></div></div>
+      </div>
+
+      <div>
+        <div class="util-card" style="margin-bottom:24px">
+          <h4>Radius <span>soft by default</span></h4>
+          <div class="radius-grid">
+            <div class="rd" style="border-radius:6px"><b>XS</b><span>6px</span></div>
+            <div class="rd" style="border-radius:10px"><b>SM</b><span>10px</span></div>
+            <div class="rd" style="border-radius:14px"><b>MD</b><span>14px</span></div>
+            <div class="rd" style="border-radius:20px"><b>LG</b><span>20px</span></div>
+            <div class="rd" style="border-radius:28px"><b>XL</b><span>28px</span></div>
+            <div class="rd" style="border-radius:999px"><b>Full</b><span>999px</span></div>
+          </div>
+        </div>
+
+        <div class="util-card">
+          <h4>Shadow <span>warm-toned</span></h4>
+          <div class="shadow-grid">
+            <div class="sh-box" style="box-shadow:var(--sh-1)"><b>sh-1</b><span>subtle</span></div>
+            <div class="sh-box" style="box-shadow:var(--sh-2)"><b>sh-2</b><span>card</span></div>
+            <div class="sh-box" style="box-shadow:var(--sh-3)"><b>sh-3</b><span>hover</span></div>
+            <div class="sh-box" style="box-shadow:var(--sh-soft)"><b>soft</b><span>modal</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ICONS -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="sec-num">— 05 / Iconography</div>
+        <h2 class="sec-title">Icon System</h2>
+      </div>
+      <p class="sec-desc">线性描边 1.6px，圆角端点，24×24 网格。禁止使用 Emoji 与高饱和色填充图标。</p>
+    </div>
+
+    <div class="icon-grid">
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V10.5z"></path></svg><span>首页</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg><span>搜索</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.5 12 21 12 21z"></path></svg><span>喜欢</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"></path></svg><span>分类</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"></path></svg><span>我的</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"></path></svg><span>私信</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg><span>通知</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg><span>收藏</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span>评论</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg><span>分享</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg><span>发布</span></div>
+      <div class="icon-cell"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"></path></svg><span>设置</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPONENTS -->
+<section id="component" style="background:var(--cream-100)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="sec-num">— 06 / Components</div>
+        <h2 class="sec-title">Core Components</h2>
+      </div>
+      <p class="sec-desc">所有组件均围绕"圆角柔软 + 玫瑰粉 CTA + 深莓紫稳定锚点"构建。</p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="comp-card">
+      <div class="comp-title">Buttons</div>
+      <div class="comp-sub"><em>按钮</em> · Rounded full, warm shadow</div>
+      <div class="comp-row">
+        <button class="btn btn-primary btn-lg">发布笔记</button>
+        <button class="btn btn-primary">关注她</button>
+        <button class="btn btn-primary btn-sm">关注</button>
+        <button class="btn btn-dark">立即加入</button>
+        <button class="btn btn-outline">查看更多</button>
+        <button class="btn btn-ghost">已关注</button>
+      </div>
+      <div class="comp-row" style="margin-top:20px">
+        <button class="btn btn-icon btn-primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14" stroke-linecap="round"></path></svg></button>
+        <button class="btn btn-icon btn-dark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.5 12 21 12 21z" stroke-linejoin="round"></path></svg></button>
+        <button class="btn btn-icon" style="background:#fff;box-shadow:var(--sh-2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--plum-900)" stroke-width="1.8"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-linejoin="round"></path></svg></button>
+      </div>
+    </div>
+
+    <!-- Inputs -->
+    <div class="comp-card">
+      <div class="comp-title">Inputs &amp; Search</div>
+      <div class="comp-sub"><em>输入</em> · 4px soft focus ring</div>
+      <div class="comp-row" style="align-items:flex-start;gap:24px">
+        <div class="field">
+          <label>昵称</label>
+          <input class="input" placeholder="她的名字..." value="林漫">
+        </div>
+        <div class="field">
+          <label>一句话介绍</label>
+          <input class="input" placeholder="用一句话描述今天的你">
+        </div>
+      </div>
+      <div class="comp-row" style="margin-top:12px">
+        <div class="search-box" style="width:100%;max-width:420px">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke-linecap="round"></circle><path d="M21 21l-4.3-4.3" stroke-linecap="round"></path></svg>
+          <input class="input" placeholder="搜索穿搭 · 独处 · 读书">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tags & Badges -->
+    <div class="comp-card">
+      <div class="comp-title">Tags &amp; Badges</div>
+      <div class="comp-sub"><em>标签</em> · 彩色分类与状态徽章</div>
+      <div class="comp-row">
+        <span class="tag tag-primary"># 穿搭日记</span>
+        <span class="tag tag-plum"># 她的独处</span>
+        <span class="tag tag-sage"># 阅读</span>
+        <span class="tag tag-honey"># 手冲咖啡</span>
+        <span class="tag tag-lilac"># 情绪记录</span>
+        <span class="tag tag-outline">+ 添加</span>
+      </div>
+      <div class="comp-row" style="margin-top:20px">
+        <span class="badge b-new">NEW</span>
+        <span class="badge b-hot">HOT</span>
+        <span class="badge b-vip">BLOOM+</span>
+        <span class="badge b-verified">认证作者</span>
+      </div>
+    </div>
+
+    <!-- Avatars -->
+    <div class="comp-card">
+      <div class="comp-title">Avatars</div>
+      <div class="comp-sub"><em>头像</em> · 渐变默认 + 白描边</div>
+      <div class="comp-row">
+        <div class="ava ava-lg">L</div>
+        <div class="ava ava-2 ava-lg">A</div>
+        <div class="ava ava-3 ava-lg">Y</div>
+        <div class="ava ava-4 ava-lg">M</div>
+        <div class="ava-group">
+          <div class="ava">L</div>
+          <div class="ava ava-2">A</div>
+          <div class="ava ava-3">Y</div>
+          <div class="ava ava-4">M</div>
+          <div class="ava" style="background:var(--cream-200);color:var(--plum-800)">+9</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Cards -->
+    <div class="comp-card">
+      <div class="comp-title">Content Cards</div>
+      <div class="comp-sub"><em>瀑布流卡片</em> · 3:4 / 1:1 / 4:5 混排</div>
+      <div class="feed-grid">
+        <div class="post">
+          <div class="cover"><div class="cover-badge"><span class="badge b-hot">HOT</span></div></div>
+          <div class="body">
+            <div class="ttl">春日野餐穿搭｜一条裙子应付整个周末</div>
+            <div class="meta">
+              <div class="au"><div class="ava">L</div><span>林漫</span></div>
+              <div class="lk"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.5 12 21 12 21z" stroke-linejoin="round" stroke-linecap="round"></path></svg>1.2w</div>
+            </div>
+          </div>
+        </div>
+        <div class="post">
+          <div class="cover"></div>
+          <div class="body">
+            <div class="ttl">一人住的小房间 · 我的秘密基地</div>
+            <div class="meta">
+              <div class="au"><div class="ava ava-2">A</div><span>安妮</span></div>
+              <div class="lk"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.5 12 21 12 21z" stroke-linejoin="round" stroke-linecap="round"></path></svg>834</div>
+            </div>
+          </div>
+        </div>
+        <div class="post">
+          <div class="cover"><div class="cover-badge"><span class="badge b-new">NEW</span></div></div>
+          <div class="body">
+            <div class="ttl">周末手冲咖啡日记｜六款豆单复盘</div>
+            <div class="meta">
+              <div class="au"><div class="ava ava-3">Y</div><span>小满</span></div>
+              <div class="lk"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.5 12 21 12 21z" stroke-linejoin="round" stroke-linecap="round"></path></svg>2.3w</div>
+            </div>
+          </div>
+        </div>
+        <div class="post">
+          <div class="cover"></div>
+          <div class="body">
+            <div class="ttl">她在 30 岁开始独居</div>
+            <div class="meta">
+              <div class="au"><div class="ava ava-4">M</div><span>Yuki</span></div>
+              <div class="lk"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.5 12 21 12 21z" stroke-linejoin="round" stroke-linecap="round"></path></svg>567</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Card & TabBar -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" class="util-grid">
+      <div class="comp-card" style="margin-bottom:0">
+        <div class="comp-title">Profile Card</div>
+        <div class="comp-sub"><em>用户卡片</em></div>
+        <div class="profile-card">
+          <div class="ava ava-lg">L</div>
+          <div class="name">林漫 <svg viewBox="0 0 24 24"><path d="M12 2l2.6 6.3L21 9l-5 4.5L17.2 20 12 16.8 6.8 20 8 13.5 3 9l6.4-.7z"></path></svg></div>
+          <div class="bio">"在一个人的时光里学会安静。"<br>穿搭 / 独处 / 小众咖啡</div>
+          <div class="stats">
+            <div><b>128</b><span>Notes</span></div>
+            <div><b>12.8k</b><span>Followers</span></div>
+            <div><b>342</b><span>Following</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="margin-bottom:0">
+        <div class="comp-title">Tab Bar</div>
+        <div class="comp-sub"><em>底部导航</em></div>
+        <div class="tabbar">
+          <div class="tab active">
+            <svg viewBox="0 0 24 24"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V10.5z" stroke-linejoin="round"></path></svg>
+            <span>首页</span>
+          </div>
+          <div class="tab">
+            <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"></path></svg>
+            <span>分类</span>
+          </div>
+          <div class="tab post-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round"></path></svg>
+            <span>发布</span>
+          </div>
+          <div class="tab">
+            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 12.5-7.6 8.4 8.4 0 0 1 4.6 7.6z" stroke-linejoin="round"></path></svg>
+            <span>私信</span>
+          </div>
+          <div class="tab">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke-linecap="round"></path></svg>
+            <span>我的</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PREVIEW -->
+<section id="preview">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <div class="sec-num">— 07 / In Context</div>
+        <h2 class="sec-title">App Preview</h2>
+      </div>
+      <p class="sec-desc">将整套规范放入真实的产品场景：发现首页 + 笔记详情。</p>
+    </div>
+
+    <div class="mockup">
+      <!-- Phone 1: Home -->
+      <div class="phone-lg">
+        <div class="app-notch"></div>
+        <div class="phone-lg-screen">
+          <div class="app-header">
+            <div class="app-top">
+              <div class="app-logo"><div class="dot"></div>Bloom</div>
+              <div class="app-icons">
+                <div class="app-icon-btn"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"></path><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke-linecap="round"></path></svg></div>
+                <div class="app-icon-btn"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 12.5-7.6 8.4 8.4 0 0 1 4.6 7.6z" stroke-linejoin="round"></path></svg></div>
+              </div>
+            </div>
+            <div class="app-search">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3" stroke-linecap="round"></path></svg>
+              <span>搜索 · 今天想了解什么</span>
+            </div>
+          </div>
+          <div class="app-chips">
+            <div class="app-chip on">发现</div>
+            <div class="app-chip">穿搭</div>
+            <div class="app-chip">独处</div>
+            <div class="app-chip">情绪</div>
+            <div class="app-chip">阅读</div>
+            <div class="app-chip">咖啡</div>
+          </div>
+          <div class="app-feed">
+            <div class="af"><div class="c"></div><div class="b"><div class="t">春日野餐穿搭指南</div><div class="m"><div class="l"><div class="a"></div><div class="n">林漫</div></div><div class="k"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#9C9393" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.5 12 21 12 21z"></path></svg>1.2w</div></div></div></div>
+            <div class="af"><div class="c"></div><div class="b"><div class="t">一人住的小房间</div><div class="m"><div class="l"><div class="a"></div><div class="n">安妮</div></div><div class="k">834</div></div></div></div>
+            <div class="af"><div class="c"></div><div class="b"><div class="t">周末手冲咖啡日记</div><div class="m"><div class="l"><div class="a"></div><div class="n">小满</div></div><div class="k">2.3w</div></div></div></div>
+            <div class="af"><div class="c"></div><div class="b"><div class="t">她在30岁开始独居</div><div class="m"><div class="l"><div class="a"></div><div class="n">Yuki</div></div><div class="k">567</div></div></div></div>
+            <div class="af"><div class="c"></div><div class="b"><div class="t">为自己做饭的第100天</div><div class="m"><div class="l"><div class="a"></div><div class="n">夏夏</div></div><div class="k">3.1w</div></div></div></div>
+            <div class="af"><div class="c"></div><div class="b"><div class="t">阅读手账 · 近期在读</div><div class="m"><div class="l"><div class="a"></div><div class="n">阿棠</div></div><div class="k">455</div></div></div></div>
+          </div>
+          <div class="bottom-nav">
+            <div class="bn-tab on"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1V10.5z" stroke-linejoin="round"></path></svg><span>首页</span></div>
+            <div class="bn-tab"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10" stroke-linecap="round"></path></svg><span>分类</span></div>
+            <div class="bn-tab pt"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke-linecap="round" stroke-width="2.4"></path></svg><span>发布</span></div>
+            <div class="bn-tab"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"></path></svg><span>私信</span></div>
+            <div class="bn-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke-linecap="round"></path></svg><span>我的</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phone 2: Detail -->
+      <div class="phone-lg">
+        <div class="app-notch"></div>
+        <div class="phone-lg-screen detail">
+          <div class="detail-head">
+            <div class="dh-left">
+              <div class="ava">L</div>
+              <div class="dh-info">
+                <b>林漫</b>
+                <span>上海 · 2 小时前</span>
+              </div>
+            </div>
+            <div class="dh-foll">+ 关注</div>
+          </div>
+          <div class="detail-cov"></div>
+          <div class="detail-body">
+            <div class="detail-ttl">春日野餐穿搭｜一条裙子应付整个周末</div>
+            <div class="detail-txt">周末和朋友去了郊外的一片草地。比起繁复的叠穿，这个季节我更偏爱一条长裙 —— 它安静、温柔，也足够体面。搭配一双平底鞋，就能在午后阳光里走很远的路。</div>
+            <div class="detail-tags">
+              <span class="dtag"># 春日穿搭</span>
+              <span class="dtag"># 长裙</span>
+              <span class="dtag"># 她的周末</span>
+            </div>
+          </div>
+          <div class="detail-act">
+            <div class="da-input">说点什么...</div>
+            <div class="da-act"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6C19 16.5 12 21 12 21z" stroke-linejoin="round" stroke-linecap="round"></path></svg>1.2w</div>
+            <div class="da-act"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" stroke-linejoin="round" stroke-linecap="round"></path></svg>823</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <h5>Bloom<span style="color:var(--rose-400)">.</span></h5>
+        <p>一套为女性社区打造的设计系统 v1.0。在少女感与高级感之间，为每一位她的表达提供温柔而克制的视觉语言。</p>
+      </div>
+      <div>
+        <div class="col-title">Design Tokens</div>
+        <ul>
+          <li>Color Palette</li>
+          <li>Typography Scale</li>
+          <li>Spacing Grid (4pt)</li>
+          <li>Radius &amp; Shadow</li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-title">Do &amp; Don't</div>
+        <ul>
+          <li>使用 Rose 500 作为唯一 CTA 主色</li>
+          <li>禁止使用 Emoji 图标</li>
+          <li>避免使用荧光粉与蝴蝶结装饰</li>
+          <li>图片优先保证构图，再看信息</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <div>© 2026 Bloom Design System · Crafted with care.</div>
+      <div>v 1.0.0 · Last updated May 2026</div>
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>

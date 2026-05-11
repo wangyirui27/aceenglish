@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+151,S6｜B1初阶｜听懂来龙去脉,S6-C02｜工作沟通基础,S6E10｜遇到阻碍,S06-B1-C02-G04,B1,同事工位旁｜说明卡点,「遇到阻碍」：任务/负责人/截止时间；A=抓住逻辑并总结；B=曲解/漏行动项翻车。,任务分配｜进度汇报｜截止时间｜障碍｜协作请求｜后续安排,办公室｜会议室｜远程会议｜走廊对话｜协作工具界面,"I’m blocked by ___.（说明阻碍）
+There’s a problem with ___.（指出问题）
+I can’t move forward until ___.（说明依赖）
+The file doesn’t open.（文件问题）
+The numbers don’t match.（数据问题）
+We need a different approach.（换方法）
+Can someone check this?（请求检查）
+I tried ___, but it didn’t work.（尝试失败）
+Let’s find the cause.（查原因）
+Maybe we can use ___ instead.（替代方案）
+This may delay the task.（影响进度）
+I need help to finish this.（请求帮助）
+What is the best way to fix it?（寻求方案）
+Let’s solve the urgent part first.（先处理紧急项）
+I’ll update you when it’s fixed.（修复后同步）","Nouns: blocker, issue, file, data, number, system, access, solution
+Verbs: open, match, fix, solve, check, try
+Adjectives: blocked, urgent, missing, incorrect, unclear
+Time / Place: now, today, before the deadline, online
+Chunks: move forward, different approach, urgent part, it didn’t work"

@@ -1,0 +1,20 @@
+﻿序号,Season,Chapter,Episode,Gate_ID,难度,推荐场景,60秒任务,目标功能,场景族,推荐掌握的高价值、高频、可复用句型、短语、习语、固定搭配 池,推荐掌握的核心词汇、词组池
+93,S4｜A2上｜出门办事不慌,S4-C01｜出行与交通,S4E01｜坐公交地铁,S04-A2-C01-G01,A2,地铁闸机旁｜确认线路和方向,「坐公交地铁」：交通时间/站台/上车确认；A=重复确认后完成；B=猜测/乱确认翻车。,交通信息｜时间地点｜票务初步｜延误｜上下车指令,街道｜地铁站｜公交站｜出租车｜机场/车站,"Where is the bus stop?（问站点）
+Where is the subway station?（问地铁站）
+Which line goes to ___?（确认线路）
+Does this bus go to ___?（确认目的地）
+I need to get to ___.（说明目的地）
+How long does it take?（询问耗时）
+The next stop is ___.（识别下一站）
+Get on here and get off at ___.（上下车指令）
+First, take Line ___.（第一步路线）
+Then change at ___.（换乘）
+Is this seat free?（确认座位）
+The bus is coming.（提示车来了）
+We missed the bus.（说明错过）
+Let’s wait for the next one.（决定等待）
+Can you tell me when to get off?（请求提醒）","Nouns: bus, subway, train, stop, station, line, seat, ticket, map
+Verbs: go, take, get on, get off, change, wait, miss, arrive
+Adjectives: crowded, late, fast, slow
+Time / Place: here, there, next stop, near, far, today
+Chunks: bus stop, subway station, Line ___, to the airport, on the bus"
