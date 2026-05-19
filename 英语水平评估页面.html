@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>头号听力 · 英语水平评估</title>
+<title>头号听力 · 30 秒了解你</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
   :root {
-    /* 主色 */
     --accent: #FF600F;
     --accent-hover: #E85500;
     --accent-light: #FF7A33;
@@ -18,27 +17,21 @@
     --accent-gradient: linear-gradient(135deg, #FF600F 0%, #FF7A33 100%);
     --accent-gradient-h: linear-gradient(90deg, #FF600F, #FFB800);
 
-    /* 背景层级 */
     --bg-0: #000000;
     --bg-1: #111111;
     --bg-2: #1A1A1A;
     --bg-3: #222222;
     --bg-accent: #2A1508;
 
-    /* 辅助色 */
     --secondary: #FFB800;
     --success: #00C853;
     --info: #448AFF;
-    --warning: #FF600F;
-    --error: #FF3B30;
 
-    /* 文字 */
     --text-1: #FFFFFF;
     --text-2: #AAAAAA;
     --text-3: #666666;
     --text-accent: #FF600F;
 
-    /* 间距 / 圆角 */
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 16px;
@@ -49,7 +42,7 @@
   }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+    font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
     background: var(--bg-0);
     color: var(--text-1);
     min-height: 100vh;
@@ -58,15 +51,20 @@
     position: relative;
   }
 
+  /* 纯数字场景专用 */
+  .font-number {
+    font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+
   .app {
-    max-width: 390px;
+    max-width: 402px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
-    padding: 20px 16px 100px;
+    padding: 20px 16px 140px;
   }
 
-  /* 全局环境光 */
   body::before {
     content: '';
     position: fixed;
@@ -79,28 +77,56 @@
     z-index: 0;
   }
 
-  /* 进度条 */
-  .progress-container {
-    margin-bottom: 32px;
-  }
-
-  .progress-header {
+  /* 顶部栏 */
+  .top-bar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    min-height: 28px;
   }
 
-  .progress-text {
-    font-size: 12px;
+  .back-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-2);
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: -8px;
+  }
+
+  .back-btn svg { width: 22px; height: 22px; }
+  .back-btn.hidden { visibility: hidden; }
+
+  .step-text {
+    font-size: 13px;
     color: var(--text-2);
     font-weight: 500;
   }
 
+  .skip-btn {
+    font-size: 13px;
+    color: var(--text-2);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin-right: -8px;
+  }
+
+  .skip-btn:active { color: var(--text-1); }
+
+  /* 进度条 */
+  .progress-container { margin-bottom: 32px; }
+
   .progress-track {
     background: var(--bg-3);
     border-radius: var(--radius-full);
-    height: 6px;
+    height: 4px;
     overflow: hidden;
   }
 
@@ -108,90 +134,123 @@
     background: var(--accent-gradient-h);
     border-radius: var(--radius-full);
     height: 100%;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 0%;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 20%;
   }
 
-  /* 标题区域 */
-  .header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
+  /* 引导页 */
+  .intro-page { text-align: center; padding-top: 40px; }
 
-  .header-icon {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 20px;
+  .intro-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 24px;
     background: var(--bg-accent);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .header-icon svg {
-    width: 32px;
-    height: 32px;
+  .intro-icon svg {
+    width: 36px;
+    height: 36px;
     color: var(--accent);
   }
 
-  .header h1 {
-    font-size: 24px;
+  .intro-title {
+    font-size: 26px;
     font-weight: 700;
     line-height: 1.3;
-    margin-bottom: 8px;
-    color: var(--text-1);
+    margin-bottom: 12px;
   }
 
-  .header p {
-    font-size: 14px;
+  .intro-sub {
+    font-size: 15px;
     color: var(--text-2);
     line-height: 1.6;
+    margin-bottom: 32px;
+    padding: 0 8px;
   }
 
-  /* 问题区域 */
-  .question-section {
-    margin-bottom: 32px;
+  .intro-features {
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    text-align: left;
+    margin-bottom: 12px;
   }
+
+  .intro-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+  }
+
+  .intro-feature-icon {
+    width: 32px;
+    height: 32px;
+    background: var(--accent-subtle);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .intro-feature-icon svg {
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+  }
+
+  .intro-feature-text {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.5;
+    padding-top: 6px;
+  }
+
+  .intro-feature-text strong {
+    color: var(--text-1);
+    font-weight: 600;
+  }
+
+  /* 问题页 */
+  .question-page { display: none; }
+  .question-page.active { display: block; }
 
   .question-label {
     font-size: 12px;
     font-weight: 600;
     color: var(--accent);
-    text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .question-number {
-    width: 20px;
-    height: 20px;
-    background: var(--accent);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
+    text-transform: uppercase;
   }
 
   .question-title {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: 700;
     color: var(--text-1);
-    margin-bottom: 20px;
-    line-height: 1.4;
+    margin-bottom: 8px;
+    line-height: 1.35;
+  }
+
+  .question-hint {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-bottom: 24px;
   }
 
   /* 选项 */
   .options-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
 
   .option-card {
@@ -202,28 +261,16 @@
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    overflow: hidden;
   }
 
-  .option-card:hover {
-    border-color: var(--accent);
-    background: var(--bg-2);
+  .option-card:active {
+    transform: scale(0.97);
   }
 
   .option-card.selected {
     border-color: var(--accent);
-    background: var(--bg-accent);
+    background: var(--bg-1);
     box-shadow: 0 0 20px var(--accent-subtle);
-  }
-
-  .option-card.selected::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 3px;
-    height: 100%;
-    background: var(--accent);
   }
 
   .option-content {
@@ -233,14 +280,14 @@
   }
 
   .option-radio {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border: 2px solid var(--bg-3);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
     flex-shrink: 0;
   }
 
@@ -249,43 +296,316 @@
     background: var(--accent);
   }
 
-  .option-radio-dot {
+  .option-radio::after {
+    content: '';
     width: 8px;
     height: 8px;
     background: white;
     border-radius: 50%;
     opacity: 0;
     transform: scale(0);
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
   }
 
-  .option-card.selected .option-radio-dot {
+  .option-card.selected .option-radio::after {
     opacity: 1;
     transform: scale(1);
-  }
-
-  .option-text {
-    flex: 1;
   }
 
   .option-main {
     font-size: 15px;
     font-weight: 500;
     color: var(--text-1);
-    margin-bottom: 2px;
-  }
-
-  .option-sub {
-    font-size: 12px;
-    color: var(--text-2);
     line-height: 1.4;
   }
 
-  /* 分隔线 */
-  .divider {
-    height: 1px;
-    background: var(--bg-3);
-    margin: 32px 0;
+  /* 结果页 */
+  .result-page { display: none; }
+  .result-page.active { display: block; }
+
+  .result-hero {
+    text-align: center;
+    margin-bottom: 28px;
+    padding-top: 8px;
+  }
+
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+    margin-bottom: 16px;
+  }
+
+  .result-badge svg { width: 14px; height: 14px; }
+
+  .result-title {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .result-sub {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+
+  /* 能力评估卡片 */
+  .level-card {
+    background: linear-gradient(180deg, rgba(42, 21, 8, 0.6) 0%, var(--bg-1) 100%);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 0 24px var(--accent-subtle);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .level-card::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, var(--accent-subtle) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .level-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .level-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--text-2);
+    background: var(--bg-2);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .level-tag svg { width: 12px; height: 12px; }
+
+  .level-name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-1);
+    line-height: 1.2;
+  }
+
+  .level-badge {
+    background: var(--accent-gradient);
+    color: #FFFFFF;
+    font-family: "OPPOSans 2.0_En", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    padding: 8px 14px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px var(--accent-glow);
+    min-width: 60px;
+    text-align: center;
+    line-height: 1;
+    letter-spacing: 0.5px;
+  }
+
+  .level-desc {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .level-scale {
+    position: relative;
+  }
+
+  .level-bar-track {
+    height: 8px;
+    background: var(--bg-2);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 8px;
+  }
+
+  .level-bar-fill {
+    height: 100%;
+    background: var(--accent-gradient-h);
+    border-radius: var(--radius-full);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+    position: relative;
+  }
+
+  .level-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -4px;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    border: 2px solid var(--bg-0);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 8px var(--accent-glow);
+  }
+
+  .level-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-3);
+    font-weight: 500;
+  }
+
+  .level-bar-labels span {
+    flex: 1;
+    text-align: center;
+  }
+
+  .level-bar-labels span:first-child { text-align: left; }
+  .level-bar-labels span:last-child { text-align: right; }
+
+  .level-bar-labels span.active {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .level-note {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--bg-3);
+    font-size: 12px;
+    color: var(--text-3);
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    position: relative;
+  }
+
+  .level-note svg {
+    width: 14px;
+    height: 14px;
+    color: var(--text-3);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* 计划卡片 */
+  .plan-card {
+    background: linear-gradient(180deg, var(--bg-1) 0%, rgba(42, 21, 8, 0.4) 100%);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-lg);
+    padding: 4px 20px;
+    margin-bottom: 16px;
+  }
+
+  .plan-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--bg-3);
+  }
+
+  .plan-row:last-child { border-bottom: none; }
+
+  .plan-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--bg-2);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .plan-icon svg {
+    width: 18px;
+    height: 18px;
+    color: var(--accent);
+  }
+
+  .plan-text { flex: 1; padding-top: 2px; }
+
+  .plan-label {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 4px;
+  }
+
+  .plan-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-1);
+    line-height: 1.4;
+  }
+
+  .plan-value .highlight { color: var(--accent); }
+
+  /* 升级提示卡 */
+  .upgrade-card {
+    background: var(--bg-1);
+    border: 1px solid var(--bg-3);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .upgrade-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-subtle);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .upgrade-icon svg {
+    width: 22px;
+    height: 22px;
+    color: var(--accent);
+  }
+
+  .upgrade-text { flex: 1; }
+
+  .upgrade-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-1);
+    margin-bottom: 2px;
+  }
+
+  .upgrade-desc {
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.4;
   }
 
   /* 底部按钮 */
@@ -303,31 +623,40 @@
     z-index: 100;
   }
 
-  .btn-primary {
-    background: var(--accent-gradient);
-    color: #FFFFFF;
-    font-weight: 700;
-    font-size: 16px;
-    padding: 14px 32px;
+  .bottom-inner {
+    max-width: 402px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px 20px;
     border-radius: var(--radius-md);
     border: none;
-    width: 100%;
-    box-shadow: 0 4px 20px var(--accent-glow);
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    font-family: inherit;
   }
 
-  .btn-primary:hover {
-    box-shadow: 0 6px 30px rgba(255, 96, 15, 0.45);
-    transform: translateY(-1px);
+  .btn-primary {
+    background: var(--accent-gradient);
+    color: #FFFFFF;
+    font-weight: 700;
+    box-shadow: 0 4px 20px var(--accent-glow);
   }
 
   .btn-primary:active {
-    transform: translateY(0);
+    transform: scale(0.97);
+    box-shadow: 0 2px 10px var(--accent-glow);
   }
 
   .btn-primary:disabled {
@@ -335,548 +664,548 @@
     color: var(--text-3);
     box-shadow: none;
     cursor: not-allowed;
-    transform: none;
   }
 
-  .btn-primary svg {
-    width: 20px;
-    height: 20px;
-  }
-
-  /* 结果页面 */
-  .result-page {
-    display: none;
-    text-align: center;
-    padding-top: 40px;
-  }
-
-  .result-page.active {
-    display: block;
-  }
-
-  .result-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 24px;
-    background: var(--bg-accent);
-    border-radius: var(--radius-xl);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-
-  .result-icon svg {
-    width: 40px;
-    height: 40px;
-    color: var(--accent);
-  }
-
-  .result-level {
-    position: absolute;
-    bottom: -8px;
-    right: -8px;
-    background: var(--accent);
-    color: white;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 4px 8px;
-    border-radius: var(--radius-sm);
-    box-shadow: 0 2px 8px rgba(255, 96, 15, 0.3);
-  }
-
-  .result-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-1);
-    margin-bottom: 8px;
-  }
-
-  .result-subtitle {
-    font-size: 16px;
+  .btn-ghost {
+    background: transparent;
     color: var(--text-2);
-    margin-bottom: 32px;
-    line-height: 1.5;
-  }
-
-  .result-stars {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 32px;
-  }
-
-  .star {
-    width: 32px;
-    height: 32px;
-    color: var(--bg-3);
-  }
-
-  .star.active {
-    color: var(--secondary);
-  }
-
-  .result-card {
-    background: var(--bg-1);
     border: 1px solid var(--bg-3);
-    border-radius: var(--radius-lg);
-    padding: 20px;
-    margin-bottom: 24px;
-    text-align: left;
+    font-weight: 500;
   }
 
-  .result-card-title {
-    font-size: 16px;
-    font-weight: 600;
+  .btn-ghost:active {
+    background: var(--bg-1);
     color: var(--text-1);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
   }
 
-  .result-card-title svg {
-    width: 20px;
-    height: 20px;
-    color: var(--accent);
-  }
-
-  .result-recommendations {
-    list-style: none;
-  }
-
-  .result-recommendations li {
-    font-size: 14px;
-    color: var(--text-2);
-    padding: 8px 0;
-    border-bottom: 1px solid var(--bg-3);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .result-recommendations li:last-child {
-    border-bottom: none;
-  }
-
-  .result-recommendations li::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: var(--accent);
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+  .btn svg { width: 18px; height: 18px; }
 
   /* 动画 */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
+  .question-page.active,
+  .result-page.active {
+    animation: fadeInUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .fade-in {
-    animation: fadeIn 0.6s ease forwards;
+  .stagger > * {
+    opacity: 0;
+    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
-
-  .slide-up {
-    animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-
-  .delay-1 { animation-delay: 0.1s; opacity: 0; }
-  .delay-2 { animation-delay: 0.2s; opacity: 0; }
-  .delay-3 { animation-delay: 0.3s; opacity: 0; }
-  .delay-4 { animation-delay: 0.4s; opacity: 0; }
-  .delay-5 { animation-delay: 0.5s; opacity: 0; }
+  .stagger > *:nth-child(1) { animation-delay: 0.05s; }
+  .stagger > *:nth-child(2) { animation-delay: 0.10s; }
+  .stagger > *:nth-child(3) { animation-delay: 0.15s; }
+  .stagger > *:nth-child(4) { animation-delay: 0.20s; }
+  .stagger > *:nth-child(5) { animation-delay: 0.25s; }
 </style>
 </head>
 <body>
 <div class="app">
-  <!-- 问题页面 -->
-  <div id="questionPage">
-    <!-- 进度条 -->
-    <div class="progress-container fade-in delay-1">
-      <div class="progress-header">
-        <span class="progress-text">问题 1 / 2</span>
-        <span class="progress-text" id="progressPercent">0%</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
-    </div>
 
-    <!-- 标题 -->
-    <div class="header fade-in delay-2">
-      <div class="header-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-          <path d="M2 17l10 5 10-5"/>
-          <path d="M2 12l10 5 10-5"/>
-        </svg>
-      </div>
-      <h1>快速评估你的英语水平</h1>
-      <p>回答两个问题，帮你找到最适合的学习内容</p>
-    </div>
-
-    <!-- 问题1 -->
-    <div class="question-section fade-in delay-3" id="question1">
-      <div class="question-label">
-        <span class="question-number">1</span>
-        学习经历
-      </div>
-      <h2 class="question-title">你学英语多久了？</h2>
-      <div class="options-grid">
-        <div class="option-card" data-question="1" data-value="1" onclick="selectOption(this)">
-          <div class="option-content">
-            <div class="option-radio">
-              <div class="option-radio-dot"></div>
-            </div>
-            <div class="option-text">
-              <div class="option-main">不到1年</div>
-              <div class="option-sub">刚开始接触英语</div>
-            </div>
-          </div>
-        </div>
-        <div class="option-card" data-question="1" data-value="2" onclick="selectOption(this)">
-          <div class="option-content">
-            <div class="option-radio">
-              <div class="option-radio-dot"></div>
-            </div>
-            <div class="option-text">
-              <div class="option-main">1-3年</div>
-              <div class="option-sub">有一些基础，但还不熟练</div>
-            </div>
-          </div>
-        </div>
-        <div class="option-card" data-question="1" data-value="3" onclick="selectOption(this)">
-          <div class="option-content">
-            <div class="option-radio">
-              <div class="option-radio-dot"></div>
-            </div>
-            <div class="option-text">
-              <div class="option-main">3-5年</div>
-              <div class="option-sub">可以进行简单交流</div>
-            </div>
-          </div>
-        </div>
-        <div class="option-card" data-question="1" data-value="4" onclick="selectOption(this)">
-          <div class="option-content">
-            <div class="option-radio">
-              <div class="option-radio-dot"></div>
-            </div>
-            <div class="option-text">
-              <div class="option-main">5年以上</div>
-              <div class="option-sub">有较好的英语基础</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider fade-in delay-4"></div>
-
-    <!-- 问题2 -->
-    <div class="question-section fade-in delay-4" id="question2">
-      <div class="question-label">
-        <span class="question-number">2</span>
-        听力能力
-      </div>
-      <h2 class="question-title">你能听懂美剧中的日常对话吗？</h2>
-      <div class="options-grid">
-        <div class="option-card" data-question="2" data-value="1" onclick="selectOption(this)">
-          <div class="option-content">
-            <div class="option-radio">
-              <div class="option-radio-dot"></div>
-            </div>
-            <div class="option-text">
-              <div class="option-main">完全听不懂</div>
-              <div class="option-sub">只能听懂零星几个单词</div>
-            </div>
-          </div>
-        </div>
-        <div class="option-card" data-question="2" data-value="2" onclick="selectOption(this)">
-          <div class="option-content">
-            <div class="option-radio">
-              <div class="option-radio-dot"></div>
-            </div>
-            <div class="option-text">
-              <div class="option-main">能听懂一些词</div>
-              <div class="option-sub">能抓住关键词，但不懂整体意思</div>
-            </div>
-          </div>
-        </div>
-        <div class="option-card" data-question="2" data-value="3" onclick="selectOption(this)">
-          <div class="option-content">
-            <div class="option-radio">
-              <div class="option-radio-dot"></div>
-            </div>
-            <div class="option-text">
-              <div class="option-main">能听懂大概意思</div>
-              <div class="option-sub">理解主要内容，但细节会漏掉</div>
-            </div>
-          </div>
-        </div>
-        <div class="option-card" data-question="2" data-value="4" onclick="selectOption(this)">
-          <div class="option-content">
-            <div class="option-radio">
-              <div class="option-radio-dot"></div>
-            </div>
-            <div class="option-text">
-              <div class="option-main">能听懂大部分</div>
-              <div class="option-sub">轻松理解对话内容</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 结果页面 -->
-  <div class="result-page" id="resultPage">
-    <div class="result-icon slide-up">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-        <polyline points="22 4 12 14.01 9 11.01"/>
-      </svg>
-      <span class="result-level" id="resultLevel">A1</span>
-    </div>
-    
-    <h1 class="result-title slide-up delay-1">你的英语水平是</h1>
-    <p class="result-subtitle slide-up delay-2" id="resultDescription">入门级 - 适合基础学习内容</p>
-    
-    <div class="result-stars slide-up delay-3" id="resultStars">
-      <!-- 星星将通过JavaScript动态生成 -->
-    </div>
-    
-    <div class="result-card slide-up delay-4">
-      <div class="result-card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-        推荐学习内容
-      </div>
-      <ul class="result-recommendations" id="resultRecommendations">
-        <!-- 推荐内容将通过JavaScript动态生成 -->
-      </ul>
-    </div>
-    
-    <div class="slide-up delay-5">
-      <button class="btn-primary" onclick="startLearning()">
-        开始学习
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"/>
-          <polyline points="12 5 19 12 12 19"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- 底部按钮 -->
-  <div class="bottom-bar" id="bottomBar">
-    <button class="btn-primary" id="nextBtn" disabled onclick="showResult()">
-      查看结果
+  <!-- 顶部栏 -->
+  <div class="top-bar">
+    <button class="back-btn hidden" id="backBtn" onclick="goBack()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="5" y1="12" x2="19" y2="12"/>
-        <polyline points="12 5 19 12 12 19"/>
+        <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
+    <span class="step-text" id="stepText"></span>
+    <button class="skip-btn" id="skipBtn" onclick="skipAll()">跳过</button>
+  </div>
+
+  <!-- 进度条 -->
+  <div class="progress-container" id="progressContainer" style="display:none;">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- 引导页 -->
+  <div class="intro-page" id="introPage">
+    <div class="intro-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+        <path d="M21 19a2 2 0 0 1-2 2h-1v-7h3v5zM3 19a2 2 0 0 0 2 2h1v-7H3v5z"/>
+      </svg>
+    </div>
+    <h1 class="intro-title">先花 30 秒<br/>帮你找到合适的起点</h1>
+    <p class="intro-sub">不用背单词，不用做长测试。<br/>我们先了解你的目标，再帮你规划从哪里开始练。</p>
+
+    <div class="intro-features">
+      <div class="intro-feature">
+        <div class="intro-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="intro-feature-text">只需 <strong>30 秒</strong>，5 道选择题</div>
+      </div>
+      <div class="intro-feature">
+        <div class="intro-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <div class="intro-feature-text">立刻拿到 <strong>专属听力计划</strong></div>
+      </div>
+      <div class="intro-feature">
+        <div class="intro-feature-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <div class="intro-feature-text">想更精准？后续可加做 <strong>5 分钟无字幕视频测试</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 问题页：5道 -->
+  <div class="question-page" id="questionPage">
+    <div class="question-label" id="qLabel"></div>
+    <h2 class="question-title" id="qTitle"></h2>
+    <p class="question-hint" id="qHint"></p>
+    <div class="options-grid stagger" id="optionsGrid"></div>
+  </div>
+
+  <!-- 结果页 -->
+  <div class="result-page" id="resultPage">
+    <div class="result-hero">
+      <div class="result-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        听力计划已生成
+      </div>
+      <h1 class="result-title" id="resultTitle">你的专属听力计划</h1>
+      <p class="result-sub" id="resultSub">基于你的目标和现状，为你量身定制</p>
+    </div>
+
+    <!-- 能力评估结果 -->
+    <div class="level-card">
+      <div class="level-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        基于自评的水平判断
+      </div>
+      <div class="level-header">
+        <div>
+          <div class="level-name" id="levelName">初级</div>
+          <div class="level-desc" id="levelDesc" style="margin-top:6px;margin-bottom:0;">—</div>
+        </div>
+        <div class="level-badge" id="levelCode">A1</div>
+      </div>
+      <div class="level-scale">
+        <div class="level-bar-track">
+          <div class="level-bar-fill" id="levelBarFill"></div>
+        </div>
+        <div class="level-bar-labels" id="levelBarLabels">
+          <span data-pos="0">入门</span>
+          <span data-pos="1">基础</span>
+          <span data-pos="2">进阶</span>
+          <span data-pos="3">熟练</span>
+        </div>
+      </div>
+      <div class="level-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <span id="levelNote">此结果基于你的自评，仅供参考。想要更精准的判断，可以做一次无字幕视频听力测试。</span>
+      </div>
+    </div>
+
+    <div class="plan-card">
+      <div class="plan-row">
+        <div class="plan-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
+        <div class="plan-text">
+          <div class="plan-label">你的目标</div>
+          <div class="plan-value" id="planGoal">—</div>
+        </div>
+      </div>
+      <div class="plan-row">
+        <div class="plan-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21l9-9 4 4 7-7"/><polyline points="14 4 21 4 21 11"/>
+          </svg>
+        </div>
+        <div class="plan-text">
+          <div class="plan-label">建议起点</div>
+          <div class="plan-value"><span class="highlight" id="planStart">—</span></div>
+        </div>
+      </div>
+      <div class="plan-row">
+        <div class="plan-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div class="plan-text">
+          <div class="plan-label">每日计划</div>
+          <div class="plan-value" id="planDaily">—</div>
+        </div>
+      </div>
+      <div class="plan-row">
+        <div class="plan-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v6"/><path d="M12 16v6"/><circle cx="12" cy="12" r="4"/><path d="M2 12h6"/><path d="M16 12h6"/>
+          </svg>
+        </div>
+        <div class="plan-text">
+          <div class="plan-label">30 天目标</div>
+          <div class="plan-value" id="planOutcome">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 升级提示 -->
+    <div class="upgrade-card">
+      <div class="upgrade-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+      </div>
+      <div class="upgrade-text">
+        <div class="upgrade-title">想要更精准的起点？</div>
+        <div class="upgrade-desc" id="upgradeDesc">再花 5 分钟看几段无字幕英文视频，我们会根据你听懂的程度更精确地判断你的水平</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 底部按钮 -->
+<div class="bottom-bar" id="bottomBar">
+  <div class="bottom-inner" id="bottomInner">
+    <!-- 由 JS 动态填充 -->
   </div>
 </div>
 
 <script>
-  // 存储用户选择
-  const userAnswers = {
-    question1: null,
-    question2: null
+  // ============ 问卷数据（按 PRD） ============
+  const QUESTIONS = [
+    {
+      key: 'primary_goal',
+      label: '学习目的',
+      title: '你学英语听力主要为了什么？',
+      hint: '选最贴近你的一个',
+      options: [
+        { value: 'travel',  label: '旅行能听懂、会回应' },
+        { value: 'work',    label: '工作开会、沟通更顺' },
+        { value: 'show',    label: '看剧看电影少看字幕' },
+        { value: 'daily',   label: '日常交流能听懂老外' },
+        { value: 'exam',    label: '考试提分' },
+      ]
+    },
+    {
+      key: 'pain_point',
+      label: '听力痛点',
+      title: '你现在最大的问题是什么？',
+      hint: '我们会针对性帮你改善',
+      options: [
+        { value: 'word_known',   label: '单词认识，但听不出来' },
+        { value: 'speed',        label: '语速一快就跟不上' },
+        { value: 'real_accent',  label: '真实老外说话听不清' },
+        { value: 'long_clip',    label: '一整段容易听丢' },
+        { value: 'persistence',  label: '学几天就坚持不下去' },
+      ]
+    },
+    {
+      key: 'self_level',
+      label: '自评水平',
+      title: '你觉得自己现在大概什么水平？',
+      hint: '凭直觉选就好，没有对错',
+      options: [
+        { value: 'almost_none', label: '几乎听不懂' },
+        { value: 'greeting',    label: '能听懂简单问候' },
+        { value: 'short',       label: '能听懂一些日常短句' },
+        { value: 'slow',        label: '能听懂慢速对话' },
+        { value: 'unsure',      label: '不确定' },
+      ]
+    },
+    {
+      key: 'daily_minutes',
+      label: '每日时间',
+      title: '你每天愿意练多久？',
+      hint: '我们会按你的时间安排每日计划',
+      options: [
+        { value: 5,  label: '5 分钟' },
+        { value: 10, label: '10 分钟' },
+        { value: 15, label: '15 分钟' },
+        { value: 30, label: '30 分钟以上' },
+      ]
+    },
+    {
+      key: 'desired_outcome',
+      label: '30 天目标',
+      title: '你希望 30 天后有什么变化？',
+      hint: '我们会用这个目标陪你坚持',
+      options: [
+        { value: 'more_phrases',  label: '能听懂更多真实短句' },
+        { value: 'less_subtitle', label: '看剧少看一点字幕' },
+        { value: 'travel_basic',  label: '旅行时能听懂基本问题' },
+        { value: 'work_calm',     label: '工作中不那么慌' },
+        { value: 'habit',         label: '建立每天练听力的习惯' },
+      ]
+    },
+  ];
+
+  // ============ 状态 ============
+  const TOTAL = QUESTIONS.length;
+  let stage = 'intro';   // intro | question | result
+  let qIndex = 0;        // 当前问题索引
+  const answers = {};    // { key: value }
+
+  // ============ 渲染 ============
+  function render() {
+    const intro    = document.getElementById('introPage');
+    const qPage    = document.getElementById('questionPage');
+    const resPage  = document.getElementById('resultPage');
+    const stepText = document.getElementById('stepText');
+    const backBtn  = document.getElementById('backBtn');
+    const skipBtn  = document.getElementById('skipBtn');
+    const progress = document.getElementById('progressContainer');
+    const bottom   = document.getElementById('bottomInner');
+
+    intro.style.display   = stage === 'intro'    ? 'block' : 'none';
+    qPage.classList.toggle('active',  stage === 'question');
+    resPage.classList.toggle('active', stage === 'result');
+    progress.style.display = stage === 'question' ? 'block' : 'none';
+
+    if (stage === 'intro') {
+      stepText.textContent = '';
+      backBtn.classList.add('hidden');
+      skipBtn.style.display = 'inline-block';
+      bottom.innerHTML = `
+        <button class="btn btn-primary" onclick="startSurvey()">
+          开始设置
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>`;
+    }
+
+    if (stage === 'question') {
+      const q = QUESTIONS[qIndex];
+      stepText.textContent = `${qIndex + 1} / ${TOTAL}`;
+      backBtn.classList.remove('hidden');
+      skipBtn.style.display = 'inline-block';
+
+      document.getElementById('progressFill').style.width = `${((qIndex + 1) / TOTAL) * 100}%`;
+
+      document.getElementById('qLabel').textContent = q.label;
+      document.getElementById('qTitle').textContent = q.title;
+      document.getElementById('qHint').textContent  = q.hint;
+
+      const grid = document.getElementById('optionsGrid');
+      grid.innerHTML = '';
+      q.options.forEach(opt => {
+        const card = document.createElement('div');
+        card.className = 'option-card' + (answers[q.key] === opt.value ? ' selected' : '');
+        card.innerHTML = `
+          <div class="option-content">
+            <div class="option-radio"></div>
+            <div class="option-main">${opt.label}</div>
+          </div>`;
+        card.addEventListener('click', () => chooseOption(q.key, opt.value));
+        grid.appendChild(card);
+      });
+
+      const isLast = qIndex === TOTAL - 1;
+      const canNext = answers[q.key] !== undefined;
+      bottom.innerHTML = `
+        <button class="btn btn-primary" id="nextBtn" ${canNext ? '' : 'disabled'} onclick="nextQuestion()">
+          ${isLast ? '生成我的计划' : '下一题'}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>`;
+    }
+
+    if (stage === 'result') {
+      stepText.textContent = '';
+      backBtn.classList.add('hidden');
+      skipBtn.style.display = 'none';
+      renderResult();
+      bottom.innerHTML = `
+        <button class="btn btn-primary" onclick="startLearning()">
+          按此结果，直接开始学习
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+        <button class="btn btn-ghost" onclick="goDeeperTest()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="23 7 16 12 23 17 23 7"/>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+          </svg>
+          再花 5 分钟做精准测试（看无字幕视频）
+        </button>`;
+    }
+  }
+
+  // ============ 交互 ============
+  function startSurvey() {
+    stage = 'question';
+    qIndex = 0;
+    render();
+  }
+
+  function chooseOption(key, value) {
+    answers[key] = value;
+    // 选中后自动推进一小段时间，让用户看到反馈
+    render();
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn) nextBtn.disabled = false;
+  }
+
+  function nextQuestion() {
+    if (qIndex < TOTAL - 1) {
+      qIndex++;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      render();
+    } else {
+      stage = 'result';
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      render();
+    }
+  }
+
+  function goBack() {
+    if (stage === 'question') {
+      if (qIndex === 0) {
+        stage = 'intro';
+      } else {
+        qIndex--;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      render();
+    }
+  }
+
+  function skipAll() {
+    // 跳过：直接进入第一关（PRD：用户可跳过测试直接开始）
+    if (confirm('要跳过设置，直接开始第一关吗？')) {
+      window.location.href = '#/camp/a1/lesson/1';
+    }
+  }
+
+  // ============ 推荐逻辑（按 PRD 6.1） ============
+  function recommendStart(self) {
+    switch (self) {
+      case 'almost_none': return { camp: 'A1 见习营第一关', level: 'A1', needDeeper: false };
+      case 'greeting':    return { camp: 'A1 见习营',       level: 'A1', needDeeper: false };
+      case 'short':       return { camp: 'A1 见习营',       level: 'A1', needDeeper: true,  hint: '可后续挑战见习营 Boss' };
+      case 'slow':        return { camp: '建议先做起点判断', level: '?',  needDeeper: true  };
+      case 'unsure':      return { camp: '建议先做起点判断', level: '?',  needDeeper: true  };
+      default:            return { camp: 'A1 见习营',       level: 'A1', needDeeper: false };
+    }
+  }
+
+  const GOAL_TEXT = {
+    travel: '旅行能听懂、会回应',
+    work:   '工作开会、沟通更顺',
+    show:   '看剧少看字幕',
+    daily:  '日常交流能听懂老外',
+    exam:   '考试提分',
   };
 
-  // 选择选项
-  function selectOption(element) {
-    const question = element.dataset.question;
-    const value = parseInt(element.dataset.value);
-    
-    // 更新存储
-    userAnswers[`question${question}`] = value;
-    
-    // 更新UI - 移除同一问题的其他选中状态
-    const questionSection = element.closest('.question-section');
-    questionSection.querySelectorAll('.option-card').forEach(card => {
-      card.classList.remove('selected');
+  const OUTCOME_TEXT = {
+    more_phrases:  '能听懂更多真实短句',
+    less_subtitle: '看剧少看一点字幕',
+    travel_basic:  '旅行时能听懂基本问题',
+    work_calm:     '工作中不那么慌',
+    habit:         '建立每天练听力的习惯',
+  };
+
+  // 能力等级映射（基于自评水平，按 PRD 6.1 + 产品化表达）
+  // pos: 0=入门, 1=基础, 2=进阶, 3=熟练；用于进度条定位（百分比 = (pos+0.5)/4 * 100，再微调）
+  const LEVEL_MAP = {
+    almost_none: {
+      code: 'A1', name: '入门起步', pos: 0, percent: 8,
+      desc: '能听懂少量单词，正在搭建对英语声音的初步反应',
+    },
+    greeting: {
+      code: 'A1', name: '入门', pos: 0, percent: 20,
+      desc: '能听懂打招呼、简单提问等基础场景的英语',
+    },
+    short: {
+      code: 'A1+', name: '基础', pos: 1, percent: 40,
+      desc: '能听懂日常短句，对常见词汇有一定反应速度',
+    },
+    slow: {
+      code: 'A2', name: '日常', pos: 2, percent: 62,
+      desc: '能跟上慢速对话的大意，但真实语速下还有差距',
+    },
+    unsure: {
+      code: '?', name: '待测评', pos: 1, percent: 35,
+      desc: '你不太确定自己的水平，建议做一次精准测试',
+    },
+  };
+
+  function renderResult() {
+    const rec = recommendStart(answers.self_level);
+    const goal = GOAL_TEXT[answers.primary_goal] || '提升听力';
+    const outcome = OUTCOME_TEXT[answers.desired_outcome] || '让耳朵习惯真实英语';
+    const mins = answers.daily_minutes || 10;
+
+    // 能力等级评估
+    const lv = LEVEL_MAP[answers.self_level] || LEVEL_MAP.unsure;
+    document.getElementById('levelCode').textContent = lv.code;
+    document.getElementById('levelName').textContent = lv.name;
+    document.getElementById('levelDesc').textContent = lv.desc;
+    // 进度条延迟动画
+    setTimeout(() => {
+      document.getElementById('levelBarFill').style.width = `${lv.percent}%`;
+    }, 200);
+    // 高亮当前刻度
+    document.querySelectorAll('#levelBarLabels span').forEach(el => {
+      el.classList.toggle('active', Number(el.dataset.pos) === lv.pos);
     });
-    
-    // 添加选中状态
-    element.classList.add('selected');
-    
-    // 更新进度
-    updateProgress();
-    
-    // 检查是否可以进入下一步
-    checkCompletion();
-  }
+    // 不确定时给更明确的引导
+    if (answers.self_level === 'unsure') {
+      document.getElementById('levelNote').textContent
+        = '你选择了"不确定"，建议做一次无字幕视频听力测试，结果会更准确。';
+    }
 
-  // 更新进度条
-  function updateProgress() {
-    const answered = Object.values(userAnswers).filter(v => v !== null).length;
-    const progress = (answered / 2) * 100;
-    
-    document.getElementById('progressFill').style.width = `${progress}%`;
-    document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
-    
-    // 更新进度文本
-    const progressText = document.querySelector('.progress-text');
-    if (answered === 0) {
-      progressText.textContent = '问题 1 / 2';
-    } else if (answered === 1) {
-      progressText.textContent = '问题 2 / 2';
+    // 学习计划
+    document.getElementById('planGoal').textContent = goal;
+    document.getElementById('planStart').textContent = rec.camp;
+    document.getElementById('planDaily').textContent = `每天 ${mins} 分钟，完成 ${mins >= 15 ? 2 : 1} 关`;
+    document.getElementById('planOutcome').textContent = outcome;
+
+    // 升级文案：水平模糊或自评偏高，更需要做精准测试
+    const upgrade = document.getElementById('upgradeDesc');
+    if (rec.needDeeper) {
+      upgrade.textContent = '你的水平介于两档之间，再花 5 分钟看几段无字幕视频，能更准确地判断你的起点';
     } else {
-      progressText.textContent = '完成！';
+      upgrade.textContent = '再花 5 分钟看几段无字幕英文视频，我们会根据你听懂的程度更精确地判断你的水平';
     }
   }
 
-  // 检查是否完成
-  function checkCompletion() {
-    const nextBtn = document.getElementById('nextBtn');
-    const allAnswered = Object.values(userAnswers).every(v => v !== null);
-    
-    nextBtn.disabled = !allAnswered;
+  // ============ 出口 ============
+  function goDeeperTest() {
+    // 接入第二套问卷（已开发好的起点判断页）
+    window.location.href = '#/start-check';
   }
 
-  // 计算结果
-  function calculateResult() {
-    const totalScore = userAnswers.question1 + userAnswers.question2;
-    
-    // 根据总分确定级别
-    // 2-3分: A1 (1星)
-    // 4分: A2 (2星)  
-    // 5分: B1 (3星)
-    // 6分: B2 (4星)
-    // 7-8分: C1+ (5星)
-    
-    if (totalScore <= 3) {
-      return {
-        level: 'A1',
-        stars: 1,
-        title: '入门级',
-        description: '适合基础学习内容，从简单对话开始',
-        recommendations: [
-          '基础日常对话（问候、自我介绍）',
-          '简单词汇和短语',
-          '慢速英语听力练习',
-          '带中文字幕的简单视频'
-        ]
-      };
-    } else if (totalScore === 4) {
-      return {
-        level: 'A2',
-        stars: 2,
-        title: '初级',
-        description: '可以开始接触简单场景对话',
-        recommendations: [
-          '生活场景对话（购物、点餐）',
-          '基础语法巩固',
-          '带双语字幕的视频',
-          '简单故事和叙述'
-        ]
-      };
-    } else if (totalScore === 5) {
-      return {
-        level: 'B1',
-        stars: 3,
-        title: '中级',
-        description: '能够理解日常交流内容',
-        recommendations: [
-          '日常话题讨论',
-          '美剧生活场景片段',
-          '中英双语字幕切换',
-          '简单新闻和播客'
-        ]
-      };
-    } else if (totalScore === 6) {
-      return {
-        level: 'B2',
-        stars: 4,
-        title: '中高级',
-        description: '能够理解大部分日常对话',
-        recommendations: [
-          '美剧电影原声片段',
-          '纯英文字幕内容',
-          '话题讨论和辩论',
-          '新闻和纪录片'
-        ]
-      };
-    } else {
-      return {
-        level: 'C1+',
-        stars: 5,
-        title: '高级',
-        description: '能够理解复杂内容和快速对话',
-        recommendations: [
-          '无字幕原声内容',
-          '专业话题讨论',
-          '快速对话和俚语',
-          '学术和专业内容'
-        ]
-      };
-    }
-  }
-
-  // 显示结果
-  function showResult() {
-    const result = calculateResult();
-    
-    // 更新结果页面
-    document.getElementById('resultLevel').textContent = result.level;
-    document.getElementById('resultDescription').textContent = `${result.title} - ${result.description}`;
-    
-    // 生成星星
-    const starsContainer = document.getElementById('resultStars');
-    starsContainer.innerHTML = '';
-    
-    for (let i = 1; i <= 5; i++) {
-      const star = document.createElement('div');
-      star.className = `star ${i <= result.stars ? 'active' : ''}`;
-      star.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="${i <= result.stars ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-      `;
-      starsContainer.appendChild(star);
-    }
-    
-    // 生成推荐内容
-    const recommendationsContainer = document.getElementById('resultRecommendations');
-    recommendationsContainer.innerHTML = '';
-    
-    result.recommendations.forEach(rec => {
-      const li = document.createElement('li');
-      li.textContent = rec;
-      recommendationsContainer.appendChild(li);
-    });
-    
-    // 切换页面
-    document.getElementById('questionPage').style.display = 'none';
-    document.getElementById('resultPage').classList.add('active');
-    document.getElementById('bottomBar').style.display = 'none';
-    
-    // 滚动到顶部
-    window.scrollTo(0, 0);
-  }
-
-  // 开始学习
   function startLearning() {
-    // 这里可以跳转到主应用页面
-    alert('即将开始你的个性化学习之旅！');
+    // 进入推荐起点对应的关卡
+    const rec = recommendStart(answers.self_level);
+    window.location.href = `#/camp/${(rec.level || 'A1').toLowerCase()}/lesson/1`;
   }
 
   // 初始化
-  document.addEventListener('DOMContentLoaded', function() {
-    updateProgress();
-    checkCompletion();
-  });
+  document.addEventListener('DOMContentLoaded', render);
 </script>
 </body>
 </html>
